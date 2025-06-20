@@ -1,0 +1,8 @@
+# Treat all files as text by default
+*       text=auto
+
+# Force LF endings for LaTeX and related text files:
+*.tex   text eol=lf
+*.bib   text eol=lf
+*.sty   text eol=lf
+*.cls   text eol=lf
