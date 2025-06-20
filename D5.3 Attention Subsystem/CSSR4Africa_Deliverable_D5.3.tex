@@ -1,0 +1,622 @@
+% Template LaTeX document for CSSR4A Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{dirtree}
+\usepackage{listings}
+\usepackage{mathtools}
+\usepackage{tabularx,colortbl}
+
+
+%%% for listing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{xcolor}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+\definecolor{greenyellow}{rgb}{0.8, 0.7, 0.10} % Example values, adjust as needed
+
+\lstdefinestyle{withoutNumbering}{
+	backgroundcolor=\color{backcolour},   
+	commentstyle=\color{codegreen},
+	keywordstyle=\color{magenta},
+	stringstyle=\color{codepurple},
+	basicstyle=\ttfamily\small,
+	breakatwhitespace=false,         
+	breaklines=true,                 
+	captionpos=b,                    
+	keepspaces=true,                 
+	showspaces=false,                
+	showstringspaces=false,
+	showtabs=false,                  
+	tabsize=2
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D5.3}                              % REPLACE with correct number
+\title{D5.3 Attention Subsystem}               % REPLACE with correct title
+
+\leadpartner{Carnegie Mellon University Africa}      % REPLACE with partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
+\partner{}                                      
+
+\revision{1.3}                          % REPLACE with correct version number
+\deliverabledate{1/09/2024}   % REPLACE with date
+\submissiondate{06/12/2024}  % REPLACE with date
+\revisiondate{13/03/2025}  % REPLACE with date
+\disseminationlevel{PU}
+\responsible{Muhammed Danso }       % REPLACE with correct  name
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+
+\section*{Executive Summary}
+%==============================================================
+\label{executive_summary}
+\addcontentsline{toc}{section}{Executive Summary}
+
+This document outlines the design and implementation of the Attention Subsystem for a culturally sensitive social robot being developed under the CSSR4Africa project. This deliverable represents the outcome of Task 5.3. Task 5.3 focuses on enabling the robot to dynamically direct its attention towards salient features in its environment, primarily during social interactions, and to scan its surroundings when not actively engaged. The Attention Subsystem integrates several processes, including face and sound detection, saliency map generation, and gaze control, allowing the robot to engage in more human-like behaviors. With modular design principles, the system incorporates different modes of operation such as disabled mode, social mode, scanning mode, seek mode, and location mode. This document details the system's requirements, functional specifications, and the modular design, offering a comprehensive view of the software architecture that powers the robot's attention capabilities. This subsystem enhances the robot’s ability to interact naturally with its environment, contributing to its overall goal of promoting culturally appropriate human-robot interaction.
+
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\pagebreak
+ 
+\section{Introduction}
+%===============================================================
+The Attention Subsystem is a critical component of the CSSR4Africa project, aimed at developing a social robot that can interact effectively with people in a culturally sensitive manner. The subsystem’s primary goal is to enable the robot to focus on relevant features in its environment, such as human faces and voices, or specific locations, while also scanning for points of interest when not actively engaged. This function is vital for the robot’s ability to behave in an ``animate" way, meaning that it can mimic human-like attention patterns by adjusting its focus based on its surroundings.
+
+This document, Deliverable D5.3, provides a detailed description of the Attention Subsystem’s design, including the software modules responsible for processing sensor data, managing attention modes, and controlling the robot's movements. The system is developed following a modular approach, with each function contributing to the overall behavior of the robot in various operational modes, such as social interactions or environment scanning. The architecture is designed to be flexible and adaptive, ensuring that the robot's attention system can be expanded or customized to accommodate different cultural contexts and interaction scenarios.
+
+By integrating multiple sensory inputs and utilizing advanced saliency mapping techniques, the Attention Subsystem supports the robot's ability to maintain dynamic and contextually appropriate focus, improving both the usability and sociability of the robot. This deliverable elaborates on each functional module, providing insight into the system's implementation and future developments.
+
+%\begin{figure}[thb]
+%	\begin{center}
+%		\includegraphics[height=21mm,angle=0]{CSSRforAfrica_logo_red.pdf} % REPLACE with correct filename
+% 	\end{center}
+% 	\caption{Figure caption.}                                                        % REPLACE with correct caption
+% 	\label{fig:xyz}                                                                        % REPLACE with correct label
+%\end{figure}
+ 
+\pagebreak
+\section{Requirements Definition}
+%===============================================================
+ 
+\subsection{Overview}
+ 
+The objective of Task 5.3, Attention Subsystem, is to develop a software module that enables the robot to focus on salient features in its environment or a specified location. Salient features primarily include elements related to social interaction, such as people's bodies, faces, eyes, and voices. When the robot is not interacting, it scans the environment for interesting objects, contributing to the animate behavior of the robot (Task 5.2 Animate Behavior Subsystem). This scanning process requires a general-purpose saliency function to complement the social interaction feature saliency function. 
+ 
+\subsection{Functional Specification}
+ 
+The Attention Subsystem operates as a ROS node and provides the robot with the ability to direct its gaze to salient features or specific locations in its environment. It has five modes of operation:
+ \begin{enumerate}
+ 	\item Social Mode: Active during social interactions, focusing on people's bodies, faces, eyes, and voices.
+ 	\item Scanning Mode: Active when the robot is not engaged in social interactions, scanning for people and interesting objects. In this mode, the robot's focus shifts periodically, avoiding returning to the initial focus point.
+ 	\item Location Mode: The robot gazes at a specified location. If the head cannot achieve the necessary pose, the robot rotates to align its head and body.
+ 	\item Seek Mode: In this mode the robot actively tries to establish mutual gaze with a person within close proximity for a fixed duration. During this time the robot either records success or returns a failure when the duration elapses.
+ 	\item Disabled Mode: Here the robot head is centred and remains immobile indefinitely.
+ \end{enumerate}
+ 
+\subsection{Saliency Maps and Processes}
+ 
+Two types of saliency maps are generated:
+\begin{itemize}
+	\item Social Features Saliency Map: Based on outputs from Task 4.2.2 Face \& Mutual Gaze Detection and Localization, and Task 4.2.3 Sound Detection and Localization.
+	\item General Features and Faces Saliency Map: Utilizing outputs from Task 4.2.2 and models such as the Itti and Koch saliency model \cite{IttiKochNiebur98, IttiKoch00, IttiKoch01}, the model proposed by Rea et al. (2013) \cite{ReaMettaBartolazzi13}, the information-theoretic saliency map \cite{BruceTsotsos09}, and open-source deep neural network saliency models.
+\end{itemize}
+%(Bruce & Tsotsos, 2009),
+The subsystem incorporates three key processes in the scanning mode:
+\begin{enumerate}
+	\item Winner-Take-All Process: Selects a single focus of attention from the saliency map candidates using a maximum function.
+	\item Inhibition-of-Return (IOR) Mechanism: Reduces the attention value of previous focus points to shift attention to new regions.
+	\item Habituation Process: Gradually reduces the salience of the current focus, limiting fixation duration.
+\end{enumerate}
+ 
+\subsection{Gaze Control}
+ 
+The robot’s gaze is directed by publishing appropriate messages to control the headYaw and headPitch joints, centering the gaze on the focus of attention. Calibration of the x and y offsets of the focus of attention in the image correlates with changes in headYaw and headPitch angles, assuming a linear relationship. Using the image width, height, and camera field of view angles (horizontal and vertical) we compute the offset from the center and then calculate the proportional offsets relative to the image dimensions. Finally, we calculate and return the yaw and pitch angle changes. For specific formulas check equation \eqref{eqn:imgtoyaw} and \eqref{eqn:imgtopitch} below. Aural attention calibration involves the angle of arrival of sound and headYaw angle adjustments. Fixation on sounds affects only the headYaw angle, which controls horizontal rotation about the head’s Z-axis.
+ 
+If the headYaw rotation exceeds a set threshold, the robot's base and head rotate in opposite directions to maintain focus while realigning the head with the body. Thresholds and calibration constants are provided as node parameters.
+ 
+\subsection{Inputs and Outputs}
+
+\subsubsection*{Topics Subscribed}
+%-----------------------------
+This node  subscribes to six topics:  three from other nodes in the  {\small \verb+cssr_system+} package, one from naoqi,  and two camera sensor topics. The specific camera sensor topic depends on whether the node is operating with the physical robot or the simulator.  
+These are are specified in the files identified by the {\small \verb+robotTopics+ }    and {\small \verb+simulatorTopics+ }   key-value pairs in the configuration file.
+
+The following are the topics to which the {\small \verb+overtAttention+} node subscribes.
+
+\begin{center}
+	\begin{tabularx}{\linewidth}{| l | l | X|}
+		\hline 
+		{\small Topic }                               & {\small Sensor / Node}                            &  {\small Platform}       \\
+		\hline
+		{\footnotesize \verb+/faceDetection/data+ }  & {\footnotesize \verb+faceDetection+}    & {\small Physical robot} \\ 
+		\hline
+		{\footnotesize \verb+/robotLocalization/pose+ }  & {\footnotesize \verb+robotLocalization+}    & {\small Physical robot} \\ 
+		\hline
+		{\footnotesize \verb+/soundDetection/data+ }  & {\footnotesize \verb+soundDetection+}    & {\small Physical robot} \\ 
+		\hline
+		{\footnotesize \verb+/joint_states+ }  & {\footnotesize \verb+naoqi+}    & {\small Physical robot} \\ 
+		\hline
+		{\footnotesize \verb+/naoqi_driver/camera/front/image_raw+ }  & {\footnotesize \verb+FrontCamera+}    & {\small Physical robot } \\ 
+		\hline
+		{\footnotesize \verb+/naoqi_driver/camera/stereo/image_raw+ }  & {\footnotesize \verb+StereoCamera+}    & {\small Physical robot } \\ 
+		\hline
+	\end{tabularx}
+\end{center}
+
+
+
+
+\subsubsection*{Topics Published}
+%----------------------------
+This node controls five joints: {\small \verb+headYaw+} and  {\small \verb+headPitch+}  to adjust the head gaze, and {\small \verb+WheelFL+},  {\small \verb+WheelFR+}, and  {\small \verb+WheelB+} to rotate the robot and allow the gaze angle to be recentred. This node also publishes the current active mode of operation to a topic.
+
+The specific topics that are used to control these joints depend on whether the node is operating with the physical robot or the simulator.  The corresponding topics are  identified in the file given by the {\small \verb+robotTopics+ }    and {\small \verb+simulatorTopics+ }   key-value pairs in the configuration file.
+
+The following are the topics to which the {\small \verb+overtAttention+} node publishes.
+
+\begin{center}
+	\begin{tabularx}{\linewidth}{| l | l | X|}
+		\hline 
+		{\small Topic }                                                                                & {\small Actuator }    &  {\small Platform}       \\
+		\hline
+		{\footnotesize \verb+/pepper_dcm/Head_controller/+ }  & {\footnotesize \verb+headYaw+,   \verb+headPitch+ } & {\small Physical robot} \\ 
+		{\footnotesize \verb+follow_joint_trajectory+ }                &                                                                                      &  \\ 
+		\hline
+		{\footnotesize \verb+/cmd_vel+ }                                               &    {\footnotesize \verb+WheelFL+},  {\footnotesize \verb+WheelFR+},   {\footnotesize \verb+WheelB+} & {\small Physical robot} \\ 
+		\hline
+		{\footnotesize \verb+/overtAttention/mode+ }                                &   & {\small Physical robot} \\ 
+		\hline
+	\end{tabularx}
+\end{center}
+
+The following table details the custom message, Status.msg, that the attention node publishes on the {\footnotesize \verb+/overtAttention/mode+} opic.
+
+\begin{center}
+	\begin{tabularx}{\linewidth}{| l | X | l| l|}
+		\hline 
+		{\small Field }                                  & {\small Field Value}    &  {\small Field Type}  &     {\small Comment}   \\
+		\hline
+		{\footnotesize  \verb+mode+}          & {\footnotesize \verb+social+,  \verb+scanning+, \verb+location+, \verb+seek+, \verb+disabled+ } & {\footnotesize String} & \\ 
+		\hline
+		{\footnotesize  \verb+value+}  & {\footnotesize \verb+1 (seeking)+, \verb+2 (success)+, \verb+3 (failure)+    } & {\footnotesize Integer} & \\ 
+		\hline
+	\end{tabularx}
+\end{center}
+The value field only has meaning in seeking mode and scanning mode. The value 1 means the robot is attempting to establish mutual gaze. The value 2 means the robot has succeeded in detecting mutual gaze. And the value 3 means the robot failed to establish mutual gaze with anyone nearby. However, the value 3 has no meaning in scanning mode as it can keep scanning indefinitely because scanning mode is not time bound.
+ 
+\subsection{Data and Service Management}
+ 
+Topic names for actuators are read from data files containing key-value pairs. Separate files exist for the physical robot and the simulator. Attention mode settings are managed via a dedicated service advertised and served by the \texttt{overtAttention} node.
+ 
+The node operates in normal or verbose mode, where verbose mode outputs published data to the terminal and displays output images in openCV windows. The \texttt{overtAttention} node's operation is defined by a configuration file (\texttt{overtAttentionConfiguration.ini}) containing key-value pairs, as shown below.
+
+\begin{center}
+	\begin{tabular}{ |p{4cm}|p{4cm}|p{6cm}| }
+		\hline
+		\textbf{Key} & \textbf{Values} & \textbf{Effect} \\ \hline
+		camera & FrontCamera, StereoCamera & Specifies which RGB camera to use.  \\
+		\hline
+		realignmentThreshold & $<$number$>$ & Specifies the threshold on the angular difference between head and base that must be met before the head and base are re-aligned.  \\
+		\hline
+		xOffsetToHeadYaw & $<$number$>$ & Specifies the calibration constant that defines the conversion of the offset in the (horizontal) x-axis of an image from the image center to the change in \texttt{headYaw} joint angle. \\
+		\hline
+		yOffsetToHeadPitch & $<$number$>$ & Specifies the calibration constant that defines the conversion of the offset in the (vertical) y-axis of an image from the image center to the change in \texttt{headPitch} joint angle. \\
+		\hline
+		%stareTime & $<$number$>$ & Specifies in milliseconds how long the robot should stare at a person's face consistently in a social interaction before changing it's focus of attention to something else.\\
+		%\hline
+		robot Topics & pepperTopics.dat & Specifies the filename of the file in which the physical Pepper robot sensor and actuator topic names are stored. \\
+		\hline
+		simulator Topics & simulatorTopics.dat & Specifies the filename of the file in which the simulator sensor and actuator topics are stored. \\
+		\hline
+		socialAttentionMode & saliency, random & Specifies whether to randomly choose a face or pick a face based on its saliency during social mode of operation.\\
+		\hline
+		verboseMode & true, false & Specifies whether diagnostic data is to be printed to the terminal and diagnostic images are to be displayed in OpenCV windows.\\
+		\hline
+	\end{tabular}
+\end{center}
+
+ 
+\subsection{Implementation}
+ 
+The software development process encompasses requirements definition, module specification, interface design, module design, coding, and unit testing. The Attention Subsystem utilizes the outputs from Task 4.2.2 Face \& Mutual Gaze Detection and Localization and Task 4.2.3 Sound Detection and Localization to achieve its objectives, ensuring robust social and environmental interaction capabilities for the robot.
+\newpage
+
+\section{System Design}
+%===============================================================
+Based on the requirements above we design a system architecture for the OvertAttention node. We follow a modular approach in this design by breaking the system into smaller functional units. The modules and services are as follows:
+\begin{itemize}
+	\item Face detection callback
+	\item Sound localization callback
+	\item Camera sensor callback
+	\item Robot localization callback
+	\item Disabled mode function
+	\item Social mode function
+	\item Location mode function
+	\item Scanning mode function
+	\item Seek mode function
+	\item Change Attention Function
+	\item Attention application
+	\item Mode service
+\end{itemize}
+
+\subsection{Face detection callback}
+
+This function is set as a callback for subscribing to the \texttt{/facedetection/data} topic, which is published by the Face Detection Node. Its primary functionality is to receive coordinates of detected faces and compute the corresponding \texttt{HeadYaw} and \texttt{HeadPitch} angles. These angles are then stored in global variables for use by other modules in the system. The precise calculation ensures that the robot's gaze can be directed accurately towards the detected faces, facilitating effective social interaction.
+
+\subsection{Sound localization callback}
+
+This function is set as a callback for subscribing to the \texttt{/soundDetection/data} topic, published by the Sound Detection Node. Its sole purpose is to receive the direction of detected sounds and compute the corresponding \texttt{HeadYaw} angle. This angle is then stored in a global variable, allowing the robot to focus its attention on the source of the sound. By prioritizing aural attention, the robot can respond more naturally and effectively to auditory stimuli in its environment.
+
+\subsection{Camera sensor callback}
+
+This function is set as a callback for subscribing to topics such as\\ \texttt{/naoqi\_driver/camera/front/imageraw}, \texttt{/pepper/camera/front/imageraw}, or \texttt{/camera/color/image\_raw}, depending on the configuration file. Its main functionality is to receive images from the robot's camera and store them in a global variable. These images are crucial for generating saliency maps and enabling the robot to visually scan its environment for interesting features.
+
+\subsection{Robot localization callback}
+
+This module is set as a callback for subscribing to the \texttt{/robotLocalization/pose} topic. It is responsible for receiving the current pose of the robot in a Cartesian world frame of reference and storing this information in a global variable. This data is essential for other functions that need to know the robot's pose to accurately adjust its head and body alignment, ensuring that the robot's movements and focus of attention are contextually appropriate and accurate.
+
+\subsection{Disabled mode function}
+
+This function centers the robot head and keeps it immobile and puts the \texttt{overtAttention} node to sleep for a short period of time. This mode is used to temporarily disable the attention functions of the robot, such as during navigation or when attention control is not required. It ensures that there's no conflict and the robot's resources are not unnecessarily utilized, maintaining system efficiency.
+
+\subsection{Social mode function}
+
+%The duration for which the robot can focus on a single face is specified in the knowledge ontology to ensure cultural sensitivity.
+
+The Social Mode Function controls the robot's attention during social interactions. It relies on the detected faces and sound directions to determine where the robot should focus. A saliency map of face locations and sound locations is created first using outputs from the facedectection node and the sound localization node. The saliency of the faces is weighted by the corresponding distances to the robot and sound is given a default max weight. Then WTA is applied to select a focus of attention. Habituation and Inhibition Of Return (IOR) are applied to gradually reduce saliency and inhibit the selection of previous focus points respectively. Sound locations outside the camera field of view are not included in the saliency map, they are only directly attended to when there are no faces detected in the current FOV. The required \texttt{HeadYaw} and \texttt{HeadPitch} angle changes for the winning point in the saliency map is computed and used to call the Change Attention Function, directing the robot's gaze appropriately.
+
+\subsection{Location mode function}
+
+In Location Mode, the \texttt{OvertAttention} Node expects to receive location coordinates from the script interpreter or another node, focusing the robot's attention on these coordinates. This function uses the location information set by the mode service. It transforms the received x, y, and z coordinates into \texttt{HeadYaw} and \texttt{HeadPitch} angles and calls the Change Attention Function to adjust the robot's focus. This ensures the robot can accurately attend to specified locations when the functionality is needed.
+
+\subsection{Scanning mode function}
+
+The Scanning Mode Function is designed to focus the robot's attention on general interesting environmental features whilst prioritizing focus on faces of people. Using the global variable image set by the Camera Sensor Callback, it produces a saliency map and determines focal points. The function employs a selective tuning model to choose a focus point, an Inhibition-of-Return mechanism to shift attention from previous points, and a habituation process to limit fixation duration. The calculated  \texttt{HeadYaw} and \texttt{HeadPitch} angles are then used to call the Change Attention Function, allowing the robot to scan and react to its surroundings dynamically.
+
+\subsection{Seek mode function}
+
+The seek mode function attempts to establish mutual gaze with a person within a fixed radius from the robot. This function rotates the robot about its base as well as rotating its head to make sure that all angles around the robot are covered. In each rotation the robot fixates for a fixed time to process the mutual gaze information from the face detection node and determine if mutual gaze has been established. Whenever mutual gaze is established the search stops and the robot stays in that pose, expecting a call to change \texttt{overtAttention} mode. If the robot covers the entire circular rotation about its base without establishing mutual gaze, it stops and remains immobile at its starting pose, again expecting a call to change \texttt{overtAttention} mode.
+
+\subsection{Change attention function}
+
+The Change Attention Function is pivotal in directing the robot's focus of attention by publishing precise control messages to adjust the \texttt{HeadYaw} and \texttt{HeadPitch} joints. When the computed \texttt{HeadYaw} rotation surpasses a predefined threshold, the function also publishes control messages to the robot’s wheels, ensuring the alignment of the head and body. This realignment process utilizes the robot's current pose, provided by the Robot Localization Callback and stored in global variables. The function requires inputs including the rotation threshold and the desired \texttt{HeadYaw} and \texttt{HeadPitch} angles in radians. To achieve accurate adjustments, the function uses information from the \texttt{/joint\_states} topic to continuously monitor the current positions of the \texttt{HeadYaw} and \texttt{HeadPitch} joints. By calculating the difference between the current and desired poses, the function sends appropriate commands to focus attention. During this process, the function temporarily puts the node to sleep, allowing the robot time to move. This ensures that the robot's attention remains precisely focused on the intended target, facilitating effective and natural interactions with its environment.
+
+\subsection{Attention application}
+
+The Attention Application is the main program that integrates all other functions and initializes the \texttt{OvertAttention} node. It starts by reading configuration parameters and initializing global variables. The application sets up the necessary publishers and subscribers, and determines the current mode and calls the corresponding function. The function for each mode completes only one process execution by calling the change attention function to publish the right message to the \texttt{HeadYaw} and \texttt{HeadPitch} joints and immediately returns back to the attention application. Therefore, each mode function stores it's state, if necessary, so that it can resume processing if that mode is still active. The current active mode is read from the global variable set by the mode service callback. The application runs in an infinite loop, continually checking the mode, publishing active mode information on the \texttt{overtAttention/mode} topic, and processing callbacks to manage the robot's attention effectively.
+
+\subsection{Mode service}
+
+This advertises the \texttt{/overtAttention/set\_mode} service, allowing the mode of attention to be set to social, scanning, seek, disabled, or location. It uses a package-specific msg, Mode.msg. The
+message has four fields, as follows.
+
+\begin{center}
+	\begin{tabular}{ |c|c|c|c| } 
+		\hline
+		Field & Field Value & Field Type & Units \\  
+		\hline
+		state & social, scanning, location, seek, disabled & String & \\  
+		\hline
+		location\_x & $<$number$>$ & Real & metres \\  
+		\hline
+		location\_y & $<$number$>$ & Real & metres \\ 
+		\hline 
+		location\_z & $<$number$>$ & Real & metres \\ 
+		\hline
+	\end{tabular}
+\end{center}
+If the set mode request is successful, the service response is ``1"; if it is unsuccessful, it is ``0". The service is called by the \texttt{behaviorController} node, setting the required mode of attention. The callback of this service receives a Mode.msg entity and update global variables for mode and location\_x, location\_y, location\_z coordinates.
+
+\newpage
+\section{System Implementation}
+%===============================================================
+The \texttt{overtAttention} node is implemented in C++ following the guidelines outlined in deliverable D3.2 Software Engineering Standards Manual using a modular design approach as detailed in the previous section.
+
+The \texttt{overtAttention} node files in the \texttt{cssr\_system} package are structured as follows:
+\vspace{0.5cm}
+\begin{figure}[h!]
+	\renewcommand*\DTstyle{\ttfamily}
+	\dirtree{%
+		.1 cssr\_system.
+		.2 overtAttention.
+		.3 config.
+		.4 overtAttentionConfiguration.ini.
+		.3 data.
+		.4 pepperTopics.dat.
+		.4 simulatorTopics.dat.
+		.3 include.
+		.4 overtAttention.
+		.5 overtAttentionInterface.h.
+		.3 msg.
+		.4 Mode.msg.
+		.4 Status.msg.
+		.3 src.
+		.4 overtAttentionApplication.cpp.
+		.4 overtAttentionImplementation.cpp.
+		.3 srv.
+		.4 setMode.srv.
+		.3 README.md.
+		.3 CMakeLists.txt.
+	}
+	\caption{File structure for overtAttention node}
+\end{figure}
+
+The \texttt{overtAttentionConfiguration.ini} file contains the configuration parameters that control the behavior of the system as mention in earlier sections. Similarly, the \texttt{pepperTopics.dat} file contains the robot topics and the \texttt{simulatorTopics.dat} file contains the simulation environment topics. The \texttt{overtAttentionInterface.h} file contains all includes for imported libraries and function and global variable declarations. \texttt{Mode.msg} file defines a custom message type for service call to switch the mode of operation of the node. \texttt{Status.msg} file defines a custom message for the data type published to keep track of the status of current operating mode.
+
+Furthermore, the \texttt{overtAttentionImplementation.cpp} file contains the definition of all functions used in achieving the objectives of this system. The \texttt{overtAttentionApplication.cpp} file has the main method of the program and it defines the step by step operation of the \texttt{overtAttention} node. It contains calls to the functions defined in \texttt{overtAttentionImplementation.cpp} and ties all of them together to achieve the aims of the system.
+
+The \texttt{setMode.srv} file contains the definition of the \texttt{/overtAttention/set\_mode} service advertised by the \texttt{overtAttention} node.
+
+\subsection{Change attention}
+A central function of the \texttt{overtAttention} node is to control the robot's head movements, ensuring it transitions logically and smoothly from one pose to another. At the heart of this implementation lies the function \texttt{move\_robot\_head\_biological\_motion}, which takes the head pitch and yaw as input parameters to position the head accordingly. This function leverages interpolation techniques to create smooth, fluid head movements that mimic natural, biological motion, avoiding the stiffness or jerkiness often associated with robotic movements.
+
+% Ignoring all the other details, a key operation of \texttt{overtAttention} node is to control the robot head and move it from pose to pose in a logical manner. Therefore, at the core of the node's implementation we have a function definition, \texttt{move\_robot\_head\_biological\_motion}, that takes in head pitch and head yaw as parameters to move the head to that corresponding pose. This function uses interpolations that make the motion of the head seem more biological and smooth rather than jerky and stiff.%
+
+\subsection{Attention application}
+The main function of the \texttt{overtAttention} application begins by reading the configuration file to initialize its settings. It then advertises the \texttt{/overtAttention/set\_mode} service and the \texttt{/overtAttention/mode} topic, followed by subscribing to \texttt{/joint\_states},\\ \texttt{/soundDetection/direction}, \texttt{/faceDetection/data}, and the relevant camera topics. Once set up, the program enters a continuous loop, running as long as the ROS process remains active. Within this loop, a switch statement monitors the global mode variable, which is updated by the callback of the \texttt{/overtAttention/set\_mode} service. Based on the current value of this variable, the appropriate mode function is invoked to handle operations accordingly.
+
+%The main function of the \texttt{overtAttention} application program starts by reading the configuration file. Then it advertises \texttt{/overtAttention/set\_mode} service and the\\ \texttt{/overtAttention/mode} topic. Next, it subscribes to \texttt{/joint\_states},\\ \texttt{/soundDetection/direction}, \texttt{/faceDetection/data}, and the appropriate camera topics. Finally, it enters an infinite loop as long as the ros process is running normally. Inside the loop it makes use of a switch statement monitoring the global mode variable set by the callback of \texttt{/overtAttention/set\_mode} service. Depending on the value of this variable it calls the right mode function to take over operation.
+
+\subsection{Scanning Mode}
+In the implementation of the scanning mode operation, we employ a saliency detection method proposed by Xiaodi Hou and Liqing Zhang, based on a spectral residual approach \cite{hou2007saliency}. Outputs from Task 4.2.2 are used to give locations of detected faces a slightly higher saliency value on the saliency map generated from the spectral residual approach. This allows the algorithm to put more emphasis on the faces of people in the robot's environment. To ensure the robot does not repeatedly focus on the same locations, we implement a habituation mechanism: the saliency value of previously selected locations are reduced by 0.1 per frame over 50 frames. After habituation, the location is blocked by assigning it a saliency value of 0 for the subsequent 50 frames, ensuring it is not selected again during this time.
+
+The scanning mode operation follows a structured sequence of steps: saliency detection, application of habituation, inhibition of return (IOR), and identification of the most salient location using a max function. Finally, the robot’s head is directed to focus on this winning location.
+
+%In the implementation of scanning mode operation, we harness a saliency detection method, proposed by Xiaodi Hou and Liqing Zhang, that uses a spectral residual approach \cite{hou2007saliency}. To habituate previous winning locations we reduce the saliency of the locations by $0.1$ gradually for $50$ frames. After the $50$ frames of habituation, we prevent that location from being picked for the next $50$ frames by assigning it a saliency of $0$, which is the lowest possible value for any point/location. 
+
+%The steps in scanning mode operation start with saliency detection, then habituation is applied, followed by inhibition of return, and a max function is applied to return the location that is the most salient. Finally, the head is moved to focus on this winning location.
+
+%However, to facilitate proper habituation and inhibition of return (IOR), since the head is moving about the base of the robot, we map locations to angles in the world with respect to the robot's base pose.
+
+To support effective habituation and IOR, we account for the robot's head movements by mapping image coordinates to angular changes relative to the robot’s base pose. This mapping ensures accurate head positioning. The calculations are as follows:
+
+\begin{equation}\label{eqn:imgtoyaw}
+	\delta Y=(x-(W/2))/W*\theta h\tag{1}
+\end{equation}
+
+\begin{equation}\label{eqn:imgtopitch}
+	\delta P=(y-(H/2))/H*\theta v\tag{2}
+\end{equation}
+
+Here, $\delta Y$ and $\delta P$ represent the required changes in head yaw and pitch, respectively, while $x$ and $y$ are the pixel coordinates in the image. $H$ and $W$ denote the image’s height and width, and  $\theta v$ and $\theta h$ represent the camera's vertical and horizontal fields of view. The center of the camera (mounted in the robot's head) serves as the reference point for these calculations, with adjustments made to the pitch angle to accurately align the robot eyes with the desired pixel location.
+
+%We use equation \eqref{eqn:imgtoyaw} and \eqref{eqn:imgtopitch} to get the angle changes required to focus the head (actually it is the center of the camera not the head but we can account for that by offsetting the pitch angle) on a particular pixel in an image captured from a camera mounted in the head. Where $\delta Y$ and $\delta P$ are the angle changes in head yaw and head pitch respectively. And $x$ and $y$ are the coordinates of the pixel in the image. $H$ and $W$ are the height and width of the image respectively, whereas $\theta v$ and $\theta h$ are the vertical and horizontal fields of view of the camera respectively.
+
+The angle changes $\delta Y$ and $\delta P$ do not directly represent unique angles in the real world because they are relative to the current pose of the robot's head, rather than its base. To obtain the absolute angles in the real-world frame, we add the current yaw and pitch joint values (recorded at the time the image is captured) to $\delta Y$ and $\delta P$, respectively. This calculation provides the actual angles corresponding to the point—or more precisely, the line in the real-world environment since we are dealing with 2D images.
+
+These updated yaw and pitch angles are then stored and later transformed back into pixel coordinates by reversing the earlier formulas and steps when applying habituation and inhibition of return (IOR) to the saliency map. This process ensures consistent and accurate mapping between image pixels and real-world coordinates during saliency-based operations.
+
+%The angle changes $\delta Y$ and $\delta P$ alone do not correspond to unique angles in the real world as they are relative to the current pose of the head and not the robot base which is what we want. Therefore, we add the current yaw joint and pitch joint, at the time the image is captured, to $\delta Y$ and $\delta P$ respectively, that gives us the actual corresponding angle of the point (line precisely, since we are dealing with 2D images) in the real world environment. These updated yaw and pitch angles are what is stored and transformed back into pixel values, by reversing the formulas and steps above, when applying habituation and IOR to the saliency map.
+
+\subsection{Location Mode}
+The implementation of location mode is straightforward. The given $x, y, z$ world coordinates are transformed into head pitch and head yaw angles using inverse kinematics. The head is then focused on the location using these angles.
+
+\subsection{Social Mode}
+In social mode we tried two implementation strategies and we found both useful after numerous tests so we decided to keep them and give users the choice to decide which one to use by changing the value of \texttt{socialAttentionMode} key in the configuration file. The two valid values are \texttt{saliency} or \texttt{random}. As mentioned in social mode we make use of faces and voices information. And with these two streams of information there are four cases namely: 
+
+\begin{itemize}
+	\item Case 1: when there is face signal and voice/sound signal
+	\item Case 2: when there is face signal but no voice/sound signal
+	\item Case 3: when there is no face signal but there is voice/sound signal
+	\item Case 4: when there is no face signal and no voice/sound signal
+\end{itemize}
+
+In Case 1, when using \texttt{random} strategy, a face is chosen randomly from the list of faces and the head is focused on this face, unless the number of frames that have passed since the node started running is a multiple of $20$, in which case attention is focused on the direction of the voice/sound. When using the \texttt{saliency} strategy, the faces are projected onto a saliency map with the saliency for each face relative to its distance from the robot where closer faces are more salient. The voice direction is also projected to the map if it is within the horizontal field of view (HFOV) of the camera, that means all voices coming from an angle outside the HFOV are ignored. Next the projected faces and voice direction are habituated, that is if a projected face or voice lands at a location which was previously a winner recently (we take recently in this case to mean within $3$ frames) then its saliency is reduced. Afterwards, the most salient location on the saliency map is picked and the head is focused on the corresponding face or voice direction.
+
+In Case 2, when using \texttt{random} strategy, there is no voice direction information so a face is chosen randomly from the list of faces and the head is focused on this face. When using the \texttt{saliency} strategy, the faces are projected onto a saliency map as above. And the most salient location on the saliency map is picked and the head is focused there.
+
+In Case 3, using either of the strategies results in the same thing. The head is focused towards the direction of sound.
+
+In Case 4, regardless of the strategy there is nothing to do as there is no information signal so the robot head stays immobile.
+
+\subsection{Seeking Mode}
+In the implementation of seeking for mutual attention we defined a fixed list of angles to turn the head to with respect to the pose of robot base. The list is as follows: $[-40, 0, 40, 0]$. We loop through this list to move the head to this yaw angles whilst keeping the pitch angle constant at $0$. If mutual gaze is established at any of these angles then the head stays focused there, until \texttt{/overtAttention/set\_mode} service is called again. When at the end of the list and mutual gaze is not established then the robot rotates $90$ degrees about its base and the program loops through the angles again from the beginning. The robot rotates about its base for a maximum of four times in a single seeking mission, after which the robot would be facing where it started from and at this point it means mutual gaze couldn't be established, thus seeking ends and the robot remains immobile until \texttt{/overtAttention/set\_mode} service is called.
+
+\subsection{Disabled Mode}
+Our implementation for the disabled mode is simple. The only step is to call\\ \texttt{move\_robot\_head\_biological\_motion} to focus the head at the center and look forward.
+
+\pagebreak
+\section{Running Attention Node}
+%===============================================================
+The following commands will launch the \texttt{overtAttention} node (after waking up the robot):
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the overtAttention node
+	rosrun cssr_system overtAttention
+\end{lstlisting}
+
+When the node is launched before it operates fully it will wait for the \texttt{/joint\_states},\\ \texttt{/faceDetection/data}, \texttt{/soundDetection/direction}, and \texttt{robotLocalization/pose} topics to be available. The status of subscribing to these topics will be printed on the terminal accordingly. When these are successful the node will run normally and regularly print a heartbeat message to the terminal to let the user know it is running fine. These topics can be made available by one of two ways, outlined below:
+
+\begin{description}
+\item[Option 1:] Running the \texttt{faceDetetction}, \texttt{soundDetection}, and \texttt{robotLocalization} nodes in the \texttt{cssr\_system} package (if available)
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the faceDetection node
+	rosrun cssr_system face_detetection_application.py
+\end{lstlisting}
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the soundDetection node
+	rosrun cssr_system sound_detection_application.py
+\end{lstlisting}
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the robotLocalization node
+	rosrun cssr_system robotLocalization
+\end{lstlisting}
+
+\item[Option 2:] Running the \texttt{overtAttentionDriver} in the \texttt{unit\_tests} package and providing the actual robot pose in the physical environment.
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the overtAttentionDriver node
+	rosrun unit_tests overtAttentionDriver <robot_x> <robot_y> 
+	<robot_theta>
+\end{lstlisting}
+
+
+\end{description}
+
+\pagebreak
+\section{Unit Tests}
+%===============================================================
+Testing is an important step in the software development process as it helps us to validate the expected behavior of software, identify and fix bugs early. In this system we employed the unit testing mechanism as stipulated in Deliverable D3.5, System Integration and Quality Assurance.
+
+The \texttt{overtAttention} node has five distinct modes of operation namely: disabled mode, location mode, social mode, scanning mode, and seeking mode. Switching between these modes can only be done through service calls to the \texttt{/overtAttention/set\_mode} service advertised by the \texttt{overtAttention} node. Each of these modes of operation have a combination of functions and code isolated from the rest. Therefore, in the unit test we test the five modes separately as independent units.
+
+The \texttt{overtAttention} node uses the outputs from Task 4.2.2 Face \& Mutual Gaze Detection and Localization and Task 4.2.3 Sound Detection and Localization to perform its operations. But the test needs to be for an independent and isolated \texttt{overtAttention} node. Thus, we created two drivers to generate and publish data in place of outputs from these two tasks. The data generation for each driver is random and follows the same message structure as expected from outputs of the two tasks.
+
+To implement the unit tests we made use of the GoogleTest library. The unit test for each mode is isolated in one function. Each test function starts by making a service call to \texttt{overtAttention} node to switch to the target mode for that function and retrieving the response message. The next step determines if the response message indicates a successful switch of mode, if not the test fails. If successful the function calls the sleep function to allow for the \texttt{overtAttention} node to operate in this mode for a few seconds. The next step is to log the test's success or failure to an output file and end the test. 
+
+Additionally, the test function for seeking mode does a little bit more. After a successful call to switch the \texttt{overtAttention} node's mode to seeking, it waits for the \texttt{overtAttention} node to publish that seeking is complete by listening to messages published on the \texttt{overtAttention/mode} topic. Then it parses this message to determine if seeking was successful or it failed to establish mutual gaze. It then compares this to what is expected based on the data published by the drivers. If they do not match then the test fails. The remaining steps are the same as explained above for other test functions.
+
+\newpage
+The file structure for the \texttt{overtAttention} node in the unit tests package is as follows:
+
+\begin{figure}[h!]
+	\renewcommand*\DTstyle{\ttfamily}
+	\dirtree{%
+		.1 unit\_tests.
+		.2 overtAttentionTest.
+		.3 config.
+		.4 overtAttentionTestConfiguration.ini.
+		.3 data.
+		.4 overtAttentionTestOutput.dat.
+		.4 pepperTopics.dat.
+		.4 simulatorTopics.dat.
+		.3 include.
+		.4 overtAttentionTest.
+		.5 overtAttentionTestInterface.h.
+		.3 launch.
+		.4 overtAttentionLaunchRobot.launch.
+		.4 overtAttentionLaunchSimulator.launch.
+		.4 overtAttentionLaunchTestHarness.launch.
+		.3 msg.
+		.4 faceDetection.msg.
+		.3 src.
+		.4 overtAttentionTestApplication.cpp.
+		.4 overtAttentionTestDriver.cpp.
+		.4 overtAttentionTestImplementation.cpp.
+		.3 README.md.
+		.3 CMakeLists.txt.
+	}
+	\caption{File structure for overAttention unit test}
+\end{figure}
+\vspace{0.5cm}
+
+The overtAttentionTestConfiguration.ini file contains key-value pairs per line. The keys are: scanning, social, seeking, location, and disabled.  The keys take a value of either \texttt{true} or \texttt{false} indicating which modes should be tested when the program is run.
+
+The overtAttentionTestOutput.dat is the output file where the test results are logged for future reference. The file is erased at the beginning of a test run. Thus, the file only contains log details of the last test run at any instant.
+
+The launch files are used to launch the unit tests for \texttt{overtAttention}. \\ \texttt{overtAttentionLaunchTestHarness.launch} launches the \texttt{overtAttention} node, unit test application, and driver nodes.
+
+The \texttt{overtAttentionTestLaunchRobot.launch} file accepts the following parameters:
+\begin{itemize}
+	\setlength\itemsep{0em}
+	\item \texttt{robot\_ip}: specifies the IP address of the robot.
+	\item \texttt{roscore\_ip}: specifies the IP address of the roscore.
+	\item \texttt{network\_interface}: specifies the network interface name.
+\end{itemize}
+
+\newpage
+
+The following commands will launch the robot, start the \texttt{overtAttention} node, start the\\ \texttt{overtAttentionTestDriver} node, and start the \texttt{overtAttentionTestApplication} to perform the tests:
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+	# Launch the physical robot
+	roslaunch unit_tests overtAttentionLaunchRobot.launch \
+	robot_ip:=<robot_ip> roscore_ip:=<roscore_ip> \
+	network_interface:=<network_interface_name>
+	
+	# Launch all the nodes
+	roslaunch unit_tests overtAttentionLaunchTestHarness.launch \
+	launch_drivers:=true launch_test:=true initial_robot_x:=<robot_x> \
+	initial_robot_y:=<robot_y> initial_robot_theta:=<robot_theta>
+\end{lstlisting}
+
+ \noindent {\color{red} \textbf{NOTE:}} 
+Setting the argument \texttt{launch\_ test} to \texttt{true} runs the tests based on the configuration, while setting it to \texttt{false} only launches the node and its dependencies. This is particularly useful if the user wants to run unique tests on the node. Setting the argument \texttt{launch\_ drivers} to \texttt{true} launches the drivers and stubs required to drive the \texttt{overtAttention} node from the \texttt{unit\_ tests} package, while setting it to \texttt{false} launches the actual nodes (if available) which include \texttt{faceDetection}, \texttt{soundDetection}, and \texttt{robotLocalization} from the \texttt{cssr\_system} package. The default values are \texttt{true}. Ensure that the robot pose matches the exact pose of the robot in the world frame of reference.
+
+\newpage
+ 
+ 
+\bibliographystyle{unsrt}
+\bibliography{cognitive_systems.bib}                       
+\addcontentsline{toc}{section}{References}
+
+\pagebreak
+\section*{Principal Contributors}
+%=============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+Adedayo Akinade, Carnegie Mellon University Africa.\\              
+Muhammed Danso, Carnegie Mellon University Africa.\\                 
+David Vernon, Carnegie Mellon University Africa.\\       
+
+
+
+\pagebreak
+\section*{Document History}
+%=============================================================
+\label{revision_history}
+\addcontentsline{toc}{section}{Revision History}
+
+\begin{description}
+\item[Version 1.0]~\\                        % REPLACE with correct data 
+First draft.\\
+Muhammed Danso.\\
+06 December 2024.
+\end{description}
+
+\begin{description}
+	\item[Version 1.1]~\\                        % REPLACE with correct data 
+	Revised draft and made changes to scanning mode to prioritize faces detected whilst scanning the environment.\\
+	Muhammed Danso.\\
+	20 December 2024.
+\end{description}
+
+\begin{description}
+	\item[Version 1.2]~\\                        % REPLACE with correct data 
+	Removed all references to simulator platform and provided additional information on running the unit tests. \\
+	Adedayo Akinade.\\
+	05 February 2025.
+\end{description}
+
+\begin{description}
+	\item[Version 1.3]~\\                        % REPLACE with correct data 
+	Changing tenses in the requirement specification to present tense and removing assigned persons. \\
+	Muhammed Danso.\\
+	13 March 2025.
+\end{description}
+\blank
+~
+\blank
+% ADD  subsequent versions here
+\end{document}
+

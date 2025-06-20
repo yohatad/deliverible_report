@@ -1,0 +1,1471 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{dirtree}
+\renewcommand{\DTstyle}{\footnotesize\sffamily}
+\usepackage{tabularx,colortbl}
+\usepackage{verbatim} % for comments
+\usepackage{graphicx}
+\usepackage{caption}    
+\usepackage{float} 
+\usepackage{forest}       % For drawing directory structures as trees
+\usepackage{graphicx}     % For including images
+\usepackage{hyperref}     % For hyperlinks (if needed)
+\usepackage{geometry}     % To adjust page layout
+\usepackage{caption}      % For figure captions
+\usepackage[T1]{fontenc}  % Improved font rendering
+\usepackage{lmodern}      % Better font scaling
+\usepackage{listings}    
+
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\usepackage{multicol}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{wasysym}% provides \ocircle and \Box
+\usepackage{enumitem}% easy control of topsep and leftmargin for lists
+\usepackage{color}% used for background color
+\usepackage{forloop}% used for \Qrating and \Qlines
+\usepackage{ifthen}% used for \Qitem and \QItem
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Beginning of questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% 2010, 2012 by Sven Hartenstein
+%% mail@svenhartenstein.de
+%% http://www.svenhartenstein.de
+%%
+%% Please be warned that this is NOT a full-featured framework for
+%% creating (all sorts of) questionnaires. Rather, it is a small
+%% collection of LaTeX commands that I found useful when creating a
+%% questionnaire. Feel free to copy and adjust any parts you like.
+%% Most probably, you will want to change the commands, so that they
+%% fit your taste.
+%%
+%% Also note that I am not a LaTeX expert! Things can very likely be
+%% done much more elegant than I was able to. If you have suggestions
+%% about what can be improved please send me an email. I intend to
+%% add good tipps to my website and to name contributers of course.
+%%
+%% 10/2012: Thanks to karathan for the suggestion to put \noindent
+%% before \rule!
+
+%% \Qq = Questionaire question. Oh, this is just too simple. It helps
+%% making it easy to globally change the appearance of questions.
+%\newcommand{\Qq}[1]{\textbf{#1}}
+\newcommand{\Qq}[1]{{#1}} %DV
+
+%% \QO = Circle or box to be ticked. Used both by direct call and by \Qrating and \Qlist.
+\newcommand{\QO}{$\Box$}% or: $\ocircle$
+
+%% \Qrating = Automatically create a rating scale with NUM steps, like this: 0--0--0--0--0.
+\newcounter{qr}
+\newcommand{\Qrating}[1]{\QO\forloop{qr}{1}{\value{qr} < #1}{---\QO}}
+
+%% \Qline = Again, this is very simple. It helps setting the line
+%% thickness globally. Used both by direct call and by \Qlines.
+\newcommand{\Qline}[1]{\noindent\rule{#1}{0.6pt}}
+
+%% \Qlines = Insert NUM lines with width=\linewith. You can change the \vskip value to adjust the spacing.
+\newcounter{ql}
+\newcommand{\Qlines}[1]{\forloop{ql}{0}{\value{ql}<#1}{\vskip0em\Qline{\linewidth}}}
+
+%% \Qlist = This is an environment very similar to itemize but with
+%% \QO in front of each list item. Useful for classical multiple
+%% choice. Change leftmargin and topsep according to your taste.
+\newenvironment{Qlist}{%
+\renewcommand{\labelitemi}{\QO}
+%\begin{itemize}[leftmargin=1.5em,topsep=-.5em]}{
+\begin{itemize}[leftmargin=1.5em,topsep=0em]}{
+\end{itemize}
+}
+
+%% \Qtab = A "tabulator simulation". The first argument is the
+%% distance from the left margin. The second argument is content which
+%% is indented within the current row.
+\newlength{\qt}
+\newcommand{\Qtab}[2]{
+\setlength{\qt}{\linewidth}
+\addtolength{\qt}{-#1}
+\hfill\parbox[t]{\qt}{\raggedright #2}
+}
+
+%% \Qitem = Item with automatic numbering. The first optional argument
+%% can be used to create sub-items like 2a, 2b, 2c, ... The item
+%% number is increased if the first argument is omitted or equals 'a'.
+%% You will have to adjust this if you prefer a different numbering
+%% scheme. Adjust topsep and leftmargin as needed.
+\newcounter{itemnummer}
+\newcommand{\Qitem}[2][]{% #1 optional, #2 notwendig
+\ifthenelse{\equal{#1}{}}{\stepcounter{itemnummer}}{}
+\ifthenelse{\equal{#1}{a}}{\stepcounter{itemnummer}}{}
+%\begin{enumerate}[topsep=2pt,leftmargin=2.8em]
+\begin{enumerate}[topsep=2pt,leftmargin=1.7em]  %%%% DV
+%\item[\textbf{\arabic{itemnummer}#1.}] #2
+\item[{\arabic{itemnummer}#1.}] #2
+\end{enumerate}
+}
+
+%% \QItem = Like \Qitem but with alternating background color. This
+%% might be error prone as I hard-coded some lengths (-5.25pt and
+%% -3pt)! I do not yet understand why I need them.
+\definecolor{bgodd}{rgb}{0.8,0.8,0.8}
+\definecolor{bgeven}{rgb}{0.9,0.9,0.9}
+\newcounter{itemoddeven}
+\newlength{\gb}
+\newcommand{\QItem}[2][]{% #1 optional, #2 notwendig
+\setlength{\gb}{\linewidth}
+\addtolength{\gb}{-5.25pt}
+\ifthenelse{\equal{\value{itemoddeven}}{0}}{%
+\noindent\colorbox{bgeven}{\hskip-3pt\begin{minipage}{\gb}\Qitem[#1]{#2}\end{minipage}}%
+\stepcounter{itemoddeven}%
+}{%
+\noindent\colorbox{bgodd}{\hskip-3pt\begin{minipage}{\gb}\Qitem[#1]{#2}\end{minipage}}%
+\setcounter{itemoddeven}{0}%
+}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End of questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D1.2}                   % REPLACE with correct number
+\title{D1.2 Rwandan Cultural Knowledge}    % REPLACE with correct title
+
+\leadpartner{Carnegie Mellon University Africa }      
+\partner{}                                % INSERT partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
+
+\revision{1.4}                           
+\deliverabledate{31/12/2023}  
+\submissiondate{1/12/2023}  
+\revisiondate{31/12/2023}              
+\disseminationlevel{PU}
+\responsible{D. Vernon }      
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+ 
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+ 
+Deliverable D1.2  comprises a catalogue of general, population-based cultural knowledge in the form of behaviors, activities, actions, and movements that are either culturally sensitive or culturally insensitive. This knowledge will be used to specify the culturally sensitive African modes of social interaction in Deliverable D1.3 and the Africa-centric design patterns in Deliverable D1.4. It will be formalized in the culture knowledge ontology and knowledge base in Deliverable D5.4.1.  The cultural knowledge will be gathered by developing a detailed questionnaire and using it  to interview a cross-section of Rwandan citizens in November and December 2023.
+{\bf This first draft of the deliverable just addresses the survey questionnaire, so that it can be validated before conducting the survey.}
+
+\newpage
+
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+
+
+\section{Introduction}
+%===============================================================
+ 
+This report will be a compilation of the culture-specific knowledge that is needed to achieve culturally-competent human robot interaction between robots and Rwandan people.   The knowledge focusses on human-human interaction, rather than human-robot interaction. Appropriate elements of this knowledge will then be used in Tasks 1.3 and 1.4 to specify culturally sensitive modes of robot behavior for human-robot interaction. This approach was adopted to avoid introducing the concept of social robots, something that may not be familiar to all participants in the survey,  when canvassing their views.   It is planned to conduct this canvassing exercise using the questionnaire in Appendix I. {\bf  This first draft of the deliverable focusses on the survey questionnaire, so that it can be validated prior to conducting the survey.}
+ 
+\section{Rwandan Cultural Knowledge for Respectful Interaction}
+%===============================================================
+ 
+The knowledge will be structured according to an ontology of cultural knowledge for respectful interaction detailed in Appendix II.  This ontology is a preemptive attempt at the ontology design exercise in Task 5.4.1.
+
+Subsequent versions of this deliverable will address the identification of the respondents who will be canvassed, with the goal of compiling responses from an broad cross-section of people and, thereby, creating an unbiased and representative knowledge base.
+
+The final version will present the results of the exercise --- Rwandan cultural knowledge for polite and respectful interaction --- which will then be used as input to Task 1.2 African Modes of Social Interaction, Task 1.3 Africa-centric Design Patterns,  and Task 5.4.1 Cultural Knowledge Ontology \& Knowledge Base.
+
+
+
+\newpage
+
+\section*{Appendix I: Cultural Knowledge  Survey  Questionnaire }
+%===============================================================
+\addcontentsline{toc}{section}{Appendix I: Cultural Knowledge  Survey Questionnaire }
+ 
+\subsection*{Respectful Interaction}
+In daily life, people interact with one another in several ways. They interact verbally using speech and they interact non-verbally using body language, e.g, by gesturing with their hands, arms, shoulders, faces, lips, eyes, and eyebrows.  During such social interaction, they often position their bodies in certain ways.  It is highly desirable that all interaction between people be conducted in a respectful manner by being aware of social and cultural norms and expectations. 
+
+\subsection*{Goal of the Survey}
+This survey aims to answer the following two questions: ``How do you behave respectfully  when interacting with people in Rwanda and how should you not behave?''   
+
+\subsection*{Purpose of the Survey}
+The knowledge that is gathered in this survey will be used to equip social robots with cultural knowledge that will allow them to interact respectfully and politely with people  using non-verbal,  verbal, and spatial modes of behaviour.
+
+\subsection*{Structure of the Questionnaire}
+The questionnaire has three parts. 
+
+In Part 1, we ask you to provide some information about yourself.  This information will be kept in strict confidence and it is only used to check that the survey is balanced in terms of age, gender, cultural heritage, and nationality. 
+
+In Part 2, we will ask you whether  you consider cultural knowledge we have gathered in previous surveys\footnote{We canvassed the views of twenty-three people from eight countries in Africa to  collect this cultural knowledge.} to be correct or not. The focus of these surveys was on human-robot interaction, derived from human-human interaction, and so the social settings reflects situations where one might encounter a social robot, e.g., hospitals, airports, exhibitions, shopping malls, and offices.
+
+In Part 3, we  ask you to answer several questions to help us identify different forms of culturally sensitive, respectful behaviours --- movements, actions, or activities --- and disrespectful behaviours.
+
+\newpage
+\subsection*{Part 1: Demographic Information}
+%==============================================================================
+\label{section:demographics}
+
+%%\Qitem{ \Qq{What is your name}: \hskip0.4cm \Qline{4cm} }
+
+\Qitem{\Qq{What age are you?} \Qtab{3.51cm}{
+
+%%\QO{} Under 20 \hskip0.2cm 
+
+\QO{} 20--29 \hskip0.2cm \QO{} 30--39 \hskip0.2cm \QO{} 40--49 \hskip0.2cm \QO{} 50--59 \hskip0.2cm \QO{} 60 or more.}}
+
+%%\Qitem{ \Qq{What gender are you?} \hskip0.05cm \QO{} Female \hskip0.5cm \QO{} Male}
+
+\Qitem{ \Qq{Which are you?} \hskip0.05cm \QO{} Woman \hskip0.25cm \QO{} Man}
+
+\Qitem{ \Qq{What is your cultural heritage?} \hskip0.26cm \Qline{5cm} }
+ 
+\Qitem{ \Qq{What is your nationality?} \hskip1.11 cm \Qline{5cm} }
+ 
+\newpage
+
+\subsection*{Part 2: Existing Cultural Knowledge}
+%==============================================================================
+
+Consider the following statements and select the option to indicate whether or agree with it or not.
+
+\setcounter{itemnummer}{0}
+
+% Non-verbal Interaction.
+%% Gaze.
+%%% Focus of attention.
+%%%%  Target.
+%%%%  Duration.
+
+\Qitem{ \Qq{To show respect, one should lower gaze when greeting someone older.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should suspend work or movements and pay attention when addressed.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+%%% Eye Contact.
+%%%%  Relative Age of Interaction Partner.
+%%%%  Duration.
+
+
+\Qitem{ \Qq{One should keep intermittent eye contact; lack of eye contact depicts disrespect as it shows divided attention during the interaction. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should not make persistent eye contact with an older person. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should not make eye contact when being corrected by someone. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+%% face or head Gesture.
+%%% Lips.
+%%%%  Shape.
+%%%%  Intensity.
+%%% Eyebrow.
+%%%%  Shape.
+%%%%  Intensity.
+%% Hand Gesture.
+%%%%  Shape.
+%%%%  Duration.
+%%% Deictic (Indicating).
+%%%%  Shape.
+%%%%  Meaning.
+
+\Qitem{ \Qq{One should use an open palm of the hand to point to people and objects.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{One should not point an upward facing palm of the hand at someone.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{One should not use the left hand to point to anything.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\newpage
+
+%%% Iconic.
+
+
+%%% Symbolic.
+%%%%  Shape.
+%%%%  Meaning.
+
+
+\Qitem{ \Qq{To show respect, one should bow slightly when greeting someone older.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{To show respect, one should raise both hands when greeting.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should not wave at someone from a distance; one should move towards them to greet them.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{One should not use the left hand to hand something to someone.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{To show respect, one should hand over and accept gifts with two hands and do so from the front, facing the recipient.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{To show respect, one should shake hands with the right hand and use the left arm to support the right forearm when doing so. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+ 
+
+%%% Beat.
+%%%%  Shape.
+%%%%  Intensity.
+
+\Qitem{ \Qq{An appreciation of rhythmic sound and movement is valued.   }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+%% Body Gesture.
+%%% Shoulder.
+%%%%  Dropped / Raised.
+%%%%  Intensity.
+%%%%  Speed.
+
+%%% Bow.
+%%%%  Extent.
+%%%%  Speed.
+
+
+\Qitem{ \Qq{To show respect, one should bow slightly and lower gaze when greeting someone older.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\newpage
+
+\Qitem{ \Qq{The younger interaction partner should bow when greeting an older person or when rendering a service.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+
+%Verbal Interaction.
+%%Words.
+%%% Loudness.
+%%% Speed.
+%%% Intonation.
+%%% Stress.
+%%% Rhythm.
+
+
+
+\Qitem{ \Qq{All interactions should begin with a courteous greeting.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{The younger interaction partner should enable a greeting to be initiated by an older person.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{It is respectful to use local languages and they should be used for verbal interaction when possible. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should use formal titles when addressing someone.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should engage in a preamble before getting to the point, as being too forward may be regarded as disrespectful. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+ 
+
+\Qitem{ \Qq{One should not interrupt or talk over someone when they are speaking. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{One should not talk loudly to an older person.}
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+
+\newpage
+
+
+\Qitem{ \Qq{Behaviours should focus on fostering social connections and relationships; they should not be purely functional. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+%% Filler Sound.
+%%% Frequency
+%% Pause.
+%%% Frequency
+
+
+% Spatial Interaction.
+
+%%  Standing.
+%%%  Relative Distance.
+%%%  Relative Orientation.
+
+
+%% Approaching.
+%%%  Relative Distance.
+%%%  Relative Orientation.
+%%%  Speed.
+
+
+%% Passing.
+%%%  Single Person.
+%%%% Relative Distance.
+%%%% Speed.
+
+%%%  Group of People.
+%%%% Relative Distance.
+%%%% Speed.
+
+
+\Qitem{ \Qq{One should not walk between two or more people who are conversing because it is considered rude to do so. }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+
+%% Accompanying.
+%%%  Relative Distance (+/-).
+ 
+\Qitem{ \Qq{One should not walk far ahead of an older person, unless leading the person (in which case, one should walk slightly to the side). }
+\begin{Qlist}
+\item Yes, this is correct.
+\item No, this is not correct.
+\item I am not sure.
+\end{Qlist}
+}
+  
+\newpage
+
+\subsection*{Part 3: New Cultural Knowledge}
+%=============================================================================
+
+\setcounter{itemnummer}{0}
+
+% Spatial Interaction.
+%====================
+
+%%  Standing.
+%--------------------
+%%%  Relative Distance.
+%%%  Relative Orientation.
+
+
+%% Approaching.
+%--------------------
+%%%  Relative Distance.
+%%%  Relative Orientation.
+%%%  Speed.
+
+%% Passing.
+%--------------------
+
+%%%  Single Person.
+%%%% Relative Distance.
+%%%% Speed.
+
+\Qitem{ \Qq{What distance should you keep when passing someone?}
+\begin{Qlist}
+\item Less than 1 m.
+\item 1 -- 2 m.
+\item More than 2 m.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{How should you acknowledge someone when passing them?}
+\begin{Qlist}
+\item No acknowledgement.
+\item Raise eyebrows slightly.
+\item Say hello.
+\item Other. Please specify: \Qline{5cm} 
+\end{Qlist}
+}
+
+
+%%%  Group of People.
+%%%% Relative Distance.
+%%%% Speed.
+
+
+\Qitem{ \Qq{How should you pass a group of two or more people?}
+\begin{Qlist}
+\item Pass behind them.
+\item Pass between them.
+\item Pass in front of them.
+\end{Qlist}
+}
+
+%% Accompanying.
+%--------------------
+%%%  Relative Distance (+/-).
+
+ \Qitem{ \Qq{When showing someone {\em older} than you the way, where should you position yourself?}
+\begin{Qlist}
+\item Far in front of them.
+\item A little in front of them.
+\item Beside them.
+\item A little behind them.
+\end{Qlist}
+}
+
+ \Qitem{ \Qq{When showing someone {\em the same age} as you the way, where should you position yourself?}
+\begin{Qlist}
+\item Far in front of them.
+\item A little in front of them.
+\item Beside them.
+\item A little behind them.
+\end{Qlist}
+}
+
+ \Qitem{ \Qq{When showing someone {\em younger} than you the way, where should you position yourself?}
+\begin{Qlist}
+\item Far in front of them.
+\item A little in front of them.
+\item Beside them.
+\item A little behind them.
+\end{Qlist}
+}
+
+\newpage
+
+%Verbal Interaction.
+%===================
+
+%%Words.
+%--------------------
+%%% Loudness.
+%%% Speed.
+%%% Intonation.
+%%% Stress.
+%%% Rhythm.
+
+
+\Qitem{ \Qq{How should you address someone who is {\em older} than you and who you haven't met before?}
+\begin{Qlist}
+\item First name.
+\item Last name.
+\item Title first name.
+\item Title last name.
+\item Other. Please specify: \Qline{5cm} 
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{How should you address someone who is {\em the same age} as you and who you haven't met before?}
+\begin{Qlist}
+\item First name.
+\item Last name.
+\item Title first name.
+\item Title last name.
+\item Other. Please specify: \Qline{5cm} 
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{How should you address someone who is {\em younger} than you and who you haven't met before?}
+\begin{Qlist}
+\item First name.
+\item Last name.
+\item Title first name.
+\item Title last name.
+\item Other. Please specify: \Qline{5cm} 
+\end{Qlist}
+}
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Should you pause before responding when someone asks you a question? If yes, for how long?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+}
+ 
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{In an interaction where you and someone else take turns to speak, would you signal that you want to speak? If yes, how do you do that?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+}
+
+
+
+%% Filler Sound.
+%--------------------
+%%% Frequency
+
+%% Pause.
+%--------------------
+%%% Frequency
+
+\newpage
+
+% Non-verbal Interaction.
+%===============
+
+%% Gaze.
+%--------------------
+%%% Focus of attention.
+%%%%  Target.
+%%%%  Duration.
+
+
+
+%%% Eye Contact.
+%%%%  Relative Age of Interaction Partner.
+%%%%  Duration.
+
+\Qitem{ \Qq{If {\em you} are explaining something to someone, what is your primary focus of attention, i.e., where do you direct your gaze?}
+\begin{Qlist}
+\item The object being explained.
+\item The face, eyes, or mouth of the person to whom you are explaining.
+\item Mostly the object and sometimes the person.
+\item Mostly the person and sometimes the object.
+\item Equally the person and the object.
+\end{Qlist}
+}
+ 
+
+
+\Qitem{ \Qq{If {\em you} are explaining something to someone, how often should you make eye contact?}
+\begin{Qlist}
+\item Never.
+\item Occasionally.
+\item Often.
+\item Constantly.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{If {\em you} are explaining something to someone, how often would you make eye contact if the person was older than you?}
+\begin{Qlist}
+\item Less often.
+\item More often.
+\item No difference.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{If {\em you} are explaining something to someone, how often would you make eye contact if the person was younger than you?}
+\begin{Qlist}
+\item Less often.
+\item More often.
+\item No difference.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{If someone is explaining something to {\em you}, what is your primary focus of attention, i.e., where do you direct your gaze?}
+\begin{Qlist}
+\item The object being explained.
+\item The face, eyes, or mouth of the person to whom you are explaining.
+\item Mostly the object and sometimes the person.
+\item Mostly the person and sometimes the object.
+\item Equally the person and the object.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{If someone is explaining something to {\em you},  how often should you make eye contact?}
+\begin{Qlist}
+\item Never.
+\item Occasionally.
+\item Often.
+\item Constantly.
+\end{Qlist}
+}
+ 
+\newpage
+
+\Qitem{ \Qq{If someone is explaining something to {\em you},  how often would you make eye contact if the person was older than you?}
+\begin{Qlist}
+\item Less often.
+\item More often.
+\item No difference.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{If someone is explaining something to {\em you},  how often would you make eye contact if the person was younger than you?}
+\begin{Qlist}
+\item Less often.
+\item More often.
+\item No difference.
+\end{Qlist}
+}
+
+
+
+%% face or head Gesture.
+%--------------------
+%%% Lips.
+%%%%  Shape.
+%%%%  Intensity.
+
+%%% Eyebrow.
+%%%%  Shape.
+%%%%  Intensity.
+
+
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em gratitude}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em approval}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em surprise}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ \end{comment}
+%--------------------------------------------------------------------------------------------------
+
+
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em agreement}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em respect}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em friendliness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+ 
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em anger}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em fear}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em happiness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em sadness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+\end{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a face or head gesture to express {\em confusion}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Would you use a face or head gesture to express {\em comprehension}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+}
+ 
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Would you use a face or head gesture to express {\em interest}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+}
+
+
+\Qitem{ \Qq{Is there  a face or head gesture you should {\em not} use? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+
+ 
+\Qitem{ \Qq{Would you use a face or head gesture to draw someone's attention  to something? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+
+
+%% Hand Gesture.
+%--------------------
+%%% Deictic (Indicating).
+%%%%  Shape.
+%%%%  Duration.
+
+%%% Iconic.
+%%%%  Shape.
+%%%%  Meaning.
+
+%%% Symbolic.
+%%%%  Shape.
+%%%%  Meaning.
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em gratitude}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em approval}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+\newpage
+ 
+\Qitem{ \Qq{Would you use a hand gesture to express {\em surprise}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\end{comment}
+%--------------------------------------------------------------------------------------------------
+
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em agreement}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+ 
+\Qitem{ \Qq{Would you use a hand gesture to express {\em respect}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a hand gesture to express {\em friendliness}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em anger}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a hand gesture to express {\em fear}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a hand gesture to express {\em happiness}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em sadness}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\end{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em confusion}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em comprehension}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em interest}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Would you use a hand gesture while speaking to someone? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+}
+
+\newpage
+
+\vspace{-5mm}\textcolor{black}{
+\Qitem{ \Qq{Would you use a hand gesture while listening to someone? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+}
+
+\Qitem{ \Qq{Is there  a hand gesture you should {\em not} use? \\If yes, what would that gesture be, and which hand would you not use: left, right, either, or both?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} , \hspace{1mm} \Qline{2cm} 
+\item No.
+\end{Qlist}
+}
+ 
+
+%%% Beat.
+%%%%  Shape.
+%%%%  Intensity.
+
+
+%% Body Gesture.
+%--------------------
+%%% Shoulder.
+%%%%  Dropped / Raised.
+%%%%  Intensity.
+%%%%  Speed.
+
+%%% Bow.
+%%%%  Extent.
+%%%%  Speed.
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em gratitude}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em approval}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em surprise}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\end{comment}
+%--------------------------------------------------------------------------------------------------
+
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em agreement}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em respect}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em friendliness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+
+\begin{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em anger}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em fear}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em happiness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em sadness}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+
+
+\end{comment}
+%--------------------------------------------------------------------------------------------------
+
+\Qitem{ \Qq{Would you use a body gesture to express {\em confusion}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em comprehension}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Would you use a body gesture to express {\em interest}? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Would you use a body gesture while speaking to someone? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm} 
+\item No.
+\end{Qlist}
+}
+}
+
+\vspace{-5mm}\textcolor{black}{\Qitem{ \Qq{Would you use a body gesture while listening to someone? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+}
+ 
+
+\Qitem{ \Qq{Is there  a body gesture you should {\em not} use? \\If yes, what would that gesture be?}
+\begin{Qlist}
+\item Yes: \Qline{5cm}  
+\item No.
+\end{Qlist}
+}
+ 
+
+
+
+
+\newpage
+
+\section*{Appendix II: Cultural Knowledge Ontology for  Respectful Interaction}
+%===============================================================
+\addcontentsline{toc}{section}{Appendix II: Cultural Knowledge Ontology for  Respectful Interaction}
+ 
+\begin{multicols}{2}
+\dirtree{%
+.1 Cultural Knowledge.
+.2 Spatial Interaction.
+.2 Verbal Interaction.
+.2 Non-verbal Interaction.
+}
+ 
+\vspace{5mm}
+
+\dirtree{%
+.2 Spatial Interaction.
+.3 Standing.
+.4 Relative Distance.
+.4 Relative Orientation.
+.3 Approaching.
+.4 Relative Distance.
+.4 Relative Orientation.
+.4 Speed.
+.3 Passing.
+.4 Single Person.
+.5 Relative Distance.
+.5 Speed.
+.4 Group of People.
+.5 Relative Distance.
+.5 Speed.
+.3 Accompanying.
+.4 Relative Distance (+/-).
+}
+
+
+
+\vspace{5mm}
+
+\dirtree{%
+.2 Verbal Interaction.
+.3 Words.
+.4 Loudness.
+.4 Speed.
+.4 Intonation.
+.4 Stress.
+.4 Rhythm.
+.3 Filler Sound.
+.4 Frequency.
+.3 Pause.
+.4 Frequency.
+.3 Turn Taking.
+.4 Signal to start turn.
+.5 Utterance.
+}
+
+\columnbreak
+
+%\newpage
+\vspace{5mm}
+
+\dirtree{%
+.2 Non-verbal Interaction.
+.3 Gaze.
+.4 Focus of attention.
+.5 Target.
+.5 Duration.
+.4 Eye Contact.
+.5 Relative Age.
+.5 Duration.
+.3 face or head Gesture.
+.4 Lips.
+.5 Shape.
+.5 Intensity.
+.4 Eyebrow.
+.5 Shape.
+.5 Intensity.
+.3 Hand Gesture.
+.4 Deictic (Indicating).
+.5 Shape.
+.5 Duration.
+.4 Iconic.
+.5 Shape.
+.5 Meaning.
+.4 Symbolic.
+.5 Shape.
+.5 Meaning.
+.4 Beat (During Speech).
+.5 Shape.
+.5 Intensity.
+.5 Frequency.
+.3 Body Gesture.
+.4 Shoulder.
+.5 Shape.
+.5 Meaning.
+.5 Intensity.
+.5 Speed.
+.4 Bow.
+.5 Meaning.
+.5 Extent.
+.5 Speed.
+.4 Sway.
+.5 Meaning.
+.5 Extent.
+.5 Speed.
+}
+\end{multicols}
+
+\newpage
+
+
+
+\newpage
+\bibliographystyle{unsrt}
+%================================================================
+\bibliography{cognitive_systems.bib}                                     % REPLACE with correct filename
+\addcontentsline{toc}{section}{References}
+
+
+
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+Eyerusalem Birhan, Carnegie Mellon University Africa.\\    
+David Vernon, Carnegie Mellon University Africa.\\   
+ 
+
+  
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft with survey questionnaire, for validation before conducting the survey. \\
+David  Vernon. \\                       
+25 October 2023.                                               
+
+
+\item [Version 1.1]~\\
+Fixed minor typos. \\
+David  Vernon. \\                       
+2 November 2023.      
+
+\item [Version 1.2]~\\
+Changed male/female to man/woman to determine the gender of the respondent. \\
+Explained the context of the existing cultural knowledge.\\
+Removed the question about name, to keep the survey anonymous.\\
+Replaced question about being Rwandan by two questions on cultural heritage and nationality.\\
+Removed the $<$ 20 age group.\\
+David  Vernon. \\                       
+20 November 2023.   
+
+\item [Version 1.3]~\\
+Changed the answers in Part 2 from I agree / do not agree to this is / is not correct.\\
+David  Vernon. \\                       
+20 November 2023.   
+
+\item [Version 1.4]~\\
+Removed several questions from Part 3 to align them with the CSSR4All questionnaire.\\
+David  Vernon. \\                       
+1 December 2023.   
+
+
+
+\end{description}
+
+\end{document}
+

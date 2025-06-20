@@ -1,0 +1,2568 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+
+\usepackage{ragged2e}
+\usepackage{dirtree}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{cprotect}
+\usepackage{xcolor}
+%\usepackage[normalem]{ulem}
+%\usepackage{verbatim} % for comments
+%\usepackage{datetime}
+\usepackage{pifont}
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\newcommand{\checkboxChecked}{\fbox{\ding{51}}} % Box with check mark
+\newcommand{\checkboxCrossed}{\fbox{\ding{55}}} % Box with cross mark
+\newcommand{\checkboxDashed}{\fbox{--}}         % Box with dash mark
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D3.5}                    
+\title{D3.5 System Integration and Quality Assurance}
+
+\leadpartner{Carnegie Mellon University Africa}                         
+\partner{}                          
+
+\revision{1.1}                  
+\deliverabledate{30/06/2024}    
+\submissiondate{25/07/2024}   
+\revisiondate{27/01/2025}   
+\disseminationlevel{PU}
+\responsible{D. Vernon }            
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+ 
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+\addcontentsline{toc}{section}{Executive Summary}
+
+
+
+\noindent Deliverable D3.5 represents the outcome of Task 3.5 and highlights the progress in integrating the software modules critical to the system's development. This deliverable comprises the integration results for four submitted software modules, as well as their corresponding unit test outcomes. The results are based on a checklist designed to assess functionality, performance, and compliance with the system's overall requirements.
+
+\noindent The following software modules have been submitted for integration:
+\begin{description}
+    \item[D5.2] Animate Behavior Subsystem.
+    \item[D5.3] Attention Subsystem.
+    \item[D5.5.1.1] Gesture Execution
+    \item[D5.5.1.2] Programming by Demonstration.
+\end{description}
+
+\noindent Each software's integration process and unit test results are documented in dedicated sections within the report, where the corresponding checklist details what was tested for and the results achieved.
+The following software modules successfully passed the integration tests, meeting all functional requirements and proving their readiness for system deployment:
+\begin{description}
+    \item[D5.2] Animate Behavior Subsystem.
+    \item[D5.3] Attention Subsystem.
+    \item[D5.5.1.1] Gesture Execution
+\end{description}
+
+\noindent The following software module is still undergoing integration. Ongoing efforts are focused on addressing outstanding issues to align it with the system's operational expectations.
+\begin{description}
+     \item[D5.5.1.2] Programming by Demonstration.
+\end{description}
+
+
+\noindent The checklist used in the integration process evaluates the modules against predefined rubrics for functionality and alignment with the software engineering standards set out for the CSSR4Africa project. Each test is marked as passed (\checkboxChecked), failed (\checkboxCrossed), or not applicable (\checkboxDashed) based on the specific characteristics of the software. 
+
+\noindent Software modules which pass the integration process have all tests either marked as passed (\checkboxChecked) or not applicable (\checkboxDashed), depending on the applicability, while the software modules which fail the integration process have at leats one test  marked as failed (\checkboxCrossed).  The current integration process prioritizes functionality of the software on the physical robot over the simulator robot.
+
+
+\newpage
+ 
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+
+
+
+%%%%%%%%%%Animate Behaviour
+\section{D5.2 Animate Behaviour Subsystem} 
+%===========================================
+\label{section:animate_behaviour}
+The \textbf{D5.2} Animate Behaviour Subsystem software was submitted for integration on January 10th, 2024. The results indicate the software has passed the integration process. This software module gives the robot the appearance of an animate agent by continually making subtle body movements, flexing its hands a little, and rotating its base slightly.
+
+\subsection{Files and Directories}
+%===============================================================
+ 
+ \begin{description}
+\item[\checkboxChecked] Files for a single component are stored in a subdirectory named \textbf{animateBehaviour}. Refer to Deliverable D3.1 System Architecture for details of the ROS package names and the associated ROS nodes.
+
+\item[\checkboxChecked] The \textbf{animateBehaviour} directory has five sub-directories:  {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/animateBehaviour+},  {\small \verb+src+}, and {\small \verb+srv+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+animateBehaviourConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains three files, named as follows.
+
+\begin{description} 
+\item[\checkboxChecked] {\small \verb+animateBehaviourLogFile.log+}  
+\item[\checkboxChecked] {\small \verb+pepperTopics.dat+}  
+\item[\checkboxChecked] {\small \verb+simulatorTopics.dat+}   
+\item[\checkboxChecked] The topic files {\small \verb+pepperTopics.dat+}  and {\small \verb+simulatorTopics.dat+} contain the key-value pairs that set the topic names required by the component.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/animateBehaviour+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourInterface.h+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains two source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourApplication.cpp+}  
+\item[\checkboxChecked]  {\small \verb+animateBehaviourImplementation.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+srv+} directory contains one file, named:
+\begin{description}
+\item[\checkboxChecked] {\small \verb+setActivation.srv+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviour+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the node 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+animateBehaviour+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+animateBehaviour+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+cssr_system+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:animate_behaviour_documentation_standards}  
+ 
+Refer to Deliverable D3.2, Appendix B (Mandatory Standards for Internal Source Code Documentation), for a definition of the standards on which this checklist is based.\\
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+animateBehaviourApplication.cpp+}  
+{\small \begin{verbatim}
+/* animateBehaviourApplication.cpp
+ *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked]  {\small \verb+animateBehaviourImplementation.cpp+}  
+{\small \begin{verbatim}
+/* animateBehaviourImplementation.cpp
+  *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked] {\small \verb+animateBehaviourInterface.h+}   
+{\small \begin{verbatim}
+/* animateBehaviourInterface.h
+ *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\end{description} 
+% \blank
+%~
+%\blank
+
+\noindent The {\small \verb+animateBehaviourApplication.cpp+} file contains a documentation comment:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/*
+ * animateBehaviourApplication.cpp
+ * Animate behavior controller for creating lifelike robot movements
+ * 
+ * Implements a ROS node that generates subtle autonomous movements to make the 
+ * robot appear more lifelike and animate. The system manages three types 
+ * of movements:
+ * - Subtle body joint movements
+ * - Hand flexing movements
+ * - Small base rotations around the z-axis
+ * 
+ * Key features:
+ * - Maintains movements near home positions using randomized patterns
+ * - Configurable movement ranges (as percentage of joint ranges)
+ * - No head control
+ * - Supports selective enabling of different movement types
+ * - Can be enabled/disabled via ROS service for social interaction coordination
+ * - Configurable via external topic mapping files for physical/simulated robots
+ * - Optional verbose mode for movement debugging
+ * 
+ * Debug Settings:
+ *   - verboseMode: Enable/disable debug output (default: false)
+ *   
+ *   Range Parameters:
+ *   - rotMaximumRange: Maximum rotation range for base movement 
+ *   - selectedRange: Selected movement range as fraction of maximum 
+ *   - armMaximumRange: Maximum range for each arm joint [5 values] 
+ *   - handMaximumRange: Maximum range for hand movement 
+ *   - legMaximumRange: Maximum range for each leg joint [3 values] 
+ *   
+ *   Movement Parameters:
+ *   - gestureDuration: Duration of each movement in seconds 
+ *   - numPoints: Number of points for arm and hand movements 
+ *   - numPointsLeg: Number of points for leg movements 
+ *   - legRepeatFactor: Number of repetitions for leg movements
+ * 
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries:
+ *   - ROS core libraries:
+ *     - roscpp
+ *     - ros/package.h
+ *     - actionlib
+ *     - control_msgs
+ *     - trajectory_msgs
+ *     - geometry_msgs
+ *   - Standard C++ libraries:
+ *     - iostream
+ *     - fstream
+ *     - thread
+ *     - chrono
+ *     - vector
+ *     - map
+ *     - string
+ *     - atomic
+ *     - random
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+  * Parameters:
+ *   ROS Parameters:
+ *   - None
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration File Parameters (animateBehaviourConfiguration.ini):
+ *   - platform: Target platform ("robot" or "simulator")
+ *   - behaviour: Type of animation behavior ("body", "hands", "rotation", "All")
+ *   - simulatorTopics: Topic mapping file for simulator ("simulatorTopics.dat")
+ *   - robotTopics: Topic mapping file for robot ("pepperTopics.dat")
+ *   - verboseMode: Enable/disable debug output (default: false)  
+ *   - rotMaximumRange	 
+ *   - selectedRange
+ *   - armMaximumRange		
+     - handMaximumRange				
+     - legMaximumRange				
+     - gestureDuration				
+     - numPoints						
+     - numPointsLeg				
+     - legRepeatFactor			
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Subscribed Topics and Message Types:
+ *   - None
+ * 
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Published Topics and Message Types:
+ * - None (This node does not publish any topics directly)
+ * 
+ * Topics Used By Node (But Not Published):
+ *   - Action Client Topics (Node sends goals to these action servers):
+ *      Physical Robot:
+ *           - /pepper_dcm/RightHand_controller/follow_joint_trajectory
+ *           - /pepper_dcm/LeftHand_controller/follow_joint_trajectory
+ *           - /pepper_dcm/RightArm_controller/follow_joint_trajectory
+ *           - /pepper_dcm/LeftArm_controller/follow_joint_trajectory
+ *           - /pepper_dcm/Pelvis_controller/follow_joint_trajectory
+ * 
+ *    Simulator:
+ *           - /pepper/RightArm_controller/follow_joint_trajectory
+ *           - /pepper/LeftArm_controller/follow_joint_trajectory
+ *           - /pepper/Pelvis_controller/follow_joint_trajectory
+ * 
+ * Topics Used via Publishers (Node sends messages but doesn't publish topics):
+ *    Physical Robot:
+ *          - /pepper_dcm/cmd_moveto
+ * 
+ *    Simulator:
+ *          - /pepper/cmd_vel
+ * 
+ * Note: It sends action goals and movement commands through established topics
+ *  but does not create or publish any topics of its own.
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked:
+ *  - None
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised:
+ *   - animateBehaviour/set_activation (cssr_system/set_activation)
+ *      Request: string state ("enabled" or "disabled")
+ *      Response: bool success
+ *
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files:
+ *   - pepperTopics.dat:
+ *   - simulatorTopics.dat:
+ * 
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Output Data Files:
+ *  - animateBehaviourLogFile.log: Log file for runtime messages
+ * 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+ *   - animateBehaviourConfiguration.ini:
+ *
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+*  Example Instantiation of the Module
+ *   - rosrun cssr_system animateBehaviour
+ *   - rosservice call /animateBehaviour/set_activation "state: 'enabled'"
+ *   - rosservice call /animateBehaviour/set_activation "state: 'disabled'"
+ *
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Eyerusalem Mamuye Birhan, Carnegie Mellon University Africa
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:   ebirhan@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  2025-01-10
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:animate_behaviour_unit_testing}
+
+The unit testing for the Animate Behaviour Subsystem is packaged in the {\small \verb+unit_tests+} package, in the subdirectory {\small \verb+animateBehaviourTest+}. The integration report is in section \ref{section:animate_behaviour_test} below.
+
+  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:gesture_execution_system_testing}
+%  
+%No content yet.
+
+
+
+\newpage
+%%%%%%ANIMATE BEHAVIOUR UNIT TEST
+ \section{Animate Behaviour Subsystem Unit test} 
+%===========================================
+\label{section:animate_behaviour_test}
+The \textbf{D5.2} Animate Behaviour Subsystem Unit Test software was submitted for integration on January 10th, 2024. This run the unit test on the {\small \verb+animateBehaviour+} node.
+
+\subsection{Files and Directories}
+%===============================================================
+\label{subsection:animate_behaviour_test_files}
+ 
+ \begin{description}
+\item[\checkboxChecked] Files are stored in a subdirectory named \textbf{animateBehaviourTest}. 
+
+\item[\checkboxChecked] The \textbf{animateBehaviourTest} directory has five sub-directories:  {\small \verb+config+},   {\small \verb+data+},   \\{\small \verb+include/animateBehaviourTest+}, {\small \verb+launch+}, and {\small \verb+src+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+animateBehaviourTestConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains one file, named as follows.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestOutput.dat+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/animateBehaviourTest+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestInterface.h+}  
+\end{description} 
+
+
+\item[\checkboxChecked] The  {\small \verb+launch+} directory contains three files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourLaunchRobot.launch+}  
+\item[\checkboxChecked] {\small \verb+animateBehaviourLaunchSimulator.launch+}  
+\item[\checkboxChecked] {\small \verb+animateBehaviourLaunchTestHarness.launch+}
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains two source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestApplication.cpp+}  
+\item[\checkboxChecked]  {\small \verb+animateBehaviourTestImplementation.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviourTest+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the test. 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+animateBehaviourTest+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+animateBehaviourTest+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+unit_tests+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:animate_behaviour_test_documentation_standards}  
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestApplication.cpp+}  
+{\small \begin{verbatim}
+/* animateBehaviourTestApplication.cpp
+ *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked]  {\small \verb+animateBehaviourTestImplementation.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionImplementation.cpp
+ *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked] {\small \verb+animateBehaviourTestInterface.h+}   
+{\small \begin{verbatim}
+/* animateBehaviourTestInterface.h
+ *
+ * Author: Eyerusalem Mamuye Birhan
+ * Date: 2025-01-10
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+
+\end{description} 
+% \blank
+%~
+%\blank
+%
+%\newpage
+\noindent The {\small \verb+animateBehaviourTestApplication.cpp+} file contains a documentation comment with the following sections:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/*
+* animateBehaviourTestApplication.cpp
+* This code implements a ROS-based test application that uses Google Test
+* to validate the animate behavior module, generates structured test reports, 
+* and supports continuous testing with user-controlled iterations.
+* 
+* Implements a ROS node that executes a comprehensive test suite for the animate
+* behavior system. The test validates four types of movements:
+* - Subtle body joint movements
+* - Hand flexing movements
+* - Small base rotations around the z-axis
+* - Combined movements of all types
+* 
+* Key features:
+* - Continuous test execution capability
+* - Automated test report generation
+* - Configurable test behavior via external configuration
+* - Clean setup and teardown between test runs
+* - User-controlled test repetition
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+* Libraries:
+*   - ROS core libraries:
+*     - roscpp
+*     - ros/package.h
+*   - Testing libraries:
+*     - gtest/gtest.h
+*   - Standard C++ libraries:
+*     - iostream
+*     - fstream
+*     - ctime
+*     - string
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Parameters:
+*   - argCount: Number of command line arguments
+*   - argValues: Array of command line argument strings
+* 
+* Command-line Parameters:
+*   - Standard ROS parameters
+*   - Google Test command line options
+* 
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration File Parameters:
+*   Test configuration file (animateBehaviourTestConfiguration.ini):
+*   - hands:     True/False    # Enable or disable hand movement tests
+*   - body:      True/False    # Enable or disable body movement tests
+*   - rotation:  True/False    # Enable or disable rotation tests
+*   - All:       True/False    # Enable or disable combined movement tests
+*   Note: Setting value to True runs the test, False skips the test
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Subscribed Topics and Message Types:
+*   - None directly (handled by test implementations)
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+* Published Topics and Message Types:
+*   - None directly (handled by test implementations)
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked
+  *
+*   - /animateBehaviour/set_activation
+*     Used to enable/disable animate behavior during tests
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised and Message Types
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Output Data Files:
+*   - animateBehaviourTest/data/animateBehaviourTestOutput.dat:Test execution 
+   results and timing information
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration Files:
+* - unit_tests/animateBehaviourTest/config/animateBehaviourTestConfiguration.ini:
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* animateBehaviourTestLaunchTestHarness.launch.
+*
+* roslaunch unit_tests animateBehaviourTestLaunchTestHarness.launch
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Eyerusalem Mamuye Birhan, Carnegie Mellon University Africa
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:   ebirhan@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  2025-01-10
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:animate_behaviour_test_unit_testing}
+
+
+\begin{description}
+\item[\checkboxChecked] A unit test application named {\small \verb+animateBehaviourLaunchRobot.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+animateBehaviourLaunchSimulator.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+animateBehaviourLaunchTestHarness.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviourLaunchRobot.launch+} file  launches the component being tested.
+
+\item[\checkboxDashed] The {\small \verb+animateBehaviourLaunchSimulator.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviourLaunchTestHarness.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked]  The {\small \verb+animateBehaviour+} being tested outputs the copyright message on startup:
+\begin{verbatim}
+\animateBehaviour: v1.0
+ 
+This project is funded by the African Engineering and Technology Network 
+ (Afretec) 
+Inclusive Digital Transformation Research Grant Programme.
+ 
+Website: www.cssr4africa.org
+ 
+ This program comes with ABSOLUTELY NO WARRANTY
+\end{verbatim}
+
+\item[\checkboxChecked]  The {\small \verb+animateBehaviour+} being tested writes short messages to the terminal during the start-up phase to
+ indicate the state of the node:
+\begin{verbatim}
+\animateBehaviour: start-up.
+\animateBehaviour: subscribed to /topicName.
+\end{verbatim}
+
+\item[\checkboxChecked]  The {\small \verb+animateBehaviour+} being tested periodically (every ten seconds) writes a short heartbeat message to
+ the terminal to indicate the state of the node:
+\begin{verbatim}
+\animateBehaviour: running.
+\end{verbatim}
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviourLaunchRobot.launch+} file  connects the component a data source and a data sink on the physical robot, and produces the expected result as set out in the  {\small \verb+README.md+}  file.    This means this file launches the physical robot and all its sensors and actuators as required.
+
+\item[\checkboxDashed] The {\small \verb+animateBehaviourLaunchSimulator.launch+} file  connects the component a data source and a data sink on the simulator.   This means this file launches the simulator robot and all its sensors and actuators as required.
+
+\item[\checkboxChecked] The {\small \verb+animateBehaviourLaunchTestHarness.launch+} file  connects the component a data source and a data sink using a driver and a stub.   This means this file launches the required drivers and stubs, and the node being tested.
+
+\item[\checkboxChecked] Unit test instructions are provided in a file named {\small \verb+README.md+} in the  {\small \verb+animateBehaviourTest+} directory. 
+
+
+\begin{description}
+
+\item[\checkboxChecked] The instructions explain how the communication and computation functionality is validated by describing the (sink) output data that will be produced from the (source) input data.  
+
+\item[\checkboxChecked] The instructions explain how the configuration functionality is validated by describing what changes in behaviour will occur if the values for the component parameters in the component configuration ({\small \verb+.ini+}) file are altered.
+
+\end{description}
+
+\end{description} 
+
+  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:animate_behaviour_test_system_testing}
+%  
+%No content yet.
+%
+
+
+
+\newpage
+\section{D5.5.1.1 Gesture Execution} 
+%===========================================
+\label{section:gesture_execution}
+The \textbf{D5.5.1.1} Gesture Execution software was submitted for integration on January 10th, 2024. The results indicate the software has passed the integration process. This module enables the Pepper robot to execute body and hand gestures. Hand gestures will include deictic, symbolic, and iconic non-verbal gestures. Body gestures will be restricted to bowing and nodding, i.e., lowering and raising gaze.
+
+\subsection{Files and Directories}
+%===============================================================
+ 
+ \begin{description}
+\item[\checkboxChecked] Files for a single component are stored in a subdirectory named \textbf{gestureExecution}. Refer to Deliverable D3.1 System Architecture for details of the ROS package names and the associated ROS nodes.
+
+\item[\checkboxChecked] The \textbf{gestureExecution} directory has six sub-directories:  {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/gestureExecution+}, {\small \verb+msg+},  {\small \verb+src+}, and {\small \verb+srv+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+gestureExecutionConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains eight files, named as follows.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureDescriptors.dat+}  
+\item[\checkboxChecked] {\small \verb+lArmShakeGestureDescriptors.dat+}  
+\item[\checkboxChecked] {\small \verb+lArmWelcomeGestureDescriptors.dat+}  
+\item[\checkboxChecked] {\small \verb+pepperTopics.dat+}  
+\item[\checkboxChecked] {\small \verb+rArmShakeGestureDescriptors.dat+}  
+\item[\checkboxChecked] {\small \verb+rArmWelcomeGestureDescriptors.dat+}  
+\item[\checkboxChecked] {\small \verb+simulatorTopics.dat+}  
+\item[\checkboxChecked] {\small \verb+waveGestureDescriptors.dat+}  
+\item[\checkboxChecked] The topic files {\small \verb+pepperTopics.dat+}  and {\small \verb+simulatorTopics.dat+} contain the key-value pairs that set the topic names required by the component.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/gestureExecution+} directory contains two files, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionInterface.h+}  
+\item[\checkboxChecked] {\small \verb+pepperKinematicsUtilitiesInterface.h+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+msg+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+Gesture.msg+}  
+\end{description} 
+
+
+%\item[\checkboxDashed] The  {\small \verb+launch+} directory contains three files, named as follows.\\
+%\noindent The launch files are placed in the {\small \verb+unit_tests+} package and unnecessary here.
+%\begin{description}
+%\item[\checkboxDashed] {\small \verb+gestureExecutionLaunchRobot.launch+}  
+%\item[\checkboxDashed] {\small \verb+gestureExecutionLaunchSimulator.launch+}  
+%\item[\checkboxDashed] {\small \verb+gestureExecutionLaunchTestHarness.launch+}
+%\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains three source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionApplication.cpp+}  
+\item[\checkboxChecked]  {\small \verb+gestureExecutionImplementation.cpp+}  
+\item[\checkboxChecked]  {\small \verb+pepperKinematicsUtilitiesImplementation.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+srv+} directory contains one files, named:
+\begin{description}
+\item[\checkboxChecked] {\small \verb+performGesture.srv+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+gestureExecution+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the node 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+gestureExecution+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+gestureExecution+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+cssr_system+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:gesture_execution_documentation_standards}  
+ 
+Refer to Deliverable D3.2, Appendix B (Mandatory Standards for Internal Source Code Documentation), for a definition of the standards on which this checklist is based.\\
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+gestureExecutionApplication.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionApplication.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked]  {\small \verb+gestureExecutionImplementation.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionImplementation.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+* This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked]  {\small \verb+pepperKinematicsUtilitiesImplementation.cpp+}  
+{\small \begin{verbatim}
+/* pepperKinematicsUtilitiesImplementation.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+* This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked] {\small \verb+gestureExecutionInterface.h+}   
+{\small \begin{verbatim}
+/* gestureExecutionInterface.h
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked] {\small \verb+pepperKinematicsUtilitiesInterface.h+}   
+{\small \begin{verbatim}
+/* pepperKinematicsUtilitiesInterface.h
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\end{description} 
+% \blank
+%~
+%\blank
+%
+%\newpage
+\noindent The {\small \verb+gestureExecutionApplication.cpp+} file contains a documentation comment:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/* gestureExecutionApplication.cpp
+*
+* This module is responsible for hosting the service that executes the gestures
+   on the robot. 
+* The module receives the gesture type, gesture ID, gesture duration, 
+   bow/nod angle, and the location in the world to pay attention/point to in 
+   x, y, z coordinates.
+* The module then executes the gesture based on the received parameters. 
+*
+* The module supports the execution of deictic, iconic, symbolic, bow, and 
+   nod gestures.
+* The iconic gestures currently supported are welcome and wave (goodbye) gestures. 
+* 
+* The module also supports the selection of the implementation platform 
+   (simulator or robot) and the interpolation type (linear or biological motion).
+* 
+* The module is implemented as a ROS service that receives the gesture parameters 
+* and returns the status of the gesture execution.
+*
+* The gestures could either be executed using linear velocity interpolation or
+   a model of biological motion (minimum-jerk model).
+*
+* The module subscribes to the /sensor_msgs/joint_states topic to receive 
+   the joint states of the robot.
+* The module also subscribes to the /robotLocalization/pose topic to receive 
+   the coordinates of the robot in the world.
+* 
+* The module is implemented in C++ and uses the ROS libraries for communication 
+   with the robot.
+* The module is part of the CSSR4A package and is used to execute gestures 
+    on the robot.
+*
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+* Standard libraries
+- std::string, std::vector, std::fstream, std::pow, std::sqrt, std::abs
+* ROS libraries
+- ros/ros.h, ros/package.h, actionlib/client/simple_action_client.h, 
+  control_msgs/FollowJointTrajectoryAction.h, geometry_msgs/Twist.h
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Parameters
+*
+* Command-line Parameters
+*
+* None
+*
+\end{verbatim}}
+
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration File Parameters
+
+* Key                   |     Value 
+* --------------------- |     -------------------
+* platform                    robot
+* interpolation               biological
+* gestureDescriptors          gestureDescriptors.dat
+* simulatorTopics             simulatorTopics.dat
+* robotTopics                 pepperTopics.dat
+* verboseMode                 true
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Subscribed Topics and Message Types
+*
+* /sensor_msgs/joint_states
+* /robotLocalization/pose
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+* Published Topics and Message Types
+*
+* None
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked
+ * 
+* /overtAttention/set_mode
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised and Message Types
+ *
+* /gestureExecution/perform_gesture
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* pepperTopics.dat
+* simulatorTopics.dat
+* gestureDescriptors.dat
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Output Data Files
+*
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+*
+* gestureExecutionConfiguration.ini
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* rosrun gestureExecution perform_gesture
+*
+* The clients can invoke the service by providing the gesture type, gesture ID, 
+   gesture duration, bow_nod angle, 
+* and the location in the world to pay attention/point to in x, y, z coordinates.
+* The service will execute the gesture based on the received parameters and 
+   return the status of the gesture execution.
+*
+* Examples of calling the service is shown below:
+* ----- rosservice call /perform_gesture -- deictic 01 3000 25 3.6 2.5 0.82
+* This will execute a pointing gesture with a duration of 3000 ms, and the 
+   location in the world to point to in x, y, z coordinates.
+*
+* ----- rosservice call /perform_gesture -- bow 01 3000 25 3.6 2.5 0.82
+* This will execute a pointing gesture with a duration of 3000 ms, and bow at an 
+   angle of 45 degrees.
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Adedayo Akinade, Carnegie Mellon University Africa
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:   aakinade@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  January 10, 2025
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:gesture_execution_unit_testing}
+
+The unit testing for Gesture Execution is packaged in the {\small \verb+unit_tests+} package, in the subdirectory {\small \verb+gestureExecutionTest+}. The integration report is in section \ref{section:gesture_execution_test} below.
+
+  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:gesture_execution_system_testing}
+%  
+%No content yet.
+
+
+
+\newpage
+%%%%%%GESTURE EXECUTION UNIT TEST
+ \section{Gesture Execution Unit test} 
+%===========================================
+\label{section:gesture_execution_test}
+The \textbf{D5.5.1.1} Gesture Execution Unit Test software was submitted for integration on January 10th, 2024. This run the unit test on the {\small \verb+gestureExecution+} node.
+
+
+\subsection{Files and Directories}
+%===============================================================
+\label{subsection:gesture_execution_test_files}
+ 
+ \begin{description}
+\item[\checkboxChecked] Files are stored in a subdirectory named \textbf{gestureExecutionTest}. 
+
+\item[\checkboxChecked] The \textbf{gestureExecutionTest} directory has six sub-directories:  {\small \verb+config+},   {\small \verb+data+}, \\  {\small \verb+include/gestureExecutionTest+}, {\small \verb+launch+},  {\small \verb+src+}, and {\small \verb+srv+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+gestureExecutionTestConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains three files, named as follows.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestOutput.dat+}  
+\item[\checkboxChecked] {\small \verb+pepperTopics.dat+}   
+\item[\checkboxChecked] {\small \verb+simulatorTopics.dat+}  
+\item[\checkboxChecked] The topic files {\small \verb+pepperTopics.dat+}  and {\small \verb+simulatorTopics.dat+} contain the key-value pairs that set the topic names required by the component.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/gestureExecutionTest+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestInterface.h+}  
+\end{description} 
+
+
+\item[\checkboxChecked] The  {\small \verb+launch+} directory contains three files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionLaunchRobot.launch+}  
+\item[\checkboxChecked] {\small \verb+gestureExecutionLaunchSimulator.launch+}  
+\item[\checkboxChecked] {\small \verb+gestureExecutionLaunchTestHarness.launch+}
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains four source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestApplication.cpp+}  
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestDriver.cpp+}  
+\item[\checkboxChecked]  {\small \verb+gestureExecutionTestImplementation.cpp+}  
+\item[\checkboxChecked]  {\small \verb+gestureExecutionTestStub.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+srv+} directory contains two files, named:
+\begin{description}
+\item[\checkboxChecked] {\small \verb+setMode.srv+}  
+\item[\checkboxChecked] {\small \verb+setPose.srv+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+gestureExecutionTest+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the test. 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+gestureExecutionTest+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+gestureExecutionTest+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+unit_tests+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:gesture_execution_test_documentation_standards}  
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestApplication.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionTestApplication.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked]  {\small \verb+gestureExecutionTestImplementation.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionImplementation.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestInterface.h+}   
+{\small \begin{verbatim}
+/* gestureExecutionTestInterface.h
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked] {\small \verb+gestureExecutionTestDriver.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionTestDriver.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked]  {\small \verb+gestureExecutionTestStub.cpp+}  
+{\small \begin{verbatim}
+/* gestureExecutionTestStub.cpp
+ *
+ * Author: Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\end{description} 
+% \blank
+%~
+%\blank
+%
+%\newpage
+\noindent The {\small \verb+gestureExecutionTestApplication.cpp+} file contains a documentation comment with the following sections:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/* gestureExecutionTestApplication.cpp
+*
+* This module is responsible for running the tests on the gesture execution node.
+* The tests are run using Google Test and the results are written to a file. 
+* The module tests the iconic, deictic, bow, nod, and symbolic gestures.
+*
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+* Standard libraries
+- std::string, std::vector, std::fstream, std::pow, std::sqrt, std::abs
+* ROS libraries
+- ros/ros.h, ros/package.h, actionlib/client/simple_action_client.h, 
+  control_msgs/FollowJointTrajectoryAction.h, geometry_msgs/Twist.h
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Parameters
+*
+* Command-line Parameters
+*
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration File Parameters
+
+* Key                   |     Value 
+* --------------------- |     -------------------
+* platform              |     robot
+* iconic                      true
+* deictic                     true
+* bow                         true
+* nod                         true
+* symbolic                    false
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Subscribed Topics and Message Types
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+* Published Topics and Message Types
+* 
+* /pepper/cmd_vel                geometry_msgs/Twist
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked
+  *
+* /gestureExecution/perform_gesture
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised and Message Types
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Output Data Files
+*
+* gestureExecutionTestOutput.dat
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+*
+* gestureExecutionTestConfiguration.ini
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* rosrun unit_tests gestureExecutionTest
+*
+* The launch file for the gesture execution unit tests is 
+   gestureExecutionTestLaunchTestHarness.launch.
+*
+* roslaunch unit_tests gestureExecutionTestLaunchTestHarness.launch
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Adedayo Akinade, Carnegie Mellon University Africa
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:   aakinade@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  January 10, 2025
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:gesture_execution_test_unit_testing}
+
+
+\begin{description}
+\item[\checkboxChecked] A unit test application named {\small \verb+gestureExecutionLaunchRobot.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+gestureExecutionLaunchSimulator.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+gestureExecutionLaunchTestHarness.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] The {\small \verb+gestureExecutionLaunchRobot.launch+} file  launches the component being tested.
+
+\item[\checkboxDashed] The {\small \verb+gestureExecutionLaunchSimulator.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked] The {\small \verb+gestureExecutionLaunchTestHarness.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked]  The {\small \verb+gestureExecution+} being tested outputs the copyright message on startup:
+\begin{verbatim}
+\gestureExecution: v1.0
+ 
+This project is funded by the African Engineering and Technology Network 
+(Afretec) 
+Inclusive Digital Transformation Research Grant Programme.
+ 
+Website: www.cssr4africa.org
+ 
+ This program comes with ABSOLUTELY NO WARRANTY
+\end{verbatim}
+
+\newpage
+\item[\checkboxChecked]  The {\small \verb+gestureExecution+} being tested writes short messages to the terminal during the start-up phase to
+ indicate the state of the node:
+\begin{verbatim}
+\gestureExecution: start-up.
+\gestureExecution: subscribed to /topicName.
+\end{verbatim}
+
+\item[\checkboxChecked]  The {\small \verb+gestureExecution+} being tested periodically (every ten seconds) writes a short heartbeat message to
+ the terminal to indicate the state of the node:
+\begin{verbatim}
+\gestureExecution: running.
+\end{verbatim}
+
+\item[\checkboxChecked] The {\small \verb+gestureExecutionLaunchRobot.launch+} file  connects the component a data source and a data sink on the physical robot, and produces the expected result as set out in the  {\small \verb+README.md+}  file.    This means this file launches the physical robot and all its sensors and actuators as required.
+
+\item[\checkboxDashed] The {\small \verb+gestureExecutionLaunchSimulator.launch+} file  connects the component a data source and a data sink on the simulator.   This means this file launches the simulator robot and all its sensors and actuators as required.
+
+\item[\checkboxChecked] The {\small \verb+gestureExecutionLaunchTestHarness.launch+} file  connects the component a data source and a data sink using a driver and a stub.   This means this file launches the required drivers and stubs, and the node being tested.
+
+\item[\checkboxChecked] Unit test instructions are provided in a file named {\small \verb+README.md+} in the  {\small \verb+gestureExecutionTest+} directory. 
+
+
+\begin{description}
+
+\item[\checkboxChecked] The instructions explain how the communication and computation functionality is validated by describing the (sink) output data that will be produced from the (source) input data.  
+
+\item[\checkboxChecked] The instructions explain how the configuration functionality is validated by describing what changes in behaviour will occur if the values for the component parameters in the component configuration ({\small \verb+.ini+}) file are altered.
+
+\end{description}
+
+\end{description} 
+
+  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:gesture_execution_test_system_testing}
+%  
+%No content yet.
+
+
+
+
+\newpage
+\section{D5.3 Attention Subsystem} 
+%===========================================
+\label{section:overt_attention}
+The \textbf{D5.3} Attention Subsystem software was submitted for integration on January 17th, 2024. The results indicate the software has passed the integration process. This module allows the robot to pay attention to salient features in the environment or to a given location in the environment. The primary salient features are those that are associated with social interaction, mainly people’s faces. This feature is also the focus of attention when the robot is not interacting, but is merely observing its environment. As such, attention also contributes to the animate behavior of the robot. Observing the environment also involves scanning the environment for interesting objects which requires the robot to change its focus of attention after some time and not return directly to the original focus of attention.
+
+\subsection{Files and Directories}
+%===============================================================
+ 
+ \begin{description}
+\item[\checkboxChecked] Files for a single component are stored in a subdirectory named \textbf{overtAttention}. Refer to Deliverable D3.1 System Architecture for details of the ROS package names and the associated ROS nodes.
+
+\item[\checkboxChecked] The \textbf{overtAttention} directory has six sub-directories:  {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/overtAttention+}, {\small \verb+msg+},  {\small \verb+src+}, and {\small \verb+srv+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+overtAttentionConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains two files, named as follows.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+pepperTopics.dat+}  
+\item[\checkboxChecked] {\small \verb+simulatorTopics.dat+}  
+\item[\checkboxChecked] The topic files {\small \verb+pepperTopics.dat+}  and {\small \verb+simulatorTopics.dat+} contain the key-value pairs that set the topic names required by the component.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/overtAttention+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionInterface.h+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+msg+} directory contains two files, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+Mode.msg+}  
+\item[\checkboxChecked] {\small \verb+Status.msg+}  
+\end{description} 
+
+\newpage
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains two source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionApplication.cpp+}  
+\item[\checkboxChecked]  {\small \verb+overtAttentionImplementation.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+srv+} directory contains one file, named:
+\begin{description}
+\item[\checkboxChecked] {\small \verb+setMode.srv+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+overtAttention+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the node 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+overtAttention+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+overtAttention+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+cssr_system+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:overt_attention_documentation_standards}  
+ 
+Refer to Deliverable D3.2, Appendix B (Mandatory Standards for Internal Source Code Documentation), for a definition of the standards on which this checklist is based.\\
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+overtAttentionApplication.cpp+}  
+{\small \begin{verbatim}
+/* overtAttentionApplication.cpp
+ *
+ * Author: Mohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked]  {\small \verb+overtAttentionImplementation.cpp+}  
+{\small \begin{verbatim}
+/* overtAttentionImplementation.cpp
+ *
+ * Author: Mohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+* This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked] {\small \verb+overtAttentionInterface.h+}   
+{\small \begin{verbatim}
+/* overtAttentionInterface.h
+ *
+ * Author: Mohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+
+\end{description} 
+% \blank
+%~
+%\blank
+%
+\newpage
+\noindent The {\small \verb+overtAttentionApplication.cpp+} file contains a documentation comment:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/* overtAttentionApplication.cpp
+*
+* This module module equips the robot with the ability to direct its gaze toward
+*  salient features in its environment  or focus on specific locations, 
+* facilitating socially and contextually appropriate behaviors. 
+* This capability is crucial for enhancing the robot’s ability to interact 
+* effectively with people and adapt to dynamic environments.
+*
+* The module operates in five distinct modes, each tailored to a specific context. 
+*   - Social mode is activated during social interactions, allowing the robot to 
+        focus on human faces, and voices. 
+*     In this mode, the robot prioritizes social cues to maintain engagement 
+       and responsiveness. 
+*
+*   - Scanning mode, on the other hand, is used when the robot is not engaged in 
+       social interaction. 
+*     In this state, the robot scans its surroundings for potential interaction 
+       opportunities, 
+*     focusing on people and objects of interest while giving higher priority to 
+       faces. 
+*     The robot periodically shifts its focus to new areas, 
+       ensuring comprehensive environmental coverage.
+*
+*   - In location mode, the robot gazes at a specific target in its environment. 
+*     If the robot’s head cannot achieve the required pose to fixate 
+       on the target, 
+*     the robot’s base rotates to realign its head and body. 
+*
+*   - Seeking mode enables the robot to establish mutual gaze with a nearby 
+       person by searching for a face looking directly at it. 
+*     If this process is unsuccessful within a given timeframe, the robot returns 
+       either a success or failure status. 
+*
+*   - Lastly, in disabled mode, the robot’s head remains centered and stationary, 
+       effectively deactivating the attention mechanism.
+*
+* To determine the focus of attention, the module generates two types of saliency 
+   maps. 
+*   - A social saliency map leverages data from face detection and sound 
+       localization to identify socially significant features. 
+*   - A general saliency map, on the other hand, uses information-theoretic 
+       models to identify visually conspicuous elements 
+*     in the robot’s environment. These maps form the basis for the robot’s 
+       attentional behavior across different modes.
+*
+* In scanning mode, three key processes work together to enhance 
+   attentional dynamics. 
+*   - First, a winner-take-all (WTA) mechanism identifies a single focus of 
+       attention from the saliency map using a selective tuning model. 
+*   - Second, an Inhibition-of-Return (IOR) mechanism ensures that previously 
+       attended locations are deprioritized, encouraging exploration of new areas. 
+*   - Third, a habituation process gradually reduces the salience of the current 
+       focus, ensuring that attention does not remain fixated on a single point 
+      for an extended period.
+*
+* The robot’s gaze is directed by publishing control commands to the 
+    headYaw and headPitch joints, 
+* which align the head toward the selected focus of attention. 
+* For aural attention, the robot adjusts its headYaw angle based on the angle of 
+   arrival of the sound. 
+* Calibration parameters ensure accurate mapping between visual offsets in the 
+   image and the corresponding head joint angles. 
+* When the required headYaw rotation exceeds a predefined threshold, the module 
+   coordinates the movement of the robot’s base 
+* and head to maintain focus while realigning the head and torso.
+*
+* The module’s functionality is supported by four key inputs. 
+* Data from the face detection and sound detection nodes inform the saliency map 
+   in social mode. 
+* An RGB image from the robot’s camera is used to compute the saliency map in 
+   scanning mode, 
+* while the robot’s current pose is utilized for attending to specific locations. 
+* These inputs enable the module to adapt its behavior dynamically based on 
+   environmental conditions.
+*
+* The module provides four outputs to facilitate its operation. 
+* First, it publishes control commands to the robot’s headYaw and headPitch 
+   joints, 
+* as well as to the wheels and angular velocity when adjusting the robot’s pose. 
+* Second, it generates an RGB image visualizing the saliency function and the 
+    current focus of attention, 
+* which can be displayed in verbose mode for debugging purposes. 
+* Third, the module continuously publishes the current active mode to the 
+   /overtAttention/mode topic, 
+* enabling other system components to monitor the robot’s attentional state. 
+* Finally, the module updates actuator topic names based on configuration files 
+   specific to either the physical robot or a simulation environment.
+*
+* The module’s operation is managed through dedicated ROS services. The module 
+   advertises services to allow the selection 
+* of operational modes, such as social, scanning, or location mode. 
+*
+* For ease of analysis, the module can also operate in verbose mode, where 
+   published data is printed to the terminal, 
+* and output images are displayed in OpenCV windows.
+*
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+* Standard libraries
+- std::string, std::vector, std::fstream, std::pow, std::sqrt, std::abs
+* ROS libraries
+- ros/ros.h, ros/package.h, actionlib/client/simple_action_client.h, 
+  control_msgs/FollowJointTrajectoryAction.h, geometry_msgs/Twist.h
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Parameters
+*
+* Command-line Parameters
+*
+* The attention mode to set the attention system to
+* The location in the world to pay attention to in x, y, z coordinates
+*
+\end{verbatim}}
+
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration File Parameters
+
+* Key                   |     Value 
+* --------------------- |     -------------------
+* platform                    simulator
+* camera                      FrontCamera
+* realignmentThreshold        5
+* xOffsetToHeadYaw            25
+* yOffsetToHeadPitch          20
+* simulatorTopics             simulatorTopics.dat
+* robotTopics                 pepperTopics.dat
+* verboseMode                 true
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Subscribed Topics and Message Types
+*
+* /faceDetection/direction              faceDetection.msg     
+* /robotLocalization/pose               sensor_msgs::JointState
+* /soundDetection/data                  std_msgs::Float64    
+* /naoqi_driver/camera/front/image_raw  sensor_msgs::ImageConstPtr       
+\end{verbatim}}
+
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+* Published Topics and Message Types
+* 
+* /pepper_dcm/Head_controller/follow_joint_trajectory 
+* /cmd_vel                                                 
+* /overtAttention/mode                                    
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked
+* 
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised and Message Types
+ * 
+* /overtAttention/set_mode  
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* pepperTopics.dat
+* simulatorTopics.dat
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Output Data Files
+*
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+*
+* overtAttentionConfiguration.ini
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* rosrun cssr_system overtAttention
+*
+* The clients can call the service by providing the attention mode and the 
+   location to pay attention to in the world.
+* The service will execute the attention mode selected and attend to the location 
+   provided if mode being set is location mode.
+* An example of calling the service is shown below:
+* ----- rosservice call /overAttention/set_mode -- location 3.0 2.0 1.0
+* This will set the attention mode to location and the location to pay attention 
+    to is (3.0, 2.0, 1.0)
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Muhammed Danso and Adedayo Akinade, Carnegie Mellon University Africa
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:  mdanso@andrew.cmu.edu, aakinade@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  January 10, 2025
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:overt_attention_unit_testing}
+
+The unit testing for Attention Subsystem is packaged in the {\small \verb+unit_tests+} package, in the subdirectory {\small \verb+overtAttentionTest+}. The integration report is in section \ref{section:overt_attention_test} below.
+
+%  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:overt_attention_system_testing}
+%  
+%No content yet.
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+%%%%%%GESTURE EXECUTION UNIT TEST
+ \section{Attention Subsystem Unit test} 
+%===========================================
+\label{section:overt_attention_test}
+The \textbf{D5.3} Attention Subsystem Unit Test software was submitted for integration on January 17th, 2024. This run the unit test on the {\small \verb+overtAttention+} node.
+
+
+\subsection{Files and Directories}
+%===============================================================
+\label{subsection:overt_attention_test_files}
+ 
+ \begin{description}
+\item[\checkboxChecked] Files are stored in a subdirectory named \textbf{overtAttentionTest}. 
+
+\item[\checkboxChecked] The \textbf{overtAttentionTest} directory has six sub-directories:  {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/overtAttentionTest+}, {\small \verb+launch+},  {\small \verb+msg+}, and {\small \verb+src+}.
+
+\item[\checkboxChecked] The  {\small \verb+config+} directory contains one file, named.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionTestConfiguration.ini+}  
+\item[\checkboxChecked] The configuration file {\small \verb+overtAttentionTestConfiguration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+data+} directory contains three files, named as follows.
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionTestOutput.dat+}  
+\item[\checkboxChecked] {\small \verb+pepperTopics.dat+}   
+\item[\checkboxChecked] {\small \verb+simulatorTopics.dat+}  
+\item[\checkboxChecked] The topic files {\small \verb+pepperTopics.dat+}  and {\small \verb+simulatorTopics.dat+} contain the key-value pairs that set the topic names required by the component.  
+\item[\checkboxChecked] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+include/overtAttentionTest+} directory contains one file, named:
+
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionTestInterface.h+}  
+\end{description} 
+
+
+\item[\checkboxChecked] The  {\small \verb+launch+} directory contains three files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionLaunchRobot.launch+}  
+\item[\checkboxChecked] {\small \verb+overtAttentionLaunchSimulator.launch+}  
+\item[\checkboxChecked] {\small \verb+overtAttentionLaunchTestHarness.launch+}
+\end{description} 
+
+\item[\checkboxChecked] The  {\small \verb+msg+} directory contains one file, named:
+\begin{description}
+\item[\checkboxChecked] {\small \verb+faceDetection.msg+}  
+\end{description} 
+
+\newpage
+\item[\checkboxChecked] The  {\small \verb+src+} directory contains three source files, named as follows.
+\begin{description}
+\item[\checkboxChecked] {\small \verb+overtAttentionTestApplication.cpp+}  
+\item[\checkboxChecked] {\small \verb+overtAttentionTestDriver.cpp+}  
+\item[\checkboxChecked]  {\small \verb+overtAttentionTestImplementation.cpp+}  
+\end{description} 
+
+\item[\checkboxChecked] The {\small \verb+overtAttentionTest+} directory contains  a {\small \verb+README.md+} file with  instructions on how to run the test. 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkboxChecked] The {\small \verb+overtAttentionTest+} directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkboxChecked] The {\small \verb+overtAttentionTest+} directory contains  no {\small \verb+package.xml+} manifest file since it is a node within the {\small \verb+unit_tests+} package .
+
+\end{description}
+
+
+ 
+ 
+\subsection{Internal Source Code Documentation}
+%===============================================================
+\label{subsection:overt_attention_test_documentation_standards}  
+
+\noindent All source files contain a documentation comment that gives the copyright notice, as follows.
+ 
+\begin{description}
+
+\item[\checkboxChecked] {\small \verb+overtAttentionTestApplication.cpp+}  
+{\small \begin{verbatim}
+/* overtAttentionTestApplication.cpp
+ *
+ * Author: Mohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network 
+     (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked]  {\small \verb+overtAttentionTestImplementation.cpp+}  
+{\small \begin{verbatim}
+/* overtAttentionImplementation.cpp
+ *
+ * Author: Mohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\item[\checkboxChecked] {\small \verb+overtAttentionTestInterface.h+}   
+{\small \begin{verbatim}
+/* overtAttentionTestInterface.h
+ *
+ * Author: AMohammed Danso, Adedayo Akinade
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\newpage
+\item[\checkboxChecked] {\small \verb+overtAttentionTestDriver.cpp+}  
+{\small \begin{verbatim}
+/* overtAttentionTestDriver.cpp
+ *
+ * Author: Mohammed Danso, Adedayo Akinadee
+ * Date: January 10, 2025
+ * Version: v1.0
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network
+    (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+
+\end{description} 
+% \blank
+%~
+%\blank
+%
+
+\noindent The {\small \verb+overtAttentionTestApplication.cpp+} file contains a documentation comment with the following sections:
+
+\begin{description}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+/* overtAttentionTestApplication.cpp
+*
+* This module is responsible for running the tests on the overt attention module.
+* The tests are run using Google Test and the results are written to a file. 
+* The module tests the scanning, social, seeking, location and disabled modes of 
+    the overtAttention node
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+* Standard libraries
+- std::string, std::vector, std::fstream, std::pow, std::sqrt, std::abs
+* ROS libraries
+- ros/ros.h, ros/package.h, actionlib/client/simple_action_client.h, 
+  control_msgs/FollowJointTrajectoryAction.h, geometry_msgs/Twist.h
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Parameters
+*
+* Command-line Parameters
+*
+* None
+*
+\end{verbatim}}
+
+\newpage
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+* Configuration File Parameters
+
+* Key                   |     Value 
+* --------------------- |     -------------------
+* platform                      robot
+* scanning                      true
+* social                        true
+* seeking                       true
+* location                      true
+* disabled                      true
+* verboseMode                   true
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Subscribed Topics and Message Types
+ *
+ * /faceDetection/direction              faceDetection.msg     
+* /robotLocalization/pose               sensor_msgs::JointState
+* /soundDetection/data                  std_msgs::Float64    
+* /naoqi_driver/camera/front/image_raw  sensor_msgs::ImageConstPtr     
+* /overtAttention/mode                  Status.msg  
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+* Published Topics and Message Types
+* 
+* None
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Invoked
+  *
+* /overtAttention/set_mode 
+* 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}                    
+ * Services Advertised and Message Types
+ *
+ * None
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* pepperTopics.dat
+* simulatorTopics.dat
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Output Data Files
+*
+* overtAttentionTestOutput.dat
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+*
+* overtAttentionTestConfiguration.ini
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* roslaunch unit_tests overtAttentionTestLaunchTestHarness.launch
+*
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Author:  Muhammed Danso and Adedayo Akinade, Carnegie Mellon University 
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Email:   mdanso@andrew.cmu.edu, aakinade@andrew.cmu.edu
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Date:  January 10, 2025
+\end{verbatim}}
+
+\item[\checkboxChecked] 
+ {\small 
+\begin{verbatim}
+ * Version: v1.0
+\end{verbatim}}
+
+
+\end{description}
+
+
+\subsection{Component Unit Testing}
+%=============================================================
+\label{subsection:overt_attention_test_unit_testing}
+
+
+\begin{description}
+\item[\checkboxChecked] A unit test application named {\small \verb+overtAttentionLaunchRobot.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+overtAttentionLaunchSimulator.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] A unit test application named {\small \verb+overtAttentionLaunchTestHarness.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkboxChecked] The {\small \verb+overtAttentionLaunchRobot.launch+} file  launches the component being tested.
+
+\item[\checkboxDashed] The {\small \verb+overtAttentionLaunchSimulator.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked] The {\small \verb+overtAttentionLaunchTestHarness.launch+} file  launches the component being tested.
+
+\item[\checkboxChecked]  The {\small \verb+overtAttention+} being tested outputs the copyright message on startup:
+\begin{verbatim}
+\overtAttention: v1.0
+ 
+This project is funded by the African Engineering and Technology Network 
+(Afretec) 
+Inclusive Digital Transformation Research Grant Programme.
+ 
+Website: www.cssr4africa.org
+ 
+ This program comes with ABSOLUTELY NO WARRANTY
+\end{verbatim}
+
+\item[\checkboxChecked]  The {\small \verb+overtAttention+} being tested writes short messages to the terminal during the start-up phase to
+ indicate the state of the node:
+\begin{verbatim}
+\overtAttention: start-up.
+\overtAttention: subscribed to /topicName.
+\end{verbatim}
+
+\item[\checkboxChecked]  The {\small \verb+overtAttention+} being tested periodically (every ten seconds) writes a short heartbeat message to
+ the terminal to indicate the state of the node:
+\begin{verbatim}
+\overtAttention: running.
+\end{verbatim}
+
+\item[\checkboxChecked] The {\small \verb+overtAttentionLaunchRobot.launch+} file  connects the component a data source and a data sink on the physical robot, and produces the expected result as set out in the  {\small \verb+README.md+}  file.    This means this file launches the physical robot and all its sensors and actuators as required.
+
+\item[\checkboxDashed] The {\small \verb+overtAttentionLaunchSimulator.launch+} file  connects the component a data source and a data sink on the simulator.   This means this file launches the simulator robot and all its sensors and actuators as required.
+
+\item[\checkboxChecked] The {\small \verb+overtAttentionLaunchTestHarness.launch+} file  connects the component a data source and a data sink using a driver and a stub.   This means this file launches the required drivers and stubs, and the node being tested.
+
+\item[\checkboxChecked] Unit test instructions are provided in a file named {\small \verb+README.md+} in the  {\small \verb+overtAttentionTest+} directory. 
+
+
+\begin{description}
+
+\item[\checkboxChecked] The instructions explain how the communication and computation functionality is validated by describing the (sink) output data that will be produced from the (source) input data.  
+
+\item[\checkboxChecked] The instructions explain how the configuration functionality is validated by describing what changes in behaviour will occur if the values for the component parameters in the component configuration ({\small \verb+.ini+}) file are altered.
+
+\end{description}
+
+\end{description} 
+
+  
+%\subsection{System Testing}
+%%=============================================================
+%\label{subsection:overt_attention_test_system_testing}
+%  
+%No content yet.
+ 
+\newpage
+\bibliographystyle{unsrt}
+%================================================================
+%\bibliography{cognitive_systems.bib}                                 
+\addcontentsline{toc}{section}{References}
+
+
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+
+Adedayo Akinade, Carnegie Mellon University Africa.\\
+David Vernon, Carnegie Mellon University Africa.\\     
+
+  
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft. \\
+David Vernon. \\                               
+25 July 2024.      
+
+\item [Version 1.1]~\\
+Updated the integration results for gestureExecution (Success). \\
+Updated the integration results for animateBehaviour (Success). \\
+Updated the integration results for overtAttention (Success). \\
+Adedayo Akinade. \\                               
+27 January 2025.   
+
+
+
+\end{description}
+
+\end{document}
+

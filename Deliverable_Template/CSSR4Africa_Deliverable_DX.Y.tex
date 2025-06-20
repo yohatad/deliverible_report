@@ -1,0 +1,122 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{DX.Y}                   % REPLACE with correct number
+\title{DX.Y Deliverable Title}    % REPLACE with correct title
+
+\leadpartner{ }                        % INSERT partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
+\partner{}                                % INSERT partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
+
+\revision{1.0}                          % REPLACE with correct version number
+\deliverabledate{1/10/2023}   % REPLACE with correct date
+\submissiondate{1/10/2023}  % REPLACE with correct date
+\revisiondate{n/a}                   % REPLACE with date
+\disseminationlevel{PU}
+\responsible{A. Name }           % REPLACE with correct  name
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+ 
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+ 
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+
+\newpage
+ 
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+
+
+\section{Introduction}
+%===============================================================
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua \cite{Bartnecketal2020}; see Fig. \ref{fig:xyz}.
+ \\~\\
+\begin{figure}[thb]
+\begin{center}
+\includegraphics[height=21mm,angle=0]{CSSRforAfrica_logo_red.pdf} % REPLACE with correct filename
+\end{center}
+\caption{Figure caption.}                                                        % REPLACE with correct caption
+\label{fig:xyz}                                                                        % REPLACE with correct label
+\end{figure}
+ 
+
+\section{Carrying On}
+%===============================================================
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+ \\~\\
+\
+
+\newpage
+\bibliographystyle{unsrt}
+%================================================================
+\bibliography{cognitive_systems.bib}                                     % REPLACE with correct filename
+\addcontentsline{toc}{section}{References}
+
+
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+Firstname Lastname, University of Somewhere.\\    % REPLACE with correct name and affiliation
+Firstname Lastname, University of Somewhere.\\    % REPLACE with correct name and affiliation
+...                                                                            % REMOVE
+ 
+
+  
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft. \\
+Firstname  Lastname. \\                                     % REPLACE with correct name
+1 July 2023.                                                        % REPLACE with correct date
+
+
+
+\end{description}
+
+\end{document}
+

@@ -1,0 +1,685 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage[table,x11names]{xcolor}
+\usepackage{listings}
+\usepackage{siunitx} % Add this in your preamble
+
+\usepackage{dirtree}
+\usepackage{url}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{verbatim}
+%\usepackage[tikz]{bclogo}  % For fancy notes
+% \usepackage{tcolorbox}  % For bounding boxes
+\usepackage{listings}  % For code formatting
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+
+% % Define custom style for code without numbering
+% \lstdefinestyle{withoutNumbering}{
+%   basicstyle=\ttfamily\footnotesize,
+%   frame=single,
+%   breaklines=true,
+%   numbers=none
+% }
+
+\lstset{upquote=true}
+\renewcommand{\DTstyle}{\footnotesize\sffamily}
+%%% for listing ;
+% \captionsetup[figure]{format=hang}
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{greenyellow}{rgb}{0.8, 0.7, 0.10}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.95} 
+
+\lstdefinestyle{withoutNumbering}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% the following is added for the note box
+\usepackage[most]{tcolorbox}
+\newtcolorbox{notebox}[1][]{
+  colback=yellow!10!white,
+  colframe=black!70!white,
+  fonttitle=\bfseries,
+  title=NOTE,
+  #1
+}
+
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D4.2.4}                   % REPLACE with correct number
+\title{D4.2.4 Robot Localization}        % REPLACE with correct title
+
+\leadpartner{Carnegie Mellon University Africa} % INSERT partner name
+\partner{Carnegie Mellon University Africa}     % INSERT partner name
+
+\revision{1.0}                          % REPLACE with correct version number
+\deliverabledate{26/02/2025}            % REPLACE with correct date
+\submissiondate{15/03/2025}             % REPLACE with correct date
+\revisiondate{n/a}                      % REPLACE with date
+\disseminationlevel{PU}
+\responsible{Ibrahim Olaide Jimoh}            % REPLACE with correct name
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+
+Deliverable D4.2.4 Robot Localization focuses on the development of a software module that estimates the pose (position and orientation) of the Pepper robot in a Cartesian world frame of reference. The module achieves this through a combination of relative and absolute position estimation techniques, including odometry, IMU data, and triangulation using visual landmarks. For the relative position, the odometry and IMU data is derived from the Pepper robot's built-in wheel encoders and inertial measurement unit (IMU) sensors, which provide continuous updates on the robot's movement. For absolute position estimation, the module integrates visual detection of ArUco markers as landmarks using an Intel RealSense camera system, enabling correction of accumulated drift and enhancing localization accuracy. The functionality is implemented as a ROS node named \texttt{robotLocalization}, which continuously updates the robot’s pose in real time. The deliverable outlines the software development process, including requirements definition, module specification, module design, implementation details, running the module, and unit testing. The test evaluates the developed module to ensure its reliability.
+
+\newpage
+\pagebreak
+\tableofcontents
+\newpage
+
+\section{Introduction}
+%===============================================================
+This deliverable represents the output of Task 4.2.4, aimed at developing a software module for estimating the robot’s pose in a Cartesian world frame of reference. The objective is achieved through relative pose estimation methods and absolute pose estimation using visual landmarks. The ROS node \texttt{robotLocalization} implements this functionality, providing continuous and real-time pose estimation for the Pepper robot in various operational scenarios.
+
+Accurate robot localization, the process of determining a robot's position and orientation within its environment, is essential for effective and safe interaction with humans and objects, particularly in dynamic social contexts. In culturally sensitive environments, precise localization allows robots to navigate human-populated areas, communicate intentions clearly, perform nuanced interactions without causing discomfort or misunderstanding, and most importantly, arrive precisely at its intended goal \cite{trovato}. This report addresses the development of a localization module for the Pepper robot in the CSSR4Africa project.
+
+Localization challenges typically include sensor inaccuracies, environmental unpredictability, and cumulative errors or drift from odometry-based methods. To address these issues, the localization module utilizes a combination of relative and absolute localization techniques. Relative localization is achieved through data fusion from the Pepper robot’s wheel encoders (odometry) and inertial measurement unit (IMU) sensors, providing a continuous, incremental estimate of the robot's movement. However, these methods alone can lead to significant drift over time, necessitating periodic recalibration.
+
+To mitigate this drift and maintain high localization accuracy, the developed module integrates absolute localization using visual landmarks, specifically ArUco markers. By recognizing these predefined landmarks with an onboard RGB-D camera (RealSense), the robot can periodically correct accumulated errors, ensuring reliable pose estimation over extended periods. The successful integration of relative and absolute localization methods ensures continuous, real-time accuracy of the robot's position.
+
+This deliverable fully documents the localization module development process, providing detailed report into the requirements definition, system specifications, module design, implementation procedures, and testing. Adherence to established project standards specified in \href{https://cssr4africa.github.io/deliverables/CSSR4Africa_Deliverable_D3.2.pdf}{\textcolor{blue}{Deliverable D3.2}} ensures maintainability, reliability, and seamless integration with other system components.
+
+\newpage
+
+\section{Requirements Definition}
+%===============================================================
+The robot localization module provide accurate and real-time pose estimation, addressing both position and orientation of the robot in a Cartesian world frame. Relative pose estimation will rely on odometry data and the robot’s IMU, while absolute pose estimation will use triangulation based on visual landmarks recognized. The module supports input from RGB and depth cameras, as well as the encoder on the head yaw actuator. Outputs will include the robot’s 2D pose (x, y, and rotation about the Z-axis) and annotated images with bounding boxes around detected landmarks.
+
+The primary objective of the robot localization module is to provide accurate and reliable real-time pose estimation to facilitate effective robot navigation, interaction, and task execution within dynamic environments. To achieve this, several key requirements were established.
+
+Firstly, the module must deliver continuous, real-time pose estimation, clearly defining the robot’s position as Cartesian coordinates (x, y) and its orientation (yaw angle) within a predefined global coordinate frame. This real-time estimation capability is essential for enabling seamless navigation and precise arrival at its intended goal.
+
+Secondly, the localization module is required to integrate data from Pepper’s built-in wheel encoders and inertial measurement unit (IMU) sensors. This approach ensures an ongoing estimation of robot displacement and orientation changes. However, recognizing the inherent limitations of relative localization techniques, especially the accumulation of drift errors over time, the module must incorporate absolute localization capabilities to recalibrate periodically and correct these cumulative errors.
+
+For absolute localization, visual landmark detection through ArUco markers has been mandated due to its effectiveness, simplicity, and robustness. The module must accurately identify these visual markers using the onboard RGB-D RealSense camera, calculate their positions relative to known, predefined locations, and accordingly update the robot’s global pose estimate.
+
+Finally, for ease of debugging, validation, and monitoring, the module must provide annotated visualization frames indicating clearly detected ArUco landmarks and the calculated pose estimations. In verbose mode, the pose estimates published to the localization topic and absolute localization update status must be printed to the terminal.
+
+\newpage
+
+\section{Module Specification}
+%===============================================================
+
+The Robot Localization module is specifically designed as a ROS node, \texttt{robotLocalization}, that combines sensor inputs to produce precise robot pose estimates in real-time. This section details the input data types, processing methods, output formats, and system configurations involved.
+
+\subsection*{Sensor Inputs}
+
+The module accepts three primary inputs: odometry data, IMU sensor readings, and RGB-D images from the onboard RealSense camera. Odometry data provides incremental displacement estimates derived from wheel encoder signals, essential for tracking relative robot movements. IMU sensor data, including linear accelerations and angular velocities, complements odometry by providing a detailed account of the robot's orientation changes.
+
+The third input is visual data captured by the RealSense RGB-D camera system, which is crucial for absolute localization. The module processes these visual inputs to detect predefined visual landmarks (ArUco markers) positioned at known coordinates within the robot’s operational environment. By identifying these markers and their corresponding known locations, the module calculates precise corrections to the robot’s estimated pose by triangulation.
+
+\subsection*{Output Data}
+
+The primary outputs of the localization module include continuous pose estimates, defined by Cartesian coordinates (x, y) and orientation (yaw angle), published on the ROS topic \texttt{/robotLocalization/pose}. The module also provides a \texttt{/robotLocalization/reset\_pose} service to reset the robot's pose using the absolute pose estimation. Additionally, the module provides annotated visual outputs via an OpenCV window, clearly marking detected landmarks within RGB-D camera frames for verification and debugging purposes.
+
+\subsection*{System Configuration}
+
+The module reads from a configuration file (\texttt{robotLocalizationConfiguration.ini}) that provides platform-specific parameters, such as the sensor and actuator topics, camera type, and pose reset intervals. This ensures the module can be easily adapted to different configurations without altering its core logic.
+
+
+\newpage
+
+
+\section{Module Design}
+%===============================================================
+
+The Robot Localization module employs a structured approach that integrates distinct subsystems to ensure accurate and robust pose estimation. The design incorporates two primary subsystems: relative localization and absolute localization, unified through sensor fusion techniques.
+
+\subsection{Relative Localization}
+
+The relative localization subsystem primarily relies on odometry and inertial measurements. Wheel encoder data provides incremental position updates based on wheel rotations, translating these into displacement estimates. Simultaneously, IMU data, encompassing linear accelerations and angular velocities, helps accurately determine orientation and corrects odometry-derived displacement measurements, especially during rapid movements or when encountering slippery surfaces.
+
+
+\subsubsection*{Odometry data processing}
+
+The functionality processes odometry data from the robot and applies an initial pose adjustment. This ensures the localization system maintains an accurate and consistent reference frame.
+
+From the received ROS \texttt{Odometry} message, the position \((x, y)\) and orientation \(\theta\) (yaw angle) are extracted as follows:
+
+\begin{equation}
+x_{\text{odom}} = \text{msg.pose.pose.position.x}
+\end{equation}
+\begin{equation}
+y_{\text{odom}} = \text{msg.pose.pose.position.y}
+\end{equation}
+
+The yaw angle \(\theta_{\text{odom}}\) is computed from the quaternion representation:
+
+\begin{equation}
+\theta_{\text{odom}} = 2 \cdot \tan^{-1} \left( \frac{\text{msg.pose.pose.orientation.z}}{\text{msg.pose.pose.orientation.w}} \right)
+\end{equation}
+
+To align the odometry readings with the global reference frame, an initial offset is applied:
+
+\begin{equation}
+x' = x_{\text{odom}} + \text{adjustment}_x - x_{\text{initial}}
+\end{equation}
+\begin{equation}
+y' = y_{\text{odom}} + \text{adjustment}_y - y_{\text{initial}}
+\end{equation}
+
+The adjusted position is rotated using a 2D rotation matrix to align with the global coordinate system:
+
+\begin{equation}
+x_{\text{current}} = x' \cos(\text{adjustment}_\theta) - y' \sin(\text{adjustment}_\theta)
+\end{equation}
+\begin{equation}
+y_{\text{current}} = x' \sin(\text{adjustment}_\theta) + y' \cos(\text{adjustment}_\theta)
+\end{equation}
+
+The final global pose correction is then applied:
+
+\begin{equation}
+x_{\text{current}} = x_{\text{current}} + x_{\text{initial}}
+\end{equation}
+\begin{equation}
+y_{\text{current}} = y_{\text{current}} + y_{\text{initial}}
+\end{equation}
+
+The corrected orientation is computed as:
+
+\begin{equation}
+\theta_{\text{current}} = \theta_{\text{odom}} + \text{adjustment}_\theta
+\end{equation}
+
+The computed pose \((x, y, \theta)\) is published as a \texttt{Pose2D} message, with \(\theta\) converted to degrees:
+
+\begin{equation}
+\theta_{\text{deg}} = \theta_{\text{current}} \times \frac{180}{\pi}
+\end{equation}
+
+This ensures the corrected pose is available for localization, mapping, and further processing.
+
+
+
+\subsection{Absolute Localization}
+
+Given the limitations of relative localization methods, particularly the accumulation of drift errors, the design incorporates absolute localization techniques utilizing visual detection of ArUco markers. The absolute localization subsystem is tasked with processing visual data streams from the onboard Intel RealSense RGB-D camera. Computer vision OpenCV techniques identify ArUco markers placed at known locations within the robot’s operational space, precisely computing their relative positions to recalibrate and correct the estimated pose provided by the relative localization subsystem.
+
+
+\subsection*{Landmark-based pose estimation}
+
+The functionality processes images from the camera and detects ArUco markers for localization. If sufficient time has passed since the last update, the function extracts marker poses and updates the robot's position by triangulation. Each detected marker provides an estimate of the robot's pose relative to the marker. The detection is performed using:
+
+\begin{equation}
+\text{cv::aruco::detectMarkers}(\text{image}, \text{dictionary}, \text{marker\_corners}, \text{marker\_ids}, \text{parameters}).
+\end{equation}
+
+If markers are detected, their poses are estimated using:
+\begin{equation}
+\text{cv::aruco::estimatePoseSingleMarkers}(\text{marker\_corners}, \text{marker\_size}, \text{camera\_matrix}, \text{dist\_coeffs}, \text{rvecs}, \text{tvecs}).
+\end{equation}
+
+Here, \( \textbf{rvecs} \) and \( \textbf{tvecs} \) represent the rotation and translation vectors of the markers with respect to the camera.
+
+\subsubsection*{Transformation to the global frame}
+
+Each detected marker has a known position in the environment reference frame \((X_m, Y_m, \Theta_m)\), and its pose relative to the camera is given by \((X_c, Y_c, \Theta_c)\). The robot’s absolute position is computed by applying a coordinate transformation:
+
+\begin{equation}
+X_{\text{robot}} = X_m + \cos(\Theta_m) X_c - \sin(\Theta_m) Y_c
+\end{equation}
+
+\begin{equation}
+Y_{\text{robot}} = Y_m + \sin(\Theta_m) X_c + \cos(\Theta_m) Y_c
+\end{equation}
+
+\begin{equation}
+\Theta_{\text{robot}} = \Theta_m + \Theta_c
+\end{equation}
+
+The resulting orientation is normalized to lie within \( (-180^\circ, 180^\circ) \):
+
+\begin{equation}
+\Theta_{\text{robot}} = \left( (\Theta_{\text{robot}} + 180) \mod 360 \right) - 180.
+\end{equation}
+
+% \subsubsection{Weighted Pose Averaging}
+
+% Since multiple markers can be detected, the estimated robot poses are combined using weighted averaging. The weight assigned to each marker is inversely proportional to its distance from the camera:
+
+% \begin{equation}
+% w_i = \frac{1}{d_i + \epsilon}, \quad \text{where} \quad d_i = \sqrt{X_c^2 + Y_c^2}.
+% \end{equation}
+
+% The final estimated pose is computed as:
+
+% \begin{equation}
+% X_{\text{final}} = \frac{\sum w_i X_{\text{robot},i}}{\sum w_i}, \quad
+% Y_{\text{final}} = \frac{\sum w_i Y_{\text{robot},i}}{\sum w_i}, \quad
+% \Theta_{\text{final}} = \frac{\sum w_i \Theta_{\text{robot},i}}{\sum w_i}.
+% \end{equation}
+
+\subsubsection*{Pose update condition}
+
+To avoid unnecessary updates, the robot pose is only updated if the movement exceeds a given threshold (reset interval):
+
+\begin{equation}
+d_{\text{moved}} = \sqrt{(X_{\text{final}} - X_{\text{last}})^2 + (Y_{\text{final}} - Y_{\text{last}})^2}
+\end{equation}
+
+\begin{equation}
+\theta_{\text{moved}} = |\Theta_{\text{final}} - \Theta_{\text{last}}|.
+\end{equation}
+
+If \( d_{\text{moved}} \) is below the movement threshold and \( \theta_{\text{moved}} \) is below the rotation threshold, the update is skipped. Otherwise, the updated pose is published as a ROS \texttt{PoseStamped} message:
+
+\begin{equation}
+\theta_{\text{quat}} = \text{tf::createQuaternionMsgFromYaw} \left( \Theta_{\text{final}} \times \frac{\pi}{180} \right).
+\end{equation}
+
+
+
+\begin{algorithm}
+\caption{Landmark-Based Absolute Localization (Triangulation)}
+\begin{algorithmic}[1]
+\State \textbf{Initialization}
+\State \textbf{Inputs:}
+\State \quad Camera's intrinsic parameters (e.g., $K$, $D$) — camera matrix and distortion coefficients.
+\State \quad Known positions of ArUco markers in the global reference frame (LAB frame).
+\State \quad Pose estimates from odometry.
+\State \quad Detection parameters for ArUco markers (e.g., marker size, dictionary).
+\State \textbf{Outputs:}
+\State \quad Estimated robot pose in the global frame: $(X_{\text{robot}}, Y_{\text{robot}}, \Theta_{\text{robot}})$.
+
+\State \textbf{Detect ArUco Markers in the Image}
+\State Use OpenCV to detect the ArUco markers from the current camera image.
+\State \textbf{Input:} Camera image $I(t)$.
+\State \textbf{Output:} List of detected marker IDs $\text{marker\_ids}$ and their corner positions $\text{marker\_corners}$.
+
+\State \textbf{Estimate Marker Pose Relative to Camera}
+\For{each detected marker}
+    \State Use the camera pose estimation algorithm from OpenCV to estimate the pose of the marker relative to the camera:
+    \[
+    T_m = \begin{bmatrix}
+    R_m & t_m \\
+    0 & 1
+    \end{bmatrix}
+    \]
+    \State $R_m$: Rotation matrix (from marker’s orientation to camera)
+    \State $t_m$: Translation vector (position of marker relative to camera)
+    \State Use OpenCV’s $\text{cv::aruco::estimatePoseSingleMarkers()}$ to get $R_m$ and $t_m$.
+\EndFor
+
+\State \textbf{Convert Marker Pose to Global Frame}
+\For{each detected marker}
+    \State Use the marker's known position in the global frame and the estimated pose relative to the camera to calculate the robot's global position.
+    \State Retrieve the marker position in the global LAB frame: $(X_m, Y_m, \Theta_m)$.
+    \State Retrieve the camera-relative pose from $\text{estimatePoseSingleMarkers()}$: $(X_c, Y_c, \Theta_c)$.
+    \State Transform the marker's pose to the global frame using the following equations:
+    \[
+    X_{\text{robot}} = X_m + \cos(\Theta_m) \cdot X_c - \sin(\Theta_m) \cdot Y_c
+    \]
+    \[
+    Y_{\text{robot}} = Y_m + \sin(\Theta_m) \cdot X_c + \cos(\Theta_m) \cdot Y_c
+    \]
+    \[
+    \Theta_{\text{robot}} = \Theta_m + \Theta_c
+    \]
+    \State Where:
+    \State $X_{\text{robot}}, Y_{\text{robot}}$ are the robot's estimated position in the global frame.
+    \State $\Theta_{\text{robot}}$ is the robot’s orientation (in degrees).
+\EndFor
+
+\algstore{part1}
+\end{algorithmic}
+\end{algorithm}
+
+\clearpage
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\algrestore{part1}
+
+\State \textbf{Normalize the Robot’s Orientation}
+\State Ensure the robot’s orientation $\Theta_{\text{robot}}$ is in the range $[-180^\circ, 180^\circ]$:
+\[
+\Theta_{\text{robot}} = \text{mod}(\Theta_{\text{robot}} + 180^\circ, 360^\circ) - 180^\circ
+\]
+
+\State \textbf{Update Pose at Reset Interval}
+\State Threshold check: Ensure the robot has moved sufficiently before updating its pose:
+\[
+d_{\text{moved}} = \sqrt{(X_{\text{robot}}^{\text{final}} - X_{\text{last}})^2 + (Y_{\text{robot}}^{\text{final}} - Y_{\text{last}})^2}
+\]
+\[
+\Delta\Theta = |\Theta_{\text{robot}}^{\text{final}} - \Theta_{\text{last}}|
+\]
+\If{$d_{\text{moved}} < \text{movement\_threshold}$ and $\Delta\Theta < \text{rotation\_threshold}$}
+    \State Skip the update.
+\EndIf
+
+\State \textbf{Publish the Updated Pose}
+\If{the pose has changed significantly}
+    \State Update the robot’s last pose:
+    \State $X_{\text{last}} = X_{\text{robot}}^{\text{final}}$
+    \State $Y_{\text{last}} = Y_{\text{robot}}^{\text{final}}$
+    \State $\Theta_{\text{last}} = \Theta_{\text{robot}}^{\text{final}}$
+    \State Publish the updated robot pose
+\EndIf
+
+\State \textbf{Repeat}
+\end{algorithmic}
+\end{algorithm}
+
+
+\newpage
+
+
+\section{Implementation}
+%===============================================================
+The \texttt{robotLocalization} ROS node is the core implementation of the module. It processes sensor inputs and outputs the robot’s pose in real time. The configuration file specifies parameters such as the platform, camera selection, and reset interval for absolute pose estimation. The implementation adheres to coding standards outlined in \href{https://cssr4africa.github.io/deliverables/CSSR4Africa_Deliverable_D3.2.pdf}{\textcolor{blue}{Deliverable D3.2}}, ensuring maintainability and consistency.
+
+\subsection{File Organization}
+The source code for executing the robot localization is structured into three primary components: robotLocalizationImplementation, robotLocalizationApplication, and robotLocalizationInterface. The robotLocalizationImplementation component outlines all the essential functionality required for localizing the robot's pose, both for relative and absolute pose estimation. This component also parse various files necessary for the robot localization functionality such as configuration files and topic files.
+
+The robotLocalizationApplication component invokes those functions from the robotLocalizationImplementation for the execution process of the localization node. The robotLocalizationInterface defines the abstract layer with functions and variables declaration that facilitate communication between the application and implementation layers, thereby ensuring modularity and consistency in the codebase.
+
+The file structure of the robot localization node in the \texttt{cssr\_system} package is organized as below:
+
+\vspace*{0.5em}
+
+\renewcommand*\DTstyle{\ttfamily}
+\dirtree{%
+.1 cssr\_system.
+.2 robotLocalization.
+.3 config.
+.4 robotLocalizationConfiguration.ini.
+.3 data.
+.4 pepperTopics.dat.
+.3 include.
+.4 robotLocalization.
+.5 robotLocalizationInterface.h.
+.3 launch.
+.4 robotLocalizationLaunchRobot.launch.
+.3 src.
+.4 robotLocalizationApplication.cpp.
+.4 robotLocalizationImplementation.cpp.
+.3 srv.
+.4 SetPose.srv.
+.3 README.md.
+.3 CMakeLists.txt.
+}
+
+\subsection{Configuration File}
+The operation of the robotLocalization node is determined by the contents of the configuration file that contains a list of key-value pairs as shown in Table 1 below. 
+
+The configuration file is named \texttt{robotLocalizationConfiguration.ini}
+
+\begin{table}[H]
+\centering
+\caption{Configuration parameters for robot localization node}
+\label{tab:robotLocalizationConfiguration}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Key} & \textbf{Values} & \textbf{Effect} \\ \hline
+\verb|camera| & \verb|FrontCamera, RGBRealSense| & Specifies which RGB camera to use. \\ \hline
+\verb|resetInterval| & \verb|<number>| & Specifies the distance that can be travelled in centimetres before the relative pose estimate is reset using the absolute pose estimate. \\ \hline
+\verb|robotTopics| & \verb|pepperTopics.dat| & Specifies the filename of the file in which the physical Pepper robot sensor and actuator topic names are stored. \\ \hline
+\verb|verboseMode| & \verb|true, false| & Specifies whether diagnostic data is to be printed to the terminal and diagnostic images are to be displayed in OpenCV windows. \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Input File}
+The robot localization node does not read from an input data file.
+
+\subsection*{Output File}
+The robot localization node does not write to an output data file. The output of the node is returned as publishing the pose estimate to the \texttt{/robotLocalization/pose} topic, printing the pose estimate as message on the screen, and landmarks boundary visualization displayed in OpenCV window, if in verbose mode. 
+
+\subsection*{Topics File}
+A list of topics for the robot is stored in the topics file. The topics file are written in the .dat file format. The data file is written as key-value pairs wherein the key specifies the actuators and the value specifies the associated topics. The topics file for the robot is named \texttt{robotTopics.dat}
+
+\subsection*{Launch File}
+The launch file \texttt{robotLocalizationLaunchRobot.launch} initializes the robot localization node, the RealSense camera node, and Pepper robot's sensors based on specified configurations. It declares several parameters configured to match your network settings and the robot's configuration, as specified in deliverable \href{https://cssr4africa.github.io/deliverables/CSSR4Africa_Deliverable_D3.3.pdf}{\textcolor{blue}{D3.3 Software Installation Manual}}.
+
+\subsection*{Topics Subscribed}
+This node subscribes to six topics: two RGB camera sensor topics (one published by the Pepper robot, one by the RealSense camera), one depth camera topic (by the RealSense camera), an odometry topic, and inertial measurement unit (IMU) topic, and a joint states topic for the head yaw angle. These are specified in the files identified by the robotTopics key-value pair in the configuration file.
+
+\begin{table}[H]
+\centering
+\caption{Topics the robot localization node subscribes}
+\label{tab:topics subscribed}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Topic} & \textbf{Sensor} & \textbf{Platform} \\ \hline
+\verb|/naoqi_driver/camera/front/image_raw| & \verb|FrontCamera| & Physical robot \\ \hline
+\verb|/camera/color/image_raw| & \verb|RGBRealSense| & Intel RealSense \\ \hline
+\verb|/camera/depth/image_rect_raw| & \verb|DepthRealSense| & Intel RealSense \\ \hline
+\verb|/naoqi_driver/odom| & \verb|Odometry| & Physical robot \\ \hline
+\verb|/naoqi_driver/imu/base| & \verb|IMU| & Physical robot \\ \hline
+\verb|/joint_states| & \verb|Head Yaw| & Physical robot \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Topics Published}
+The \texttt{robotLocalization} node publishes to topics as listed in Table 3 below.
+
+\begin{table}[H]
+\centering
+\caption{Topics published by the robot localization node.}
+\label{tab:topics published}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Topic} & \textbf{Node} & \textbf{Platform} \\ \hline
+\texttt{/robotLocalization/pose} & \begin{tabular}{l}
+     \verb|gestureExecution| \\
+     \verb|overtAttention| \\
+     \verb|robotNavigation| \\
+     \verb|behaviorController| \\
+\end{tabular} & Physical robot \\ \hline
+\end{tabularx}
+\end{table}
+
+\subsection*{Services Supported}
+This node provides and advertizes a server for a service \texttt{/robotLocalization/reset\_pose} to reset the pose of the robot using absolute pose estimation. It uses a generic msg, Reset.msg with just one field string, with a value “reset”. If the reset request is successful, the service response is “1”; if it is unsuccessful, it is “0”.
+
+\begin{table}[H]
+\centering
+\caption{Services supported}
+\label{tab:services supported}
+\begin{tabularx}{\textwidth}{|l|l|X|}
+\hline
+\textbf{Service} & \textbf{Message Value} & \textbf{Effect} \\ \hline
+\verb|/robotLocalization/reset_pose| & \texttt{reset} & Reset robot pose. \\ \hline
+\end{tabularx}
+\end{table}
+
+
+\newpage
+
+
+\section{Running the Robot Localization Node}
+%===============================================================
+
+Running the \texttt{robotLocalization} node requires modules including a set of clearly defined ROS launch files and configuration parameters. To initiate the robot localization module on the Pepper robot hardware, you must ensure that all necessary sensor drivers and ROS components are correctly installed as outlined in deliverable \href{https://cssr4africa.github.io/deliverables/CSSR4Africa_Deliverable_D3.3.pdf}{\textcolor{blue}{D3.3 Software Installation Manual}}.
+
+\begin{tcolorbox}[colback=yellow!10, colframe=black, title= \textbf{NOTE}]
+Ensure that the RealSense camera is properly connected to the Pepper robot and operational. To visualize its feed, you can run:  
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+rosrun image_view image_view image:=/camera/color/image_raw
+\end{lstlisting}
+
+To visualize the RealSense camera calibration using ROS (intrinsic parameters), run:
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+sudo apt-get install ros-<your_ros_distro>-camera-calibration
+\end{lstlisting}
+replace $<your\_ros\_distro>$ with your ROS distribution, and:
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.024 image:=/camera/color/image_raw camera:=/camera/color
+\end{lstlisting}
+\end{tcolorbox}
+
+
+\subsection*{Launching the localization node}
+
+Launching the node is achieved using the launch file \texttt{robotLocalizationLaunchRobot.launch}. This launch file encapsulates all parameters, node configurations, and sensor initializations required for the localization system’s full functionality. To execute the launch file, users should run the following command in a terminal:
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+    roslaunch robotLocalization robotLocalizationLaunchRobot.launch
+\end{lstlisting}
+
+The launch file initializes the localization node alongside ROS subscribers and publishers necessary for sensor data acquisition and localization outputs.
+
+\subsection*{Verifying successful startup and running}
+
+To verify successful startup and running of the node, users should monitor the terminal outputs, looking specifically for initialization confirmation messages from the ROS topic \texttt{/robotLocalization/pose} and visual data topic from the RealSense camera system node in an OpenCV window. 
+
+If the node runs successfully, the message \texttt{"robot localization node running"} is printed to the terminal at every interval. When the absolute pose estimate is updated, the following message \texttt{"absolute pose updated successfully:<x\_position> <y\_position> <theta>"} is printed to the terminal.
+
+To view the pose estimate of the robot in a continuous stream, visualize the topic by running:
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+    rostopic echo /robotLocalization/pose
+\end{lstlisting}
+
+
+
+
+% In RViz, users can subscribe to the \texttt{/robotLocalization/pose} topic to visually monitor the robot’s estimated position and orientation within the global coordinate system. Additionally, the annotated RGB-D camera frames showing detected ArUco markers can also be subscribed to and displayed within RViz, providing clear visual feedback to confirm localization accuracy and reliability.
+
+% \subsection{Troubleshooting and Documentation}
+
+% Detailed troubleshooting guidance is provided within the user manual documentation, helping users quickly identify and resolve common issues such as sensor misalignment, missing configuration parameters, or incorrect ROS topic connections. This comprehensive guidance ensures efficient deployment and operation across diverse scenarios, ultimately supporting robust performance of the Pepper robot.
+
+
+\newpage
+
+
+\section{Unit Testing}
+%===============================================================
+
+The unit testing is designed to validate all individual components and integrated subsystems of the robot localization process, and adhering to the standards outlined in Deliverable D3.2 Software Engineering Standards Manual and Deliverable D3.5 System Integration and Quality Assurance.
+
+The file structure of the robot localization unit test is as follows.
+
+\vspace*{0.5em}
+
+\renewcommand*\DTstyle{\ttfamily}
+\dirtree{%
+.1 unit\_test.
+.2 robotLocalizationTest.
+.3 config.
+.4 robotLocalizationTestConfiguration.ini.
+.3 data.
+.4 testTopics.dat.
+.3 include.
+.4 robotLocalizationTest.
+.5 robotLocalizationTestInterface.h.
+.3 launch.
+.4 robotLocalizationTest.launch.
+.3 src.
+.4 robotLocalizationTestApplication.cpp.
+.4 robotLocalizationTestImplementation.cpp.
+.3 srv.
+.4 SetPose.srv.
+.3 README.md.
+.3 CMakeLists.txt.
+}
+
+
+To verify the correct acquisition and preprocessing of sensor data inputs, isolated tests were conducted. Individual ROS subscribers for odometry (\texttt{/pepper\_robot/odom}) and camera inputs (\texttt{/camera/color\allowbreak/image\_raw} and \texttt{/camera/depth/image\_rect\_raw}) were tested. 
+
+Test scenarios included simulated sensor data streams with known properties to ensure each data channel's correct parsing, synchronization, and preprocessing. These tests ensured that each subscriber reliably acquired data at expected rates and correctly handled sensor-specific anomalies such as data dropouts or inconsistent message formats.
+
+Tests were also performed on the visual landmark detection subsystem. Introducing several ArUco markers placed at known positions in the environment and the camera's ability to detect any in its range of view to compute the robot's pose.
+
+
+\begin{table}[H]
+\centering
+\caption{Test cases}
+\label{tab:test_cases}
+\begin{tabularx}{\textwidth}{|l|X|}
+\hline
+\textbf{Test Case} & \textbf{Description} \\ \hline
+odometry & Verifies that the odometry data is published by the Pepper robot and the subscriber node is able to subscribe to the topic. \\ \hline
+cameraInputs & Verifies that the RealSense camera system publishes the camera topics and the camera feeds can be visualized in an OpenCV window. \\ \hline
+detectArucoMarkers & Verifies that the ArUco markers in the environment can be detected and the pose can be estimated based on the ArUco markers in the camera's field of view. \\ \hline
+updateAbsolutePose & Verifies that the robot's pose is correctly updated at specified intervals on the \texttt{/robotLocalization/pose} topic. \\ \hline
+\end{tabularx}
+\end{table}
+
+The results of the unit tests falls under success or failure conditions. If a test is successful, a success message is logged, otherwise, a failure message is logged.
+
+
+
+\newpage
+\bibliographystyle{unsrt}
+%================================================================
+\bibliography{references.bib} % REPLACE with correct filename
+\addcontentsline{toc}{section}{References}
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows:
+\blank
+Ibrahim Olaide Jimoh, Carnegie Mellon University Africa.
+\blank
+David Vernon, Carnegie Mellon University Africa.
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft. \\
+Ibrahim Olaide Jimoh \\
+15 March 2025.
+
+\end{description}
+
+\end{document}

@@ -1,0 +1,611 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+
+\usepackage{ragged2e}
+\usepackage{dirtree}
+\usepackage{listings}
+\usepackage{textcomp}
+\usepackage{multicol}
+\usepackage{cprotect}
+\usepackage{xcolor}
+%\usepackage[normalem]{ulem}
+%\usepackage{verbatim} % for comments
+
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D3.4}                    
+\title{D3.4 System Integration and Quality Assurance Manual}
+
+\leadpartner{Carnegie Mellon University Africa}                         
+\partner{}                          
+
+\revision{1.3}                  
+\deliverabledate{31/03/2024}    
+\submissiondate{01/11/2023}   
+\revisiondate{13/09/2024}   
+\disseminationlevel{PU}
+\responsible{D. Vernon }            
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+ 
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+ 
+Deliverable D3.4 sets out the procedures used in CSSR4Africa to validate and test software developed by the partners prior to integration into the CSSR4Africa  software repository.   It is, in essence,  is a check-list of the {\em mandatory}  standards set out in Deliverable D3.2 and software must satisfy all these checks before it can be integrated.  
+
+Developers can submit their software by sending it by email in a zip file to aakinade@andrew.cmu.edu and vernon@cmu.edu, with CSSR4Africa, the ROS package name, and the ROS node name of the component being submitted in the subject line,\\ e.g., {\small \verb+CSSR4Africa pepper_interface_tests sensorTest+}.
+
+The system integration team at CMU-Africa will validate the software against the check-list in this deliverable, compiling the code, and running the unit test application supplied with the submission.  If the component satisfies all the checks and the test runs successfully, the ROS node will then be uploaded to the CSSR4Africa GitHub software repository.
+
+The complete CSSR4Africa  software system will also be subject to quality assurance procedures, including regression tests and system tests.  
+
+\newpage
+ 
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+ 
+%===========================================
+
+\section{Files and Directories}
+%===============================================================
+
+Refer to Deliverable D3.2, Appendix A (Mandatory Standards for  File Organization), for a definition of the standards on which this checklist is based.
+
+ \subsection{C/C++Programming Language}
+\begin{description}
+\item[\checkbox] Files for a single component are stored in a  directory or subdirectory named after the ROS package or node (in the case of the \verb+cssr_system+ and \verb+unit_tests+ package) in which it is to be integrated. Refer to Deliverable D3.1 System Architecture for details of the ROS package names and the associated ROS nodes.
+
+\item[\checkbox] This directory has between four and seven sub-directories, depending on the software functionality:  {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/<package name>+}, {\small \verb+launch+}, {\small \verb+msg+},  {\small \verb+src+}, and {\small \verb+srv+}; with {\small \verb+config+},   {\small \verb+data+},   {\small \verb+include/<package name>+}, and  {\small \verb+src+} necessarily present.
+
+\item[\checkbox] The  {\small \verb+config+} directory contains at least one of two files, named as follows.
+
+\begin{description}
+\item[\checkbox] {\small \verb+<componentName>Configuration.ini+}  
+\item[\checkbox]  {\small \verb+<componentName>Input.ini+}  
+\item[\checkbox] The configuration file {\small \verb+<componentName>Configuration.ini+} contains the key-value pairs that set the component parameters.  
+\item[\checkbox] Each key-value pair is written on a separate line.
+\end{description} 
+
+\item[\checkbox] The  {\small \verb+include/<package name>+} directory contains at least one file, named as follows.
+
+\begin{description}
+\item[\checkbox] {\small \verb+<componentName>Interface.h+}  
+\end{description} 
+
+\item[\checkbox] The  {\small \verb+launch+} directory contains three files, named as follows.
+\begin{description}
+\item[\checkbox] {\small \verb+<componentName>LaunchRobot.launch+}  
+\item[\checkbox] {\small \verb+<componentName>LaunchSimulator.launch+}  
+\item[\checkbox] {\small \verb+<componentName>LaunchTestHarness.launch+} 
+\end{description} 
+
+
+\item[\checkbox] The  {\small \verb+src+} directory contains at least two source files, named as follows.
+\begin{description}
+\item[\checkbox] {\small \verb+<componentName>Application.cpp+}  
+\item[\checkbox]  {\small \verb+<componentName>Implementation.cpp+}  
+\end{description} 
+
+\item[\checkbox] The package directory or node subdirectory contains  a {\small \verb+README.md+} file with  instructions on how to run the test 
+%{\color{blue}in the case of \verb+unit_tests+ or run the node in the case of \verb+cssr_system+}.
+\item[\checkbox] The package directory contains  a {\small \verb+CMakeLists.txt+} build file.
+\item[\checkbox] The package directory contains  a {\small \verb+package.xml+} manifest file (if it is a node within a package, e.g., \verb+cssr_system+ or \verb+unit_tests+ package, there is no {\small \verb+package.xml+} manifest file).
+
+\end{description}
+
+ 
+\subsection{Python Programming Language}
+\begin{description}
+\item[\checkbox] Files for a single component are stored in a directory or subdirectory named after the ROS package or node (in the case of the \verb+cssr_system+ and \verb+unit_tests+ package) in which it is to be integrated. Refer to Deliverable D3.1 System Architecture for details of the ROS package names and the associated ROS nodes.
+
+\item[\checkbox] This directory has between four and seven sub-directories depending on the software functionality:  {\small \verb+config+},   {\small \verb+data+}, {\small \verb+launch+}, {\small \verb+msg+},  {\small \verb+model+}, {\small \verb+src+}, and {\small \verb+srv+}; with {\small \verb+config+},   {\small \verb+data+}, and  {\small \verb+src+} mandatorily present.
+
+\item[\checkbox] The  {\small \verb+config+} directory contains at least one of two files, named as follows.
+
+\begin{description}
+\item[\checkbox] {\small \verb+<component_name>_configuration.ini+}  
+\item[\checkbox]  {\small \verb+<component_name>_input.ini+}  
+\item[\checkbox] The configuration file {\small \verb+<component_name>_configuration.ini+}  contains the key-value pairs that set the component parameters.  
+\item[\checkbox] Each key-value pair is written on a separate line.
+\end{description} 
+
+%\item[\checkbox] The  {\small \verb+include/<package name>+} directory contains {\color{blue}at least} one file, named as follows.
+%
+%\begin{description}
+%\item[\checkbox] {\small \verb+<component_name>_interface.h+}  
+%\end{description} 
+
+\item[\checkbox] The  {\small \verb+launch+} directory contains three files, named as follows.
+\begin{description}
+\item[\checkbox] {\small \verb+<component_name>_launch_robot.launch+}  
+\item[\checkbox] {\small \verb+<component_name>_launch_simulator.launch+}  
+\item[\checkbox] {\small \verb+<component_name>_launch_test_harness.launch+} 
+\end{description} 
+
+
+\item[\checkbox] The  {\small \verb+src+} directory contains at least two source files, named as follows.
+\begin{description}
+\item[\checkbox] {\small \verb+<component_name>_application.py+}  
+\item[\checkbox]  {\small \verb+<component_name>_implementation.py+}  
+\end{description} 
+
+\item[\checkbox] The package directory or node subdirectory contains  a {\small \verb+README.md+} file with  instructions on how to run the test.
+\item[\checkbox] The package directory contains  a {\small \verb+CMakeLists.txt+} file specifying message generation and service building, if applicable.
+\item[\checkbox] The package directory contains  a {\small \verb+package.xml+} manifest file (if it is a node within a package, e.g. \verb+\cssr_system+ or \verb+unit_tests+ package, there is no {\small \verb+package.xml+} manifest file).
+\item[\checkbox] The package directory or node subdirectory contains  a {\small \verb+requirements.txt+} file with  the dependencies (and their versions) required to be installed for proper functionality of the node.
+\end{description}
+
+ 
+\newpage
+\section{Internal Source Code Documentation}
+%===============================================================
+\label{appendix:documentation_standards}  
+ 
+Refer to Deliverable D3.2, Appendix B (Mandatory Standards for Internal Source Code Documentation), for a definition of the standards on which this checklist is based.
+
+ \subsection{C/C++Programming Language}
+All source files contain a documentation comment that gives the copyright notice, as follows.
+{\small \begin{verbatim}
+/* <filename> <one line to identify the nature of the file>
+ *
+ * Author:
+ * Date:
+ * Version:
+ * 
+ * Copyright (C) 2023 CSSR4Africa Consortium
+ * 
+ * This project is funded by the African Engineering and Technology Network (Afretec) 
+ * Inclusive Digital Transformation Research Grant Programme. 
+ *
+ * Website: www.cssr4africa.org
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY.
+ */
+\end{verbatim} }
+ 
+\begin{description}
+
+\item[\checkbox] {\small \verb+<componentName>Application.cpp+}  
+
+\item[\checkbox]  {\small \verb+<componentName>Implementation.cpp+}  
+
+\item[\checkbox] {\small \verb+<componentName>Interface.h+}   
+
+\end{description} 
+ \blank
+~
+\blank
+
+\newpage
+\noindent The {\small \verb+<componentName>Application.cpp+} file contains a documentation comment with the following sections:
+
+\begin{description}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+/* <componentName>Application.cpp <one line to identify the nature of the file>
+*
+* <detailed functional description>
+*
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Libraries
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Parameters 
+*
+* Command-line Parameters
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Configuration File Parameters
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Subscribed Topics and Message Types
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}                    
+ * Published Topics and Message Types
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Input Data Files
+*
+* <componentName>Input.dat
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Output Data Files
+*
+* <componentName>Output.dat
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Configuration Files
+*
+* <componentName>Configuration.ini 
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Example Instantiation of the Module
+*
+* rosrun <componentName> __name:=<alternativeComponentName> ...
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Author:  <name of author>, <author institute>
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Email:   <preferred email address>
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Date:
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+ * Version:
+\end{verbatim}}
+
+
+\end{description}
+
+\newpage
+\subsection{Python Programming Language}
+All source files contain a documentation comment that gives the copyright notice, as follows.
+{\small \begin{verbatim}
+"""
+    <filename> <one line to identify the nature of the file>
+
+    Author:
+    Date:
+    Version:
+
+    Copyright (C) 2023 CSSR4Africa Consortium
+ 
+    This project is funded by the African Engineering and Technology Network (Afretec) 
+    Inclusive Digital Transformation Research Grant Programme. 
+
+    Website: www.cssr4africa.org
+
+    This program comes with ABSOLUTELY NO WARRANTY.
+
+"""
+\end{verbatim} 
+ 
+\begin{description}
+
+\item[\checkbox] {\small \verb+<component_name>_application.py+}  
+
+\item[\checkbox]  {\small \verb+<component_name>_implementation.py+}  
+
+\end{description} 
+ \blank
+~
+\blank
+
+\newpage
+\noindent The {\small \verb+<component_name>_application.py+} file contains a documentation comment with the following sections:\
+
+\verb+"""+
+
+\begin{description}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  <component_name>_application.py <one line to identify the nature of the file>
+
+ <detailed functional description>
+
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Libraries
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Parameters 
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Command-line Parameters
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Configuration File Parameters
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Subscribed Topics and Message Types
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}                    
+  Published Topics and Message Types
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Input Data Files
+
+ <component_name>_input.dat
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Output Data Files
+
+ <component_name>_output.dat
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Configuration Files
+
+ <component_name>_configuration.ini 
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Example Instantiation of the Module
+
+ rosrun <component_name> __name:=<alternative_component_name> ...
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Author:  <name of author>, <author institute>
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Email:   <preferred email address>
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Date:
+\end{verbatim}}
+
+\item[\checkbox] 
+ {\small 
+\begin{verbatim}
+  Version:
+\end{verbatim}}
+
+
+\end{description}
+}
+
+ 
+ 
+ \newpage
+\section{Component Unit Testing}
+%=============================================================
+\label{section:unit_testing}
+
+\subsection{C/C++Programming Language}
+
+\begin{description}
+\item[\checkbox] A unit test application named {\small \verb+<componentName>LaunchRobot.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] A unit test application named {\small \verb+<componentName>LaunchSimulator.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] A unit test application named {\small \verb+<componentName>LaunchTestHarness.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchRobot.launch+} file  launches the component being tested.
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchSimulator.launch+} file  launches the component being tested.
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchTestHarness.launch+} file  launches the component being tested.
+
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchRobot.launch+} file  connects the component a data source and a data sink on the physical robot, and produces the expected result as set out in the  {\small \verb+README.txt+}  file.   
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchSimulator.launch+} file  connects the component a data source and a data sink on the simulator.   
+
+\item[\checkbox] The {\small \verb+<componentName>LaunchTestHarness.launch+} file  connects the component a data source and a data sink using a driver and a stub.   
+
+\item[\checkbox] Unit test instructions are provided in a file named {\small \verb+README.md+} in the package directory. 
+
+
+\begin{description}
+
+\item[\checkbox] The instructions  explain how the  communication and computation functionality are validated by describing the (sink) output data that will be produced from the (source) input data.  
+
+\item[\checkbox] The instructions  explain how the  configuration functionality is validated by describing what changes in behaviour will occur if the values for the component parameters in the component configuration ({\small \verb+.ini+}) file are altered.
+
+\end{description}
+
+\end{description} 
+
+\newpage
+\subsection{Python Programming Language}
+
+\begin{description}
+\item[\checkbox] A unit test application named {\small \verb+<component_name>_launchRobot.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] A unit test application named {\small \verb+<component_name>_launchSimulator.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] A unit test application named {\small \verb+<component_name>_launch_test_harness.launch+} is provided in the {\small \verb+launch+} directory. 
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_robot.launch+} file  launches the component being tested.
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_simulator.launch+} file  launches the component being tested.
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_test_harness.launch+} file  launches the component being tested.
+
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_robot.launch+} file  connects the component a data source and a data sink on the physical robot, and produces the expected result as set out in the  {\small \verb+README.txt+}  file.   
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_simulator.launch+} file  connects the component a data source and a data sink on the simulator.   
+
+\item[\checkbox] The {\small \verb+<component_name>_launch_test_harness.launch+} file  connects the component a data source and a data sink using a driver and a stub.   
+
+\item[\checkbox] Unit test instructions are provided in a file named {\small \verb+README.md+} in the package directory. 
+
+
+\begin{description}
+
+\item[\checkbox] The instructions  explain how the  communication and computation functionality are validated by describing the (sink) output data that will be produced from the (source) input data.  
+
+\item[\checkbox] The instructions  explain how the  configuration functionality is validated by describing what changes in behaviour will occur if the values for the component parameters in the component configuration ({\small \verb+.ini+}) file are altered.
+
+\end{description}
+
+\end{description} 
+
+  
+\section{System Testing}
+%=============================================================
+\label{section:system_testing}
+  
+Regression testing refers to the practice of re-running all integration tests periodically to ensure that no  unintentional changes has been introduced during the ongoing development of the CSSR4Africa software release.   These test check for backward compatibility, ensuring that what used to work in the past remains working.    Regression tests will be carried out on all software in the CSSR4Africa release every two months.
+
+ 
+\newpage
+\bibliographystyle{unsrt}
+%================================================================
+\bibliography{cognitive_systems.bib}                                 
+\addcontentsline{toc}{section}{References}
+
+
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+Adedayo Akinade, Carnegie Mellon University Africa.\\     
+David Vernon, Carnegie Mellon University Africa.\\     
+
+  
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft. \\
+David Vernon. \\                               
+1 November 2023.      
+ 
+\item [Version 1.1]~\\
+Updated the standards checklist to accomodate software written in Python programming language. \\
+Created two subsections for C/C++ and Python programming languages in sections 1 (Files and Directories and 2 (Internal Source Code Documentation).\\
+Documented the checklist for Python programming language.\\
+Relaxed the requirements for files and directories in packages because of packages which may not have all in their design. \\
+Updated the submission email to include Adedayo Akinade, who is the current system integrator.\\
+Adedayo Akinade. \\                               
+29 August, 2024.   
+
+\item [Version 1.2]~\\
+Updated the software standards to accomodate standard practice for filenames when using the Python programming language, i.e., using an underscore {\small \verb+_+} to separate words, rather than using camel case, as is the recommended practice with C++.\\
+The same practice is also applied to related files, e.g., input, output, and configuration files.\\
+Added Adedayo Akinade to the list of contributors.\\     
+David Vernon. \\       
+9 September 2024. 
+
+\item [Version 1.3]~\\
+Corrected several errors and omissions in the changes made in the previous version.\\     
+David Vernon. \\       
+13 September 2024. 
+
+\end{description}
+
+\end{document}
+

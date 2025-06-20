@@ -1,0 +1,147 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass{CSSRforAfrica}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{verbatim} % for comments
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D2.3}               
+\title{D2.3 Visitor Behaviour Specification}  
+
+\leadpartner{Carnegie Mellon University Africa}     
+%%\partner{}                               
+
+\revision{1.0}                         
+\deliverabledate{31/12/2023}    
+\submissiondate{31/12/2023}   
+\revisiondate{n/a}   
+\disseminationlevel{PU}
+\responsible{D. Vernon }            
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+ 
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+ 
+Deliverable D2.3 is concerned with the identification of the visitor’s behaviour in the two use-case scenarios described in Deliverable D2.1 Use Case Scenario Definition,  Sections 3 and 4 of which define the visitor actions and describe them in perceptual terms, from the perspective of the robot.  
+
+The purpose of this deliverable is simply to identify the ROS nodes that will provide this sensory functionality. It also identifies the ROS packages in which the ROS nodes will be implemented.  We defer the detailed specification of these nodes to Deliverable D3.1 System Architecture Design, i.e., the exact functional description, the topics to which the nodes will subscribe, the topics on which the nodes will publish messages, the services that will be advertized and served, and the services that will be invoked.
+
+Together with Deliverable D3.1, Deliverable D2.3 provides the requirements for work package WP4 on robot sensing, complementing and augmenting the detailed specification already provided in the work plan.  
+
+The dynamics of the interaction between the visitor and the robot will be specified in Deliverable D5.4.2 Scenario Script Language, and implemented in the {\small \verb+scriptInterpreter+} node in Deliverable D5.4.3 Scenario Script Interpreter.
+
+\newpage
+ 
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+
+
+\section{Implementation of Robot Perception Functions Required for Visitor Interaction}
+%===============================================================
+Deliverable D2.1 Use Case Scenario Definition identifies the set of baseline robot perception functions that are invoked when the robot interacts with the visitor, either in its role as a receptionist or as a lab tour guide.   These functions represent the behaviour of the visitor, and the state of the robot’s environment, as perceived by the robot.   They are summarized in Table \ref{table:nodes} below, along with the corresponding of ROS nodes that implement the perception functions, and the ROS packages in which the nodes are implemented.  Each node has a set of  configuration parameters that, suitably chosen, allows it to effect one or more required robot perceptions. 
+
+Deliverable D3.1 System Architecture Design provides a detailed specification of each ROS node. It specifies the node configuration parameters that are read from the associated configuration file, the data that are read from the associated input file, the data that are written to an associated output file, the ROS topics to which the node subscribes for input,  the ROS topics on which the node publishes output, the services that will be advertized and served, and the services that will be invoked.
+
+The dynamics of the interaction between the visitor and the robot, implemented with these  ROS nodes and those identified in Deliverable D2.2, will be specified in Deliverable D5.4.2 Scenario Script Language, and implemented in the {\small \verb+scriptInterpreter+} node in Deliverable D5.4.3 Scenario Script Interpreter.
+
+\begin{table}[thb]
+\begin{center}
+\begin{tabular}{|l l l|}
+\hline 
+Robot Perceptions                                                    & ROS Package                                                  &  ROS Node       \\
+\hline
+{\small Detect mutual gaze }	           & {\small \verb+cssr_system+}                      & {\small \verb+faceDetection+} \\
+{\small Face detection }                      & {\small \verb+cssr_system+}                      & {\small \verb+faceDetection+}  \\
+{\small Face localization }                   & {\small \verb+cssr_system+}                       &  {\small \verb+faceDetection+}  \\
+{\small Person detection }                   & {\small \verb+cssr_system+}                      & {\small \verb+personDetection+}  \\
+{\small Person distance estimation }    & {\small \verb+cssr_system+}                      & {\small \verb+personDetection+}  \\
+{\small Person localization  }               & {\small \verb+cssr_system+}                      &  {\small \verb+personDetection+}  \\
+{\small Sound detection  }                    & {\small \verb+cssr_system+}                     & {\small \verb+soundDetection+}  \\
+{\small Speech event}                          &  {\small \verb+cssr_system+}    		& {\small \verb+speechEvent+} \\
+{\small Sound localization}                 &  {\small \verb+cssr_system+}                     & {\small \verb+soundDetection+} \\
+{\small Tablet PC event}                      &  {\small \verb+cssr_system+}    		& {\small \verb+tabletEvent+} \\
+\hline
+\end{tabular}
+\end{center}
+\caption{The ROS packages and nodes that implement the robot perceptual functions in the CSSR4Africa  system.}
+\label{table:nodes}
+\end{table}
+ 
+
+\begin{comment}
+\section{ROS Perception Node Specifications}
+%===============================================================
+
+\label{section:perception_nodes} 
+
+\subsection{}
+%--------------------------------------------------------------------------------------
+\end{comment}
+
+
+%\newpage
+%\bibliographystyle{unsrt}
+%================================================================
+%\bibliography{cognitive_systems.bib}                                     % REPLACE with correct filename
+%\addcontentsline{toc}{section}{References}
+
+
+
+\pagebreak
+\section*{Principal Contributors}
+%===============================================================
+\label{contributors}
+\addcontentsline{toc}{section}{Principal Contributors}
+The main authors of this deliverable are as follows (in alphabetical order).
+\blank
+~
+\blank
+David Vernon, Carnegie Mellon University Africa.\\   
+  
+
+\newpage
+\section*{Document History}
+%================================================================
+\addcontentsline{toc}{section}{Document History}
+\label{document_history}
+
+\begin{description}
+
+\item [Version 1.0]~\\
+First draft. \\
+David Vernon. \\                          
+31 December 2023.
+
+\end{description}
+
+\end{document}
+

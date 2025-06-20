@@ -1,0 +1,1218 @@
+% Template LaTeX document for CSSR4Africa Deliverables
+% Adapted from documents prepared by EPFL for the RobotCub project
+% and subsequently by the University of Skövde for the DREAM project
+%
+% DV 28/06/2023
+
+\documentclass[12pt,a4paper]{article}
+
+\usepackage[hidelinks,colorlinks=false]{hyperref}
+\usepackage[titletoc,title]{appendix}
+\usepackage{latexsym}
+\usepackage{dirtree}
+\renewcommand{\DTstyle}{\footnotesize\sffamily}
+\usepackage{tabularx,colortbl}
+
+\newcommand{\blank}{~\\}
+\newcommand{\checkbox}{{~~~~~~~\leavevmode \put(-7,-1.5){  \huge $\Box$  }}}
+
+\usepackage{multicol}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% for questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\usepackage[utf8]{inputenc}
+\usepackage{wasysym}% provides \ocircle and \Box
+\usepackage{enumitem}% easy control of topsep and leftmargin for lists
+\usepackage{color}% used for background color
+\usepackage{forloop}% used for \Qrating and \Qlines
+\usepackage{ifthen}% used for \Qitem and \QItem
+ 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Beginning of questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% 2010, 2012 by Sven Hartenstein
+%% mail@svenhartenstein.de
+%% http://www.svenhartenstein.de
+%%
+%% Please be warned that this is NOT a full-featured framework for
+%% creating (all sorts of) questionnaires. Rather, it is a small
+%% collection of LaTeX commands that I found useful when creating a
+%% questionnaire. Feel free to copy and adjust any parts you like.
+%% Most probably, you will want to change the commands, so that they
+%% fit your taste.
+%%
+%% Also note that I am not a LaTeX expert! Things can very likely be
+%% done much more elegant than I was able to. If you have suggestions
+%% about what can be improved please send me an email. I intend to
+%% add good tipps to my website and to name contributers of course.
+%%
+%% 10/2012: Thanks to karathan for the suggestion to put \noindent
+%% before \rule!
+
+%% \Qq = Questionaire question. Oh, this is just too simple. It helps
+%% making it easy to globally change the appearance of questions.
+%\newcommand{\Qq}[1]{\textbf{#1}}
+\newcommand{\Qq}[1]{{#1}} %DV
+
+%% \QO = Circle or box to be ticked. Used both by direct call and by \Qrating and \Qlist.
+\newcommand{\QO}{$\Box$}% or: $\ocircle$
+
+%% \Qrating = Automatically create a rating scale with NUM steps, like this: 0--0--0--0--0.
+\newcounter{qr}
+\newcommand{\Qrating}[1]{\QO\forloop{qr}{1}{\value{qr} < #1}{---\QO}}
+
+%% \Qline = Again, this is very simple. It helps setting the line
+%% thickness globally. Used both by direct call and by \Qlines.
+\newcommand{\Qline}[1]{\noindent\rule{#1}{0.6pt}}
+
+%% \Qlines = Insert NUM lines with width=\linewith. You can change the \vskip value to adjust the spacing.
+\newcounter{ql}
+\newcommand{\Qlines}[1]{\forloop{ql}{0}{\value{ql}<#1}{\vskip0em\Qline{\linewidth}}}
+
+%% \Qlist = This is an environment very similar to itemize but with
+%% \QO in front of each list item. Useful for classical multiple
+%% choice. Change leftmargin and topsep according to your taste.
+\newenvironment{Qlist}{%
+\renewcommand{\labelitemi}{\QO}
+%\begin{itemize}[leftmargin=1.5em,topsep=-.5em]}{
+\begin{itemize}[leftmargin=1.5em,topsep=0em]}{
+\end{itemize}
+}
+
+%% \Qtab = A "tabulator simulation". The first argument is the
+%% distance from the left margin. The second argument is content which
+%% is indented within the current row.
+\newlength{\qt}
+\newcommand{\Qtab}[2]{
+\setlength{\qt}{\linewidth}
+\addtolength{\qt}{-#1}
+\hfill\parbox[t]{\qt}{\raggedright #2}
+}
+
+%% \Qitem = Item with automatic numbering. The first optional argument
+%% can be used to create sub-items like 2a, 2b, 2c, ... The item
+%% number is increased if the first argument is omitted or equals 'a'.
+%% You will have to adjust this if you prefer a different numbering
+%% scheme. Adjust topsep and leftmargin as needed.
+\newcounter{itemnummer}
+\newcommand{\Qitem}[2][]{% #1 optional, #2 notwendig
+\ifthenelse{\equal{#1}{}}{\stepcounter{itemnummer}}{}
+\ifthenelse{\equal{#1}{a}}{\stepcounter{itemnummer}}{}
+%\begin{enumerate}[topsep=2pt,leftmargin=2.8em]
+\begin{enumerate}[topsep=2pt,leftmargin=1.7em]  %%%% DV
+%\item[\textbf{\arabic{itemnummer}#1.}] #2
+\item[{\arabic{itemnummer}#1.}] #2
+\end{enumerate}
+}
+
+%% \QItem = Like \Qitem but with alternating background color. This
+%% might be error prone as I hard-coded some lengths (-5.25pt and
+%% -3pt)! I do not yet understand why I need them.
+\definecolor{bgodd}{rgb}{0.8,0.8,0.8}
+\definecolor{bgeven}{rgb}{0.9,0.9,0.9}
+\newcounter{itemoddeven}
+\newlength{\gb}
+\newcommand{\QItem}[2][]{% #1 optional, #2 notwendig
+\setlength{\gb}{\linewidth}
+\addtolength{\gb}{-5.25pt}
+\ifthenelse{\equal{\value{itemoddeven}}{0}}{%
+\noindent\colorbox{bgeven}{\hskip-3pt\begin{minipage}{\gb}\Qitem[#1]{#2}\end{minipage}}%
+\stepcounter{itemoddeven}%
+}{%
+\noindent\colorbox{bgodd}{\hskip-3pt\begin{minipage}{\gb}\Qitem[#1]{#2}\end{minipage}}%
+\setcounter{itemoddeven}{0}%
+}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End of questionnaire command definitions %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{document}
+\input{epsf}
+
+%%
+%% SHOULD NOT NEED TO BE CHANGED BEFORE THIS POINT
+%% ------------------------------------------------
+%%
+
+\deliverable{D1.2}                   % REPLACE with correct number
+\title{D1.2 Rwandan Cultural Knowledge}    % REPLACE with correct title
+
+\leadpartner{Carnegie Mellon University Africa }      
+\partner{}                                % INSERT partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
+
+\revision{1.0}                           
+\deliverabledate{31/12/2023}  
+\submissiondate{18/12/2023}  
+\disseminationlevel{PU}
+\responsible{D. Vernon }           % REPLACE with correct  name
+
+
+%%
+%% Create the titlepage
+%%
+
+\maketitle
+
+
+
+\section*{Executive Summary}
+%===============================================================
+\label{executive_summary}
+%%\addcontentsline{toc}{section}{Executive Summary}
+ 
+Deliverable D1.2  comprises a catalogue of general, population-based cultural knowledge in the form of behaviors, activities, actions, and movements that are either culturally sensitive or culturally insensitive. This knowledge will be used to specify the culturally sensitive African modes of social interaction in Deliverable D1.3 and the Africa-centric design patterns in Deliverable D1.4. It will be formalized in the culture knowledge ontology and knowledge base in Deliverable D5.4.1.  The cultural knowledge was gathered by developing a detailed questionnaire and using it  to interview a cross-section of Rwandan citizens in November and December 2023. 
+
+
+
+\newpage
+
+ 
+%\graphicspath{{./figs/}}
+\pagebreak
+\tableofcontents
+\newpage
+
+
+\vspace{1cm}
+\noindent Sincerely, \\
+\\
+Name \underline{\hspace{4cm}} \\
+\\
+Position \underline{\hspace{4cm}} \\
+\\
+Signature \underline{\hspace{4cm}} \\
+\\
+Culturally Sensitive Social Robotics for Africa\\
+Carnegie Mellon University Africa
+\newpage
+
+
+\newpage
+\subsection*{Igice 1: Umwirondoro}
+%==============================================================================
+
+%\Qitem{ \Qq{Amazina:}: \hskip0.4cm \Qline{4cm} }
+
+\Qitem{\QqUfite imyaka ingahe?} \Qtab{3.51cm}{\QO{} Munsi 20 \hskip0.2cm \QO{} 20--29 \hskip0.2cm \QO{} 30--39 \hskip0.2cm \QO{} 40--49 \hskip0.2cm \QO{} 50--59 \hskip0.2cm \QO{} 60 cyangwa hejuru yayo.}}
+
+\Qitem{ \Qq{Uri nde?} \hskip0.05cm \QO{} Gore \hskip0.5cm \QO{} Gabo}
+
+%\Qitem{ \Qq{Uri Umunyarwanda?} \hskip0.46cm \QO{} Yego \hskip1.10cm \QO{} Oya}
+
+ 
+\newpage
+
+\subsection*{Igice 2: Ubumenyi bw’umuco buriho}
+%==============================================================================
+
+Soma neza interuro zikurikira, uhitemo YEGO cyangwa OYA mu gihe wemeranya niyo nteruro. 
+
+
+% Non-verbal Interaction.
+%% Gaze.
+%%% Focus of attention.
+%%%%  Target.
+%%%%  Duration.
+
+\Qitem{ \Qq{Mu buryo bwo kwerekana icyubahiro, umuntu agomba guca bugufi mu gihe asuhuza umuntu mukuru.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu agomba guhagarika akazi yararimo nibyo yakoraga akumva umuntu umushaka icyo amushakira.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+%%% Eye Contact.
+%%%%  Relative Age of Interaction Partner.
+%%%%  Duration.
+
+
+\Qitem{ \Qq{Umuntu agomba guhuza amaso n’umuntu mu gihe bavugana; kudahuza amaso n’umuntu mu gihe muvugana byerekana ko wamusuzuguye kandi utamwitwayeho.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu ntagomba guhuza amaso n’umuntu mukuru. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{9.	Umuntu ntago agomba guhuza amaso n’umuntu umukosoye. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+%% Facial Gesture.
+%%% Lips.
+%%%%  Shape.
+%%%%  Intensity.
+%%% Eyebrow.
+%%%%  Shape.
+%%%%  Intensity.
+%% Hand Gesture.
+%%%%  Shape.
+%%%%  Duration.
+%%% Deictic (Indicating).
+%%%%  Shape.
+%%%%  Meaning.
+
+\Qitem{ \Qq{10.	Umuntu agomba gukoresha ikiganza gifunguye kugirango yerekane abantu nibintu.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Umuntu ntagomba gutunga urutoki umuntu arwerekeza hejuru.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Umuntu ntagomba gukoresha ikiganza cy’ibumoso yerekana ikintu.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+%%% Iconic.
+
+
+%%% Symbolic.
+%%%%  Shape.
+%%%%  Meaning.
+
+
+\Qitem{ \Qq{Umuntu agomba guca bugufi mu gihe asuhuza umuntu mukuru.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Muburyo bwo kwerekana icyubahiro, umuntu agomba gukoresha ibiganza byombi asuhuza umuntu.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu ntagomba gupepera umuntu uri kure; agomba kumwegera akamusuhuza.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Umuntu ntagomba guhereza ikintu umuntu akoresheje ikiganza cy’ibumoso.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Mubyo bwo kwerekana icyubahiro, umuntu agomba kwakira impano akoresheje amaboko abiri kandi akanayakira ari imbere y’umuntu uyimuhaye.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Mubyo bwo kwerekana icyubahiro, Umuntu agomba gusuhuzanya akoresheje ikiganza cy’iburyo akanakoresha ikiganza cy’ibumoso akagishyira ku cy’iburo mugihe asuhuzanya. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+ 
+
+%%% Beat.
+%%%%  Shape.
+%%%%  Intensity.
+
+\Qitem{ \Qq{Gushimira nibya gaciro.  }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+%% Body Gesture.
+%%% Shoulder.
+%%%%  Dropped / Raised.
+%%%%  Intensity.
+%%%%  Speed.
+
+%%% Bow.
+%%%%  Extent.
+%%%%  Speed.
+
+
+\Qitem{ \Qq{Mubyo bwo kwerekana icyubahiro, umuntu agomba guca bugufi mugihe asuhuza umuntu mukuru cyangwa ukuze.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu muto agomba guca bufi mugihe asuhuza umuntu mukuru cyangwa amwaka ubufasha.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+
+%Verbal Interaction.
+%%Words.
+%%% Loudness.
+%%% Speed.
+%%% Intonation.
+%%% Stress.
+%%% Rhythm.
+
+
+
+\Qitem{ \Qq{Imikoranire yose igomba gutangirana indamutso.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu muto agomba gutegereza inyikirizo y’indamutso yahaye umuntu mukuru}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+\newpage
+\Qitem{ \Qq{Nibyiza gukoresha ururimi mwese muhuriyeho. Kandi rukanakoreshwa mu mikoranire mu magambo. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu agomba gukoresha amazina y’icyubahiro mu gihe abwira umuntu.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu agomba kubanza agasuhuza ndetse akanibwira abantu ashaka kubwira ikintu, kuko kuvuga uhita urasa ku ntego bigaragara nko kutubaha. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+ 
+
+\Qitem{ \Qq{Umuntu ntagomba kuvugira mu muntu uri kuvuga.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Umuntu ntagomba kuvugira hejuru mu gihe ambwira umuntu mukuru.}
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+
+\newpage
+
+
+\Qitem{ \Qq{Imyitwarire igomba kwibanda ku guteza imbere imibanire, bitari mu gukora gusa. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+%% Filler Sound.
+%%% Frequency
+%% Pause.
+%%% Frequency
+
+
+% Spatial Interaction.
+
+%%  Standing.
+%%%  Relative Distance.
+%%%  Relative Orientation.
+
+
+%% Approaching.
+%%%  Relative Distance.
+%%%  Relative Orientation.
+%%%  Speed.
+
+
+%% Passing.
+%%%  Single Person.
+%%%% Relative Distance.
+%%%% Speed.
+
+%%%  Group of People.
+%%%% Relative Distance.
+%%%% Speed.
+
+
+\Qitem{ \Qq{Umuntu ntagomba kunyura hagati y’abantu babiri bari kuganira kuko bigaraga nko kutubaha. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+
+%% Accompanying.
+%%%  Relative Distance (+/-).
+ 
+\Qitem{ \Qq{Umuntu ntagomba kugendera kure y’umuntu mukuru,ahubwo muricyo gihe umuntu agomba kugendera gacye kugirango abe kuruhande. }
+\begin{Qlist}
+\item Yego, nibyo.
+\item Oya, ntago aribyo.
+\item Ntago mbizi neza.
+\end{Qlist}
+}
+  
+\newpage
+
+\subsection*{Igice 3: Ubumenyi bushya bwumuco}
+%=============================================================================
+
+% Non-verbal Interaction.
+%--------------------
+
+%% Gaze.
+%--------------------
+%%% Focus of attention.
+%%%%  Target.
+%%%%  Duration.
+
+
+
+%%% Eye Contact.
+%%%%  Relative Age of Interaction Partner.
+%%%%  Duration.
+
+\Qitem{ \Qq{Ni iyihe ntera ugomba gushyiramo mu gihe uri kunyura ku muntu?}
+\begin{Qlist}
+\item Munsi ya 1m
+\item 1 – 2 m.
+\item Hejuru 2 m.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ni gute ugomba kwitwara mu gihe unyuze k’umuntu?}
+\begin{Qlist}
+\item Nta kuntu ugomba kwitara. 
+\item Kubura amaso gato.
+\item kumusuhuza.
+\item Ibindi. Sobanura:.\Qline{5cm}  
+\end{Qlist}
+}
+
+\Qitem{ \Qq{34.	Ni gute ugomba kunyura ku bantu babiri cyangwa benshi?}
+\begin{Qlist}
+\item Kubanyura inyuma.
+\item Kubanyura hagati.
+\item Kubanyura imbere.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Mu gihe uri kwereka inzira umuntu ukuruta,ni hehe ugomba kuba uri hehe cyangwa uhagaze hehe?}
+\begin{Qlist}
+\item kure ho imbere yabo.
+\item Imbere yabo gato.
+\item Iruhande rwabo.
+\item Inyuma yabo gato.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Mu gihe uri kwereka inzira umuntu mungana,ugomba kuba uri hehe cyangwa uhagaze hehe?}
+\begin{Qlist}
+\item kure ho imbere yabo.
+\item Imbere yabo gato.
+\item Iruhande rwabo.
+\item Inyuma yabo gato.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{37.	Mu gihe uri kwereka inzira umuntu muto kuri wowe,ugomba kuba uri hehe cyangwa uhagaze hehe?}
+\begin{Qlist}
+\item kure ho imbere yabo.
+\item Imbere yabo gato.
+\item Iruhande rwabo.
+\item Inyuma yabo gato.
+\end{Qlist}
+}
+ 
+\newpage
+\Qitem{ \Qq{Ni gute ushobora kwita umuntu ukuruta kandi mutanahuye na mbere?}
+\begin{Qlist}
+\item Izina rya mbere.
+\item Izina rya kabiri.
+\item Bwana.
+\item Madamu
+\item Ibindi. sobanura:\Qline{5cm}   
+\end{Qlist}
+}
+
+\Qitem{ \Qq{39.	Ni gute ushobora kwita umuntu muri mu kigero kimwe kandi mutanahuye na mbere?}
+\begin{Qlist}
+\item Izina rya mbere.
+\item Izina rya kabiri.
+\item Bwana.
+\item Madamu
+\item Ibindi. sobanura:\Qline{5cm}  
+\end{Qlist}
+}
+
+
+
+%% Facial Gesture.
+%--------------------
+%%% Lips.
+%%%%  Shape.
+%%%%  Intensity.
+
+%%% Eyebrow.
+%%%%  Shape.
+%%%%  Intensity.
+
+
+\Qitem{ \Qq{Ni gute ushobora kwita umuntu muto kuri wowe kandi mutanahuye na mbere?}
+\begin{Qlist}
+\item Izina rya mbere.
+\item Izina rya kabiri.
+\item Bwana.
+\item Madamu
+\item Ibindi. sobanura:\Qline{5cm}  
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{41.	Ugomba kwitonda ho gato,mbere yo gusubiza ikibazo umuntu akubajije? Niba ari yego, bigomba kumpara igihe kingana gute?}
+\begin{Qlist}
+\item Yego: \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Mu biganiro aho wowe nundi muntu bisaba ko mwaka ijambo kugirango muvuge, ni ngombwa ko werekana ko ushaka kuvuga? Niba ari yego, wabikora ute?}
+\begin{Qlist}
+\\item Yego: \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{43.	Mu gihe uri gusobanurira umuntu ikintu, ni kihe kintu ugomba kubanza kwitaha, urugero, ni hehe ugomba kwibanda ?}
+\begin{Qlist}
+\item Ku kintu urigusobanura.
+\item Mwisura, mu maso cyangwa ku munwa w’umuntu uri gusobanurira..
+\item Cyane cyane umuntu, rimwe na rimwe nikintu. 
+\item Byose icyarimwe umuntu nikintu.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Niba uri gusobanrira umuntikintu, Ni ryari mugomba guhuza amaso?}
+\begin{Qlist}
+\item Nta na rimwe. 
+\item Rimwe.
+\item Akenshi.
+\item Bihoraho.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Mu gihe uri gsobanurira ikintu umuntu, ni ryari mugomba guhuza amaso niba uwo muntu akuruta?}
+\begin{Qlist}
+\item Kenshi na kenshi.
+\item Kenshi.
+\item Nta tandukaniro.
+\end{Qlist}
+}
+	
+\Qitem{ \Qq{Mu gihe uri gsobanurira ikintu umuntu, ni ryari mugomba guhuza amaso niba uwo muntu ari muto kuri wowe?}
+\begin{Qlist}
+\item Kenshi na kenshi.
+\item Kenshi.
+\item Nta tandukaniro.
+\end{Qlist}
+}
+
+\Qitem{ \Qq{Mu gihe uri gusobanurira umuntu ikintu, ni kihe kintu ugomba kubanza kwitaha, urugero, ni hehe ugomba kwibanda?}
+\begin{Qlist}
+\item Ku kintu urigusobanura.  
+\item Mwisura, mu maso cyangwa ku munwa w’umuntu uri gusobanurira.
+\item Cyane cyane umuntu, rimwe na rimwe nikintu
+\item Byose icyarimwe umuntu nikintu.
+\end{Qlist}
+}
+
+ 
+\Qitem{ \Qq{Mu gihe umuntu ari ku gusobanurira ikintu , ni ryari ugomba guhuza amaso nawe?}
+\begin{Qlist}
+\item Nta na rimwe.
+\item Rimwe na rimwe.
+\item Kenshi.
+\item Bihoraho.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Mu gihe umuntu ari ku gusobanurira ikintu , ni ryari ugomba guhuza amaso nawe mu gihe uwo muntu akuruta?}
+\begin{Qlist}
+\item Gake cyane.
+\item kenshi cyane .
+\item Nta tandukaniro.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Mu gihe umuntu ari ku gusobanurira ikintu , ni ryari ugomba guhuza amaso nawe mu gihe uwo muntu akuruta?}
+\begin{Qlist}
+\item Gake cyane.
+\item kenshi cyane.
+\item Nta tandukaniro.
+\end{Qlist}
+}
+
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza gushimira?
+Niba ari yego, ayo marenga yaba ari ayahe?}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+
+
+%% Hand Gesture.
+%--------------------
+%%% Deictic (Indicating).
+%%%%  Shape.
+%%%%  Duration.
+
+%%% Iconic.
+%%%%  Shape.
+%%%%  Meaning.
+
+%%% Symbolic.
+%%%%  Shape.
+%%%%  Meaning.
+
+\Qitem{ \Qq{Would you use a hand gesture to express {\em gratitude}? \\If yes, what would that gesture be, and which hand would you use: left, right, either, or both?}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza Kwemeza?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza gutungurwa?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza kwemeranya?
+Niba ari yego, ayo marenga yaba ari ayahe?}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+\newpage
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza icyubahiro?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza ubucuti?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza umujnya?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza ubwoba?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza ibyishimo?
+Niba ari yego, ayo marenga yaba ari ayahe?}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza uburakari?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza ko wasobanukiwe ikintu?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+
+ 
+
+
+
+
+
+
+%%% Beat.
+%%%%  Shape.
+%%%%  Intensity.
+
+
+%% Body Gesture.
+%--------------------
+%%% Shoulder.
+%%%%  Dropped / Raised.
+%%%%  Intensity.
+%%%%  Speed.
+
+%%% Bow.
+%%%%  Extent.
+%%%%  Speed.
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga ya maso ugaragaza ko wishimiye ikintu?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Hari amarenga yo mu maso utagomba gukoresha?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga mu maso  werekana ko witondeye ikintu?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza werekana gushimira?
+          Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}, \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza werekana kwemeza?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}, \hspace{1mm} \Qline{2cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza werekana gutungurwa?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm}  
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza werekana kwemeranya?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}, \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu kwerekana ubushuti?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu kwerekana umujinya?Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu kwerekana ubwoba?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu kwerekana ibyishimo?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+
+
+%Verbal Interaction.
+%===================
+
+%%Words.
+%--------------------
+%%% Loudness.
+%%% Speed.
+%%% Intonation.
+%%% Stress.
+%%% Rhythm.
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu kwerekana uburakari?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+ 
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu gihe uri kuvugana umuntu?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga y’ikiganza mu gihe uri kumva umuntu?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm},  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+
+
+
+%% Filler Sound.
+%--------------------
+%%% Frequency
+
+%% Pause.
+%--------------------
+%%% Frequency
+
+
+% Spatial Interaction.
+%====================
+
+%%  Standing.
+%--------------------
+%%%  Relative Distance.
+%%%  Relative Orientation.
+
+
+%% Approaching.
+%--------------------
+%%%  Relative Distance.
+%%%  Relative Orientation.
+%%%  Speed.
+
+%% Passing.
+%--------------------
+
+%%%  Single Person.
+%%%% Relative Distance.
+%%%% Speed.
+\newpage
+\Qitem{ \Qq{Hari amarenga yi kiganza utagomba gukoresha?
+Niba ari yego, ayo marenga yaba ari ayahe, nikihe kiganza utagomba gukoresha : ubumoso, uburyo, kimwe muri byo cyangwa byose?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  \hspace{1mm} \Qline{2cm} 
+\item Oya.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana gushimira?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+%%%  Group of People.
+%%%% Relative Distance.
+%%%% Speed.
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana kwemeza?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+%% Accompanying.
+%--------------------
+%%%  Relative Distance (+/-).
+
+ \Qitem{ \Qq{Ushobora gukoresha amarenga werekana gutungurwa?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+ \Qitem{ \Qq{Ushobora gukoresha amarenga werekana kwemeranya ?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+ \Qitem{ \Qq{Ushobora gukoresha amarenga werekana icyubahiro?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana ubushuti?
+Niba ari yego, ay marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana umujinya?
+Niba ari yego, ayo marenga ayaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana ko ufite ubwoba?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana ko wishimye?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga werekana ko warakaye?
+Niba ari yego,ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga mu gihe uri kuvugana n’umuntu?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+\Qitem{ \Qq{Ushobora gukoresha amarenga mu gihe uri kumva umuntu?
+Niba ari yego, ayo marenga yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\Qitem{ \Qq{90.	Hari amarenga umuntu adashobora gukoresha?
+Niba ari yego, yaba ari ayahe?
+}
+\begin{Qlist}
+\item Yego: : \Qline{5cm}  
+\item Oya.
+\end{Qlist}
+}
+
+
+
+\end{document}
+

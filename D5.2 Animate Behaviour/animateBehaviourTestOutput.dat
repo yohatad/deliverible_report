@@ -1,0 +1,63 @@
+===============================================================================================
+=== New Test Run Started at 2024-12-13 17:08:42 ===
+===============================================================================================
+
+===============================================================================================
+Animate behaviour enabled: PASSED
+...............................................................................................
+Test 1: Test Flexi Hand Animate Behavior
+
+        Configuration file for the  armMaximumRange : 0.2,0.2,0.2,0.35,0.2
+ behaviour : hands
+ gestureDuration : 1.0
+ handMaximumRange : 0.7
+ legMaximumRange : 0.1,0.1,0.08
+ legRepeatFactor : 8
+ numPoints : 100
+ numPointsLeg : 2
+ platform : robot
+ robotTopics : pepperTopics.dat
+ rotMaximumRange : 0.3
+ selectedRange : 0.5
+ simulatorTopics : simulatorTopics.dat
+ verboseMode : true
+
+        Flexi movement started: PASSED
+
+        Joint names:
+            right hand: ["RHand"]
+
+        Ensure the joint moves to the Home position before starting random movements.
+        The values of the home positions are:
+            right hand: [0.66608] 
+
+        After the joint is in the home position, start moving to random positions continuously.
+        The random positions captured are:
+            right hand: 
+            [0.504129] 
+            [0.639561] 
+            [0.62218] 
+            [0.680939] 
+            [0.604296] 
+            [0.587088] 
+            [0.689032] 
+            [0.723844] 
+            [0.746807] 
+            [0.675237] 
+            [0.664153] 
+            [0.656114] 
+            [0.49426] 
+            [0.583266] 
+            [0.693701] 
+            [0.546183] 
+            [0.833812] 
+            [0.710836] 
+            [0.787003] 
+            [0.75161] 
+
+        Flexi movement ended: PASSED
+...............................................................................................
+
+Animate behaviour disabled: PASSED
+===============================================================================================
+
