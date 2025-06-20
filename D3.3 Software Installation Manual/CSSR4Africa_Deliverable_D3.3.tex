@@ -21,6 +21,7 @@
 \usepackage[colorlinks, urlcolor=blue, linkcolor=black, citecolor=black]{hyperref}
 \usepackage{blindtext}
 \usepackage[T1]{fontenc}
+\usepackage{enumitem}
 
 
 \lstset{upquote=true}
@@ -74,10 +75,10 @@
 \leadpartner{Carnegie Mellon University Africa}    
 \partner{}                                      
 
-\revision{1.11}                          
+\revision{1.12}                          
 \deliverabledate{1/10/2023}     
 \submissiondate{26/07/2023}   
-\revisiondate{03/06/2025}      
+\revisiondate{20/06/2025}      
 \disseminationlevel{PU}
 \responsible{ CSSR4Africa Team }   
 
@@ -151,23 +152,35 @@ This section provides step-by-step instructions for installing a set of software
 \subsection{Method 1: Shell Script Installation}
 
 \begin{enumerate}
-\item First clone the GitHub repository and navigate to the directory.
+\item Ensure Git is installed. If not, install it by running:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-git clone https://github.com/cssr4africa/software-Installation-scripts.git
-\end{lstlisting} 
-\item Make the all the shell files in the Software Installation Scripts executable
-\begin{lstlisting}[style=withoutNumbering, language=bash]
-chmod +x $HOME/workspace/software-Installation-scripts/*.sh
+sudo apt update
+sudo apt install -y git
 \end{lstlisting}
-\item Run the shell script for installing ROS-Noetic.
+
+\item Navigate to your workspace folder and clone the GitHub repository there:
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+cd $HOME/workspace
+git clone https://github.com/cssr4africa/software-Installation-scripts.git
+cd software-Installation-scripts
+\end{lstlisting}
+
+\item Make all the shell files executable:
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+chmod +x *.sh
+\end{lstlisting}
+
+\item Run the shell script to install ROS Noetic:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 ./install_ros_noetic.sh
 \end{lstlisting}
-\item Run the shell script for installing the necessary packages and setting up the workspace
+
+\item Run the shell script to install necessary packages and set up the workspace:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 ./install_pepper_ws.sh
 \end{lstlisting}
 \end{enumerate}
+
 \hspace{0.9cm}
 \begingroup
 \tcbset{%
@@ -200,7 +213,7 @@ sudo apt update && sudo apt upgrade -y
 
 \item Install Curl, Git, and Python3-pip.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-sudo apt install -y curl git python3-pip net-tools
+sudo apt install -y curl git python3-pip net-tools git-lfs
 \end{lstlisting}
 
 \item Setup the computer to accept software from \href{http://packages.ros.org}{packages.ros.org.}
@@ -379,8 +392,6 @@ source $HOME/.bashrc
 \label{bup}
 To establish communication between the computer device and the Pepper robot, the IP address of the computer device, its network interface name, and the IP address of the Pepper robot are needed. Below are the steps to find this information. First, ensure the Pepper robot and computer device are on the same network.\\
 
-\newpage
-
 \begin{enumerate}
 \item \textbf{IP address identification of the computer}
 {
@@ -409,8 +420,6 @@ roslaunch pepper_dcm_bringup pepper_bringup.launch \
 robot_ip:=172.29.111.230 roscore_ip:=172.29.111.229 \
 network_interface:=ens160
 \end{lstlisting}
-
-\newpage
 
 \item Open a new terminal and launch the NAOqi driver.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
@@ -503,8 +512,8 @@ source $HOME/.bashrc
 
 \end{enumerate}
 \item \textbf{Run the Pepper Gazebo Simulator}
-\begin{enumerate}
-    \item Start the Gazebo simulation.
+\begin{enumerate}[leftmargin=0pt,labelsep=0.5em]
+\item Start the Gazebo simulation.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 roslaunch pepper_gazebo_plugin \
 pepper_gazebo_plugin_in_office_CPU.launch
@@ -516,14 +525,16 @@ pepper_gazebo_plugin_in_office_CPU.launch
 \caption{Pepper Gazebo simulation environment.}
 \label{fig:gazebo-sim}
 \end{figure}
-Once you've successfully launched the simulator, your simulation environment should be similar to Figure \ref{fig:gazebo-sim}.
-To visualize the simulation on rviz, open a new terminal and type the below command.
+
+\noindent Once you’ve successfully launched the simulator, your environment should match Figure~\ref{fig:gazebo-sim}. To visualize in RViz, open a new terminal and run:
+
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-rosrun rviz rviz -d `rospack find \
-pepper_gazebo_plugin`/config/pepper_sensors.rviz
+rosrun rviz rviz -d `rospack find pepper_gazebo_plugin`/config/pepper_sensors.rviz
 \end{lstlisting}
-\clearpage
+\end{enumerate}
+
 The visualization that appears on rviz after launching will have a similar appearance to Figure \ref{fig:rviz}.
+
 \begin{figure}[!hbpt]
 \centering
 \includegraphics[scale=0.40]{./images/rviz.png}
@@ -532,7 +543,6 @@ The visualization that appears on rviz after launching will have a similar appea
 \end{figure}
 
 
-\end{enumerate}
 \end{enumerate}
 
 \clearpage
@@ -563,7 +573,13 @@ The visualization that appears on rviz after launching will have a similar appea
 \endgroup
 
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-./install_cssr4africa_pacakge.sh
+# Change into the Software Installation Scripts directory
+cd $HOME/workspace/software-Installation-scripts
+\end{lstlisting}
+
+\begin{lstlisting}[style=withoutNumbering, language=bash]
+# Execute the installer for the CSSR4Africa package
+./install_cssr4africa_package.sh
 \end{lstlisting}
 
 
@@ -582,28 +598,46 @@ git clone https://github.com/cssr4africa/cssr4africa.git
 # Build the source files
 cd .. && catkin_make
 
-# Clone the models from HuggingFace:
+# Clone the models from HuggingFace
 cd && git lfs install
 git clone https://huggingface.co/cssr4africa/cssr4africa_models
 
-# Move the face detection models to the models directory:
-mv cssr4africa_models/face_detection/models/* $HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/face_detection/models
+# Prepare and move the face detection models
+mkdir -p "$HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/face_detection/models"
+mv cssr4africa_models/face_detection/models/* \
+"$HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/face_detection/models/"
 
-# Move the person detection models to the models directory:
-mv cssr4africa_models/person_detection/models/* $HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/person_detection/models
+# Prepare and move the person detection models
+mkdir -p "$HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/person_detection/models"
+mv cssr4africa_models/person_detection/models/* \
+"$HOME/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/person_detection/models/"
 
-# Clone the unit test data from HuggingFace:
+# Clone the unit test data from HuggingFace
 cd && git lfs install
 git clone https://huggingface.co/cssr4africa/cssr4africa_unit_tests_data_files
 
-# Move the face detection test data to the data directory:
-mv cssr4africa_unit_tests_data_files/face_detection_test/data/* $HOME/workspace/pepper_rob_ws/src/unit_tests/face_detection_test/data
+# Prepare and move the face detection test data
+mkdir -p "$HOME/workspace/pepper_rob_ws/src/cssr4africa/unit_tests/face_detection_test/data"
+mv cssr4africa_unit_tests_data_files/face_detection_test/data/* \
+"$HOME/workspace/pepper_rob_ws/src/cssr4africa/unit_tests/face_detection_test/data/"
 
-# Move the person detection test data to the data directory:
-mv cssr4africa_unit_tests_data_files/person_detection_test/data/* $HOME/workspace/pepper_rob_ws/src/unit_tests/person_detection_test/data
+# Prepare and move the person detection test data
+mkdir -p "$HOME/workspace/pepper_rob_ws/src/cssr4africa/unit_tests/person_detection_test/data"
+mv cssr4africa_unit_tests_data_files/person_detection_test/data/* \
+"$HOME/workspace/pepper_rob_ws/src/cssr4africa/unit_tests/person_detection_test/data/"
+
+# Remove the cloned model and test data directories to clean up
+rm -rf ~/cssr4africa_models
+rm -rf ~/cssr4africa_unit_tests_data_files
 \end{lstlisting}
 
-\noindent Upon completing the installation above, the \textbf{src} folder within the development environment's workspace will contain the CSS4Africa software meta-package and all the necessary packages for the project. As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehvaiour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, and \texttt{personDetection}. Below is the directory structure of the workspace for reference.
+\noindent Upon completing the installation above, the \textbf{src} folder within the development environment's workspace will contain the CSS4Africa software meta-package and all the necessary packages for the project. 
+
+\newpage
+
+As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehvaiour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, $ $and \texttt{personDetection}. 
+
+Figure \ref{fig:pepper-robot-workspace-directory} shows the directory structure of the workspace for reference.
 \begin{figure}[ht]
 
 {\small 
@@ -650,6 +684,7 @@ The CSSR4Africa system requires dedicated Python virtual environments for differ
 \paragraph{Face and Person Detection Environment}
 The face and person detection system requires Python 3.10 with PyTorch and CUDA support.
 
+\newpage
 \subparagraph{System Package Installation}
 First, update the system packages and install Python 3.10:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
@@ -707,50 +742,52 @@ To use the face and person detection system, activate the environment:
 
 The face and person detection virtual environment setup is now complete.
 
+\newpage 
+
 \paragraph{Sound Detection Environment}
 The sound detection system requires Python 3.8 with its own set of dependencies.
 
 \subparagraph{System Package Installation for Sound Detection}
 Ensure Python 3.8 virtual environment tools are installed:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Update system packages (if not already done)
-	sudo apt update && sudo apt upgrade -y
-	
-	# Install Python virtual environment tools
-	sudo apt install python3.8-venv -y
+# Update system packages (if not already done)
+sudo apt update && sudo apt upgrade -y
+
+# Install Python virtual environment tools
+sudo apt install python3.8-venv -y
 \end{lstlisting}
 
 \subparagraph{Sound Detection Virtual Environment Setup}
 Create and configure the Python virtual environment for sound detection:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Navigate to the virtual environments directory
-	cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs/
-	
-	# Create a virtual environment for sound detection
-	python3.8 -m venv cssr4africa_sound_detection_env
-	
-	# Activate the virtual environment
-	source cssr4africa_sound_detection_env/bin/activate
-	
-	# Upgrade pip in the virtual environment
-	pip install --upgrade pip
+# Navigate to the virtual environments directory
+cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs/
+
+# Create a virtual environment for sound detection
+python3.8 -m venv cssr4africa_sound_detection_env
+
+# Activate the virtual environment
+source cssr4africa_sound_detection_env/bin/activate
+
+# Upgrade pip in the virtual environment
+pip install --upgrade pip
 \end{lstlisting}
 
 \subparagraph{Sound Detection Dependencies Installation}
 Install the required packages for sound detection:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Install required packages from requirements file
-	pip install -r ~/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/sound_detection/sound_detection_requirements.txt
+# Install required packages from requirements file
+pip install -r ~/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/sound_detection/sound_detection_requirements.txt
 \end{lstlisting}
 
 \subparagraph{Activating the Sound Detection Environment}
 To use the sound detection system, activate the dedicated environment:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Navigate to the virtual environment directory
-	cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
-	
-	# Activate the sound detection environment
-	source cssr4africa_sound_detection_env/bin/activate
+# Navigate to the virtual environment directory
+cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
+
+# Activate the sound detection environment
+source cssr4africa_sound_detection_env/bin/activate
 \end{lstlisting}
 
 The sound detection virtual environment setup is now complete.
@@ -769,7 +806,6 @@ git clone https://github.com/cssr4africa/cssr4africa.git
 cd .. && catkin_make -DSIMULATOR=ON
 \end{lstlisting}
 
-\newpage
 \subsection{Running the CSSR4Africa Software}
 In this section, the execution of the unit, integration, and system tests of the CSSR4Africa software packages will be presented.
 
@@ -1024,12 +1060,12 @@ David Vernon \\
 
 \item [Version 1.9]~\\
 Included steps to obtain the models and data files from HuggingFace for the \texttt{faceDetection} and \texttt{personDetection} software in the installation steps for the physical robot.\\
-Modified the directory structure to include two new software: \texttt{faceDetection} and \texttt{personDetection}.\\
+Modified the directory structure to include two new software: \texttt{faceDetection} and \\ \texttt{personDetection}.\\
 Adedayo Akinade \\       
 27 April 2025.
 
 \item [Version 1.10]~\\
-Updated the installation manual with face and person detection python environment setup.\\
+Updated the installation manual with the face and person detection and localization python environment setup.\\
 Yohannes Haile.\\    
 26 May 2025.
 
@@ -1038,11 +1074,16 @@ Fixed the issue with the heading and put an important marker for users not to co
 Added command to change the software installation scripts to be executable.\\
 Added a the shell script command to install cssr4africa package in the section 4.\\
 And update the note to be similar to the installation of development environment. \\
-Added the installation of the python environment for the sound detection. \\
+Added the installation of the Python environment for the sound detection. \\
 Yohannes Haile and Muhammed Danso.\\
 03 June 2025.
 
-
+\item [Version 1.12]~\\
+Added the installation of Git before the usage the installation scripts.\\
+Changed the Git clone location of the \texttt{software-Installation-scripts} repository to \texttt{\$HOME/workspace}.\\
+Fixed issues regarding the installation of the Hugging Face models and unit tests.\\
+Yohannes Haile.\\
+20 June 2025.
 
 \end{description}
 \end{document}
