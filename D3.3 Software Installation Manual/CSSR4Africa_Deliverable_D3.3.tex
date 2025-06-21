@@ -635,51 +635,6 @@ rm -rf ~/cssr4africa_unit_tests_data_files
 
 \noindent Upon completing the installation above, the \textbf{src} folder within the development environment's workspace will contain the CSS4Africa software meta-package and all the necessary packages for the project. 
 
-\newpage
-
-As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehaviour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, $ $and \texttt{personDetection}. 
-
-Figure \ref{fig:pepper-robot-workspace-directory} shows the directory structure of the workspace for reference.
-\begin{figure}[ht]
-
-{\small 
-\dirtree{%
-.1 workspace.
-.2 pepper\_rob\_ws.
-.3 build.
-.3 devel.
-.3 src.
-.4 cssr4africa.
-.5 cssr\_system.
-.6 animateBehavior.
-.6 face\_detection.
-.6 gestureExecution.
-.6 overtAttention.
-.6 person\_detection.
-.6 sound\_detection.
-.5 dashboard.
-.5 pepper\_interface\_tests.
-.5 system\_tests.
-.5 unit\_tests.
-.6 animateBehaviourTest.
-.6 face\_detection\_test.
-.6 gestureExecutionTest.
-.6 overtAttentionTest.
-.6 person\_detection\_test.
-.6 sound\_detection\_test.
-.4 naoqi\_dcm\_driver.
-.4 naoqi\_driver.
-.4 pepper\_dcm\_robot.
-.4 pepper\_moveit\_config.
-.4 pepper\_robot.
-.4 pepper\_virtual.
-}
-}
-
-\caption{Directory structure for the CSSR4Africa software repository.}
-\label{fig:pepper-robot-workspace-directory}
-\end{figure}
-
 \subsubsection{Installing the CSSR4Africa Python Virtual Environment}
 The CSSR4Africa system requires dedicated Python virtual environments for different components. This section provides step-by-step instructions for setting up these environments.
 
@@ -687,7 +642,6 @@ The CSSR4Africa system requires dedicated Python virtual environments for differ
 \subsubsection*{Face and Person Detection Environment}
 The face and person detection system requires Python 3.10 with PyTorch and CUDA support.
 
-\newpage
 \subsubsection*{System Package Installation}
 First, update the system packages and install Python 3.10:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
@@ -792,6 +746,52 @@ source cssr4africa_sound_detection_env/bin/activate
 \end{lstlisting}
 
 The sound detection virtual environment setup is now complete.
+
+\newpage
+
+As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehaviour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, $ $and \texttt{personDetection}. 
+
+Figure \ref{fig:pepper-robot-workspace-directory} shows the directory structure of the workspace for reference.
+\begin{figure}[ht]
+
+{\small 
+\dirtree{%
+.1 workspace.
+.2 pepper\_rob\_ws.
+.3 build.
+.3 devel.
+.3 src.
+.4 cssr4africa.
+.5 cssr\_system.
+.6 animateBehaviour.
+.6 face\_detection.
+.6 gestureExecution.
+.6 overtAttention.
+.6 person\_detection.
+.6 sound\_detection.
+.5 dashboard.
+.5 pepper\_interface\_tests.
+.5 system\_tests.
+.5 unit\_tests.
+.6 animateBehaviourTest.
+.6 face\_detection\_test.
+.6 gestureExecutionTest.
+.6 overtAttentionTest.
+.6 person\_detection\_test.
+.6 sound\_detection\_test.
+.4 cssr4africa\_virtual\_envs.
+.4 naoqi\_dcm\_driver.
+.4 naoqi\_driver.
+.4 pepper\_dcm\_robot.
+.4 pepper\_moveit\_config.
+.4 pepper\_robot.
+.4 pepper\_virtual.
+}
+}
+
+\caption{Directory structure for the CSSR4Africa software repository.}
+\label{fig:pepper-robot-workspace-directory}
+\end{figure}
 
 \subsubsection{Installing the CSSR4Africa Software for the Simulator Robot}
 \label{sim-soft}
