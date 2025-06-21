@@ -75,10 +75,10 @@
 \leadpartner{Carnegie Mellon University Africa}    
 \partner{}                                      
 
-\revision{1.12}                          
+\revision{1.13}                          
 \deliverabledate{1/10/2023}     
 \submissiondate{26/07/2023}   
-\revisiondate{20/06/2025}      
+\revisiondate{21/06/2025}      
 \disseminationlevel{PU}
 \responsible{ CSSR4Africa Team }   
 
@@ -90,7 +90,7 @@
 
 \section*{Executive Summary}
 %==============================================================
-Deliverable D3.3 is a comprehensive installation manual for the Culturally Sensitive Social Robotics for Africa (CSSR4Africa) project. The manual will be continually updated as a living document to ensure it reflects the system's current capabilities. This task aims to document the process of installing and executing the required software components to instantiate the CSSR4Africa system. It provides step-by-step instructions for setting up the development environment and controlling the Pepper robot in both physical and simulated environments.
+Deliverable D3.3 is a comprehensive installation manual for the Culturally Sensitive Social Robotics for Africa \href{https://cssr4africa.github.io/}{CSSR4Africa} project. The manual will be continually updated as a living document to ensure it reflects the system's current capabilities. This task aims to document the process of installing and executing the required software components to instantiate the CSSR4Africa system. It provides step-by-step instructions for setting up the development environment and controlling the Pepper robot in both physical and simulated environments.
 \label{executive_summary}
 \addcontentsline{toc}{section}{Executive Summary}
 
@@ -122,7 +122,7 @@ To configure the Pepper robot for the first time, reference the Pepper Robot Poc
 
 Next, establish a Wi-Fi connection between the robot and the user's computer. It's advisable to use a dedicated Wi-Fi router for this purpose, rather than relying on a campus wireless network (CMU), to avoid the complications of logging in with a school ID (Andrew ID). To achieve this, connect a router to the campus's network via an Ethernet cable. Upon powering your laptop, instructions on the tablet will guide you to connect to this router. Once connected, the Pepper robot will vocalize its IP address when you press the power button once. This IP address is crucial, as it will be used to establish a connection through ROS (Robot Operating System), enabling communication and control of the robot from your computer. Furthermore, we set up the router for the robot to have a static IP address using the robot's MAC address. 
 
-The MAC address can be found when accessing the Pepper web page as shown in Figure \ref{fig:pepper-web-page} by opening a web browser and entering the IP address. Then log in by setting the username and password you configured when setting up the robot. Then using the Wi-Fi MAC address configure the router to have the pepper robot IP address permanent. This can be done by looking in the DHCP or static IP Assignment. Then assign a static IP address by adding a new reservation, enter the MAC  address, and save the setting. Restart the robot and the router for the changes to take effect.
+The MAC address can be found when accessing the Pepper web page as shown in Figure \ref{fig:pepper-web-page}, by opening a web browser and entering the IP address. Then log in by setting the username and password you configured when setting up the robot. Then, using the Wi-Fi MAC address, configure the router to have the Pepper robot's IP address permanently. This can be done by looking at the DHCP or static IP Assignment. Then assign a static IP address by adding a new reservation, entering the MAC  address, and saving the setting. Restart the robot and the router for the changes to take effect.
 
 \begin{figure}[!hbpt]
 \centering
@@ -137,7 +137,7 @@ The MAC address can be found when accessing the Pepper web page as shown in Figu
 \label{devenv}
 This section provides step-by-step instructions for installing a set of software packages required to control the physical Pepper robot and the robot in the Gazebo simulator. Open a new terminal \textit{\textbf{(ctrl + shift + t)}} and type the following commands carefully. 
 
-\paragraph{Prerequisite}
+\subsubsection*{Prerequisite}
 
 {The user needs to have Ubuntu 20.04 running natively for all the software to work properly.} 
 
@@ -145,8 +145,8 @@ This section provides step-by-step instructions for installing a set of software
 
 \begingroup
 \tcbset{%
-	noteshift/.store in=\mynote@shift,
-	noteshift=0.2cm
+noteshift/.store in=\mynote@shift,
+noteshift=0.2cm
 }
 
 \subsection{Method 1: Shell Script Installation}
@@ -158,8 +158,9 @@ sudo apt update
 sudo apt install -y git
 \end{lstlisting}
 
-\item Navigate to your workspace folder and clone the GitHub repository there:
+\item Create a workspace folder and clone the GitHub repository there:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
+mkdir -p $HOME/workspace
 cd $HOME/workspace
 git clone https://github.com/cssr4africa/software-Installation-scripts.git
 cd software-Installation-scripts
@@ -184,24 +185,24 @@ chmod +x *.sh
 \hspace{0.9cm}
 \begingroup
 \tcbset{%
-	noteshift/.store in=\mynote@shift,
-	noteshift=0.9cm
+noteshift/.store in=\mynote@shift,
+noteshift=0.9cm
 }
 \begin{tcolorbox}[nobeforeafter,
-	enhanced,
-	sharp corners,
-	toprule=1pt,
-	bottomrule=1pt,
-	leftrule=0pt,
-	rightrule=0pt,
-	colback=red!20,
-	left skip=\mynote@shift,
-	right skip=\mynote@shift,
-	overlay={\node[left] (mynotenode) at ([xshift=-0.2cm]frame.west) {\textbf{\textcolor{red}{Important:}}} ;},]
-	There are two alternatives below to set up the development environment for the CSSR4Africa project. If you choose the shell script method (Method 1), the installation ends there and you can skip the manual installation steps. Only follow Method 2 if you prefer to install ROS Noetic and dependencies manually step-by-step.
+enhanced,
+sharp corners,
+toprule=1pt,
+bottomrule=1pt,
+leftrule=0pt,
+rightrule=0pt,
+colback=red!20,
+left skip=\mynote@shift,
+right skip=\mynote@shift,
+overlay={\node[left] (mynotenode) at ([xshift=-0.2cm]frame.west) {\textbf{\textcolor{red}{Important:}}} ;},]
+There are two alternatives below to set up the development environment for the CSSR4Africa project. If you choose the shell script method (Method 1), the installation ends there, and you can skip the manual installation steps. Only follow Method 2 if you prefer to install ROS Noetic and dependencies manually, step-by-step. 
 \end{tcolorbox}
 \endgroup
-\subsection{Method 2: Manually Installation of Development Environment}
+\subsection{Method 2: Manual Installation of Development Environment}
 \subsubsection{Installation Steps of the ROS-Noetic }
 {
 
@@ -238,7 +239,7 @@ sudo apt update
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 sudo apt install ros-noetic-desktop-full
 \end{lstlisting}
-          
+
 \item Make ROS environment variables automatically added every time a new shell is launched.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 echo "source /opt/ros/noetic/setup.bash" >> $HOME/.bashrc
@@ -271,37 +272,37 @@ The NAOqi driver is a module that provides bridge capabilities. It publishes sen
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 # Install the NAOqi driver
 sudo apt-get install ros-.*-naoqi-driver
-        
+
 # Create ROS workspace
 mkdir -p $HOME/workspace/pepper_rob_ws/src
-        
+
 # Move to the workspace directory
 cd $HOME/workspace/pepper_rob_ws/src
-    
+
 # Clone NAOqi DCM driver repository
 git clone https://github.com/cssr4africa/naoqi_dcm_driver.git
 
 # Clone NAOqi driver repository
 git clone https://github.com/cssr4africa/naoqi_driver.git
-    
+
 # Clone Pepper DCM driver repository
 git clone https://github.com/cssr4africa/pepper_dcm_robot.git
 
 # Clone Pepper virtual repository
 git clone https://github.com/ros-naoqi/pepper_virtual.git
 
-# Clone Pepper robot repository
+# Clone the Pepper robot repository
 git clone https://github.com/ros-naoqi/pepper_robot.git
-    
+
 # Clone Pepper moveit config repository
 git clone https://github.com/ros-naoqi/pepper_moveit_config.git
 
 # Make scripts in naoqi_driver package executable
 chmod +x $HOME/workspace/pepper_rob_ws/src/naoqi_driver/scripts/*
-    
+
 # Build the repository
 cd .. && catkin_make
-# Add the workspace to your ROS environment by sourcing the setup file in devel folder
+# Add the workspace to your ROS environment by sourcing the setup file in the devel folder
 source devel/setup.bash
 
 # Add the setup to your .bashrc file so that you don't have to do this every time you open a new terminal
@@ -312,14 +313,13 @@ $HOME/.bashrc
 sudo apt-get install ros-noetic-joint-trajectory-controller
 sudo apt-get install ros-noetic-ros-controllers
 sudo apt-get install ros-noetic-pepper-meshes
-       
+
 \end{lstlisting}
 \subsubsection*{Installing and Configuring the Python NAOqi SDK}
 {
 The NAOqi Framework, a cross-language programming framework for programming Pepper, supports both C++ and Python. The Python NAOqi SDK was used when the microphone sensor failed to function with the naoqi\_driver, the Python SDK was employed to access the microphone sensors' API. This method allowed the modified naoqi\_driver to publish the captured audio data successfully. Furthermore, since the tablet was not supported by the ROS-NAOqi drivers, the Python SDK was used to provide an interface through ROS. 
 
-rospy (a python client library for ROS(Robot Operating System) which enables the development of ROS-based applications was used mainly to define publishers, subscribers, and services. However, one of the limitations of 
-Python SDK is that it runs on Python 2 whereas rospy uses Python 3 (ROS-Noetic). To overcome this problem, a UDP socket was used that will send the data from Python 2 to the python3 script that receives data and then publishes or provides a ros service using the rospy.
+\texttt{rospy} is a Python client library for ROS (Robot Operating System), which enables the development of ROS-based applications. It is used mainly to define publishers, subscribers, and services. However, one of the limitations of the Python SDK is that it runs on Python 2, whereas rospy uses Python 3 (ROS-Noetic). To overcome this problem, a UDP socket was used that will send the data from Python 2 to the Python 3 script that receives data and then publishes or provides a ROS service using the rospy.
 
 \begin{enumerate}
 \item Change directory to home  
@@ -331,7 +331,7 @@ cd $HOME
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 sudo apt install python2
 
-# check the version of the Python
+# Check the version of Python
 python2 --version
 \end{lstlisting}
 
@@ -369,19 +369,21 @@ sdk-python/pynaoqi-python2.7-2.5.5.5-linux64.tar.gz
 tar -xvf pynaoqi-python2.7-2.5.5.5-linux64.tar.gz
 \end{lstlisting}
 
+\newpage
+
 \item To ensure that the \texttt{PYTHONPATH} environment variable is automatically set every time a new shell session starts. 
 
 \begin{lstlisting}[style=withoutNumbering, language=bash, escapeinside={(*@}{@*)}]
 # If you extracted it in another directory you can set it up by putting the correct path here. 
 
-(*@\color{red}{In addition, Write the entire code in one line (avoid using two}@*)
+(*@\color{red}{In addition, write the entire code in one line (avoid using two}@*)
 (*@\color{red}{lines)}@*)
 
 echo "export PYTHONPATH=${PYTHONPATH}:$HOME/pynaoqi-python2.7-2.5.5.5-linux64/lib/python2.7/site-packages" >> $HOME/.bashrc
 \end{lstlisting}
 
 
-To apply the changes immediately, you can source your 
+To apply the changes immediately, you can use the following command 
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 source $HOME/.bashrc
 \end{lstlisting}
@@ -390,25 +392,25 @@ source $HOME/.bashrc
 \subsubsection*{Bring up Pepper}
 {
 \label{bup}
-To establish communication between the computer device and the Pepper robot, the IP address of the computer device, its network interface name, and the IP address of the Pepper robot are needed. Below are the steps to find this information. First, ensure the Pepper robot and computer device are on the same network.\\
+To establish communication between the computer device and the Pepper robot, the IP address of the computer device, its network interface name, and the IP address of the Pepper robot are needed. To find this information first, ensure the Pepper robot and computer device are on the same network.
 
 \begin{enumerate}
-\item \textbf{IP address identification of the computer}
+\item \textbf{IP address identification of the computer:}
 {
 \label{ipsystem}
-To find the IP address of the computer device, open a new terminal and execute \texttt{ifconfig} commands.
+To find the IP address of the computer device, open a new terminal and execute the \texttt{ifconfig} command.
 
 \begin{figure}[!hbpt]
-\centering
-\includegraphics[scale=0.65]{images/Ifconfig.png}
-\caption{\texttt{ifconfig} command output: Network interface name and IP address.}
-\label{fig:ifconfig}
+	\centering
+	\includegraphics[scale=0.65]{images/Ifconfig.png}
+	\caption{\texttt{ifconfig} command output: Network interface name and IP address.}
+	\label{fig:ifconfig}
 \end{figure}
 
 Upon executing the \texttt{ifconfig} command, the output will display information similar to the illustration shown in Figure \ref{fig:ifconfig}. Please take note of the network interface name and its corresponding IP address as shown in the output. This IP address will be passed as a value for the \texttt{roscore\_ip} argument. Similarly, the network interface must be passed as a value for the \texttt{network\_interface} argument.} 
-    
-\item \textbf{IP address identification of the Pepper robot}
-To find the IP address of the Pepper Robot, ensure the robot is powered on and connected to the network. Usually when the Pepper Robot is booting it says, ``Hello, I'm Pepper, my internet address is $<robot\_ip >$ (for example, 172.29.111.230)". If you missed it, press the chest button once and take note of that IP address. This IP address will be passed as a value for the robot\_ip argument.
+
+\item \textbf{IP address identification of the Pepper robot:}
+To find the IP address of the Pepper Robot, ensure the robot is powered on and connected to the network. Usually, when the Pepper Robot is booting, it says, ``Hello, I'm Pepper, my internet address is $<robot\_ip >$ (for example, 172.29.111.230)". If you missed it, press the chest button once and take note of that IP address. This IP address will be passed as a value for the robot\_ip argument.
 
 \end{enumerate}
 \noindent Using the above IP address of the robot, the IP address, and the network interface name of the computer device, the following instruction will bring Pepper up over ROS, and the NAOqi driver will be launched. Below are the instructions to follow for the sample shown above:
@@ -431,7 +433,7 @@ roscore_ip:=172.29.111.229 network_interface:=ens160
 
 \subsubsection{Setting up the Development Environment for the Gazebo Simulator}
 \label{simulator}
-Section \ref{phyrob} assumes access to a physical Pepper robot. However, circumstances may arise where testing software without the physical robot becomes necessary. In such cases, a simulator can serve as an alternative. This section explains how to control the Pepper robot within a Gazebo simulator. The simulation is based on an open-source Pepper ROS environment developed by Sam Pfeiffer.\footnote{The Pepper ROS simulator is available on the following links: \url{https://github.com/awesomebytes/pepper\_virtual}} The installation of the Gazebo simulator is presented below.
+Section \ref{phyrob} assumes access to a physical Pepper robot. However, circumstances may arise where testing software without the physical robot becomes necessary. In such cases, a simulator can serve as an alternative. This section explains how to control the Pepper robot within a Gazebo simulator. The simulation is based on an open-source Pepper ROS environment developed by Sam Pfeiffer.\footnote{The Pepper ROS simulator is available on the following links: \url{https://github.com/awesomebytes/pepper\_virtual}}. The installation of the Gazebo simulator is presented below.
 
 \subsubsection*{Installation of the Gazebo Simulator}
 To set up the Gazebo simulator for the Pepper robot, follow the instructions below.
@@ -439,13 +441,13 @@ To set up the Gazebo simulator for the Pepper robot, follow the instructions bel
 \begin{enumerate}
 \item \textbf{Setup Pepper in the Gazebo Simulator}
 \begin{enumerate}
-    \item Make a separate workspace for the simulator installation.
+\item Make a separate workspace for the simulator installation.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 mkdir -p $HOME/workspace/pepper_sim_ws/src
 cd $HOME/workspace/pepper_sim_ws/src
 \end{lstlisting} 
 
-    \item Clone the necessary packages from the GitHub repository.
+\item Clone the necessary packages from the GitHub repository.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 git clone -b correct_chain_model_and_gazebo_enabled \
 https://github.com/awesomebytes/pepper_robot
@@ -469,7 +471,7 @@ ros-noetic-gazebo-plugins ros-noetic-controller-manager \
 ros-noetic-ddynamic-reconfigure-python
 \end{lstlisting}
 
-\item Install pepper mesh.
+\item Install Pepper Mesh.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 sudo apt-get install ros-noetic-pepper-meshes
 \end{lstlisting}
@@ -495,10 +497,9 @@ colback=yellow!20,
 left skip=\mynote@shift,
 right skip=\mynote@shift,
 overlay={\node[left] (mynotenode) at ([xshift=-\mynote@shift]frame.west) {\textbf{\textcolor{greenyellow}{Note:}}} ;},]
-After setting up the physical robot's environment, follow step f to modify the \texttt{.bashrc} will result in the simulator environment being sourced last, overriding the physical robot's settings. If your main work is with the physical robot, consider skipping this step. You can manually \texttt{source devel/setup.bash} when necessary for simulator tasks to maintain the correct environment setup 
+After setting up the physical robot's environment, follow step (f) to modify the \texttt{.bashrc} will result in the simulator environment being sourced last, overriding the physical robot's settings. If your main work is with the physical robot, consider skipping this step. You can manually \texttt{source devel/setup.bash} when necessary for simulator tasks to maintain the correct environment setup 
 \end{tcolorbox}
 \endgroup
-
 
 \item Make ROS environment variables automatically added every time a new shell is launched.
 \begin{lstlisting}[style=withoutNumbering, language=bash]
@@ -532,18 +533,19 @@ pepper_gazebo_plugin_in_office_CPU.launch
 rosrun rviz rviz -d `rospack find pepper_gazebo_plugin`/config/pepper_sensors.rviz
 \end{lstlisting}
 \end{enumerate}
+\end{enumerate}
 
-The visualization that appears on rviz after launching will have a similar appearance to Figure \ref{fig:rviz}.
+\newpage
+The visualization that appears on RViz after launching will have a similar appearance to Figure \ref{fig:rviz}.
 
 \begin{figure}[!hbpt]
 \centering
 \includegraphics[scale=0.40]{./images/rviz.png}
-\caption{Visualization of the simulation on rviz.}
+\caption{Visualization of the simulation on RViz.}
 \label{fig:rviz}
 \end{figure}
 
 
-\end{enumerate}
 
 \clearpage
 \section{Installing and Running the CSSR4Africa Software}
@@ -554,21 +556,21 @@ The visualization that appears on rviz after launching will have a similar appea
 \hspace{0.9cm}
 \begingroup
 \tcbset{%
-	noteshift/.store in=\mynote@shift,
-	noteshift=1.2cm
+noteshift/.store in=\mynote@shift,
+noteshift=1.2cm
 }
 \begin{tcolorbox}[nobeforeafter,
-	enhanced,
-	sharp corners,
-	toprule=1pt,
-	bottomrule=1pt,
-	leftrule=0pt,
-	rightrule=0pt,
-	colback=red!20,
-	left skip=\mynote@shift,
-	right skip=\mynote@shift,
-	overlay={\node[left] (mynotenode) at ([xshift=-0.5cm]frame.west) {\textbf{\textcolor{red}{Important:}}} ;},]
-	Inside the Software Installation Scripts directory that was cloned in section 3.1, run the following script. This installs all the CSSR4Africa software. Section 4.2 should be skipped if this script runs successfully to completion. 
+enhanced,
+sharp corners,
+toprule=1pt,
+bottomrule=1pt,
+leftrule=0pt,
+rightrule=0pt,
+colback=red!20,
+left skip=\mynote@shift,
+right skip=\mynote@shift,
+overlay={\node[left] (mynotenode) at ([xshift=-0.5cm]frame.west) {\textbf{\textcolor{red}{Important:}}} ;},]
+Inside the Software Installation Scripts directory that was cloned in section 3.1, run the following script. This installs all the CSSR4Africa software. Section 4.2 should be skipped if this script runs successfully to completion. 
 \end{tcolorbox}
 \endgroup
 
@@ -584,7 +586,7 @@ cd $HOME/workspace/software-Installation-scripts
 
 
 \subsection{Manual Installation of the CSSR4Africa Software}
-This section will guide you through the installation process of the CSSR4Africa software in the source directory of the workspace. The software installation for the physical and simulator environment will be discussed below.
+This section will guide you through the installation process of the CSSR4Africa software in the source directory of the workspace. The software installation for the physical and simulator environments will be discussed below.
 
 \subsubsection{Installing the CSSR4Africa Software for the Physical Robot}
 The outlined steps for installing the CSSR4Africa software for the physical robot are as follows:
@@ -635,7 +637,7 @@ rm -rf ~/cssr4africa_unit_tests_data_files
 
 \newpage
 
-As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehvaiour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, $ $and \texttt{personDetection}. 
+As of now, only six software have been uploaded in the \texttt{cssr\_system} and \texttt{unit\_tests} directory: \texttt{animateBehaviour}, \texttt{faceDetection}, \texttt{soundDetection}, \texttt{gestureExecution}, \texttt{overtAttention}, $ $and \texttt{personDetection}. 
 
 Figure \ref{fig:pepper-robot-workspace-directory} shows the directory structure of the workspace for reference.
 \begin{figure}[ht]
@@ -679,75 +681,74 @@ Figure \ref{fig:pepper-robot-workspace-directory} shows the directory structure 
 \end{figure}
 
 \subsubsection{Installing the CSSR4Africa Python Virtual Environment}
-The CSSR4Africa system requires dedicated Python virtual environments for different components. This section provides step-by-step instructions for setting up this environments.
+The CSSR4Africa system requires dedicated Python virtual environments for different components. This section provides step-by-step instructions for setting up these environments.
 
-\paragraph{Face and Person Detection Environment}
+
+\subsubsection*{Face and Person Detection Environment}
 The face and person detection system requires Python 3.10 with PyTorch and CUDA support.
 
 \newpage
-\subparagraph{System Package Installation}
+\subsubsection*{System Package Installation}
 First, update the system packages and install Python 3.10:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Update system packages
-	sudo apt update && sudo apt upgrade -y
-	
-	# Add the deadsnakes PPA for Python versions
-	sudo apt install software-properties-common -y
-	sudo add-apt-repository ppa:deadsnakes/ppa -y
-	sudo apt update
-	
-	# Install Python 3.10
-	sudo apt install python3.10 python3.10-venv python3.10-distutils -y
-	
-	# Verify Python installation
-	python3.10 --version
+# Update system packages
+sudo apt update && sudo apt upgrade -y
+
+# Add the deadsnakes PPA for Python versions
+sudo apt install software-properties-common -y
+sudo add-apt-repository ppa:deadsnakes/ppa -y
+sudo apt update
+
+# Install Python 3.10
+sudo apt install python3.10 python3.10-venv python3.10-distutils -y
+
+# Verify Python installation
+python3.10 --version
 \end{lstlisting}
 
-\subparagraph{Virtual Environment Setup}
+\subsubsection*{Virtual Environment Setup}
 Create and configure the Python virtual environment for face and person detection:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Create the virtual environment directory
-	mkdir -p $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
-	cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
-	
-	# Create a virtual environment
-	python3.10 -m venv cssr4africa_face_person_detection_env
-	
-	# Activate the virtual environment
-	source cssr4africa_face_person_detection_env/bin/activate
-	
-	# Upgrade pip in the virtual environment
-	pip install --upgrade pip
+# Create the virtual environment directory
+mkdir -p $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
+cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
+
+# Create a virtual environment
+python3.10 -m venv cssr4africa_face_person_detection_env
+
+# Activate the virtual environment
+source cssr4africa_face_person_detection_env/bin/activate
+
+# Upgrade pip in the virtual environment
+pip install --upgrade pip
 \end{lstlisting}
 
-\subparagraph{PyTorch and Dependencies Installation}
+\subsubsection*{PyTorch and Dependencies Installation}
 Install PyTorch with CUDA support and the required dependencies:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Install PyTorch with CUDA support
-	pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-	
-	# Install additional requirements from the project requirements file
-	pip install -r ~/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/face_detection/face_detection_requirements_x86.txt
+# Install PyTorch with CUDA support
+pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# Install additional requirements from the project requirements file
+pip install -r ~/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/face_detection/face_detection_requirements_x86.txt
 \end{lstlisting}
 
-\subparagraph{Activating the Face and Person Detection Environment}
+\subsubsection*{Activating the Face and Person Detection Environment}
 To use the face and person detection system, activate the environment:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-	# Navigate to the virtual environment directory
-	cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
-	
-	# Activate the environment
-	source cssr4africa_face_person_detection_env/bin/activate
+# Navigate to the virtual environment directory
+cd $HOME/workspace/pepper_rob_ws/src/cssr4africa_virtual_envs
+
+# Activate the environment
+source cssr4africa_face_person_detection_env/bin/activate
 \end{lstlisting}
 
 The face and person detection virtual environment setup is now complete.
 
-\newpage 
-
-\paragraph{Sound Detection Environment}
+\subsubsection*{Sound Detection Environment}
 The sound detection system requires Python 3.8 with its own set of dependencies.
 
-\subparagraph{System Package Installation for Sound Detection}
+\subsubsection*{System Package Installation for Sound Detection}
 Ensure Python 3.8 virtual environment tools are installed:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 # Update system packages (if not already done)
@@ -757,7 +758,7 @@ sudo apt update && sudo apt upgrade -y
 sudo apt install python3.8-venv -y
 \end{lstlisting}
 
-\subparagraph{Sound Detection Virtual Environment Setup}
+\subsubsection*{Sound Detection Virtual Environment Setup}
 Create and configure the Python virtual environment for sound detection:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 # Navigate to the virtual environments directory
@@ -773,14 +774,14 @@ source cssr4africa_sound_detection_env/bin/activate
 pip install --upgrade pip
 \end{lstlisting}
 
-\subparagraph{Sound Detection Dependencies Installation}
+\subsubsection*{Sound Detection Dependencies Installation}
 Install the required packages for sound detection:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
-# Install required packages from requirements file
+# Install required packages from the requirement file.
 pip install -r ~/workspace/pepper_rob_ws/src/cssr4africa/cssr_system/sound_detection/sound_detection_requirements.txt
 \end{lstlisting}
 
-\subparagraph{Activating the Sound Detection Environment}
+\subsubsection*{Activating the Sound Detection Environment}
 To use the sound detection system, activate the dedicated environment:
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 # Navigate to the virtual environment directory
@@ -810,46 +811,13 @@ cd .. && catkin_make -DSIMULATOR=ON
 In this section, the execution of the unit, integration, and system tests of the CSSR4Africa software packages will be presented.
 
 \subsubsection{The Pepper Interface Tests Package}
-The pepper\_interface\_test package contains the node files that have been written to perform the unit tests to evaluate the functionality and performance of sensors and actuators on the physical robot and the robot simulator. The directory structure of the pepper\_interface\_test is as follows:
-
-\begin{figure}[ht]
-\label{fig:pepper-interface-tests-directory-structure}
-{\dirtree{%
-.1 pepper\_interface\_tests.
-.2 config.
-.3 actuatorTestConfiguration.ini.
-.3 actuatorTestInput.ini.
-.3 sensorTestConfiguration.ini.
-.3 sensorTestInput.ini.
-.2 data.
-.3 pepperTopics.dat.
-.3 sensorTestOutput.dat.
-.3 simulatorTopics.dat.
-.2 include.
-.3 pepper\_interface\_tests.
-.4 actuatorTest.h.
-.4 sensorTest.h.
-.2 launch.
-.3 actuatorTestLaunchRobot.launch.
-.3 interfaceTestLaunchSimulator.launch.
-.3 sensorTestLaunchRobot.launch.
-.2 src.
-.3 actuatorTestApplication.cpp.
-.3 actuatorTestImplementation.cpp.
-.3 sensorTestApplication.cpp.
-.3 sensorTestImplementation.cpp.
-.2 CMakeLists.txt.
-.2 package.xml.
-.2 README.md.
-}}
-\caption{Directory structure for the \texttt{pepper\_interface\_tests} package. There are two nodes: \texttt{actuatorTest} and \texttt{sensorTest}.}
-\end{figure}
+The pepper\_interface\_test package contains the node files that have been written to perform the unit tests to evaluate the functionality and performance of sensors and actuators on the physical robot and the robot simulator. The directory structure of the pepper\_interface\_test is shown in Figure \ref{fig:pepper-interface-tests-directory-structure}.
 
 The actuator test includes testing the head, hand, arm, leg, and wheels. The sensor test comprehensively assesses multiple sensors: front and back sonar, front and bottom cameras, stereo and depth cameras, laser sensor, microphone, odometry, and joint states.
 
-\noindent To run the test on the physical robot, change the first line of the actuatorTestConfiguration.ini and sensorTestConfiguration.ini file to \texttt{platform robot}. On the other hand, to run the test on the simulator platform, change the first line of the actuatorTestConfiguration.ini and sensorTestConfiguration.ini file to \texttt{platform simulator}. 
+\noindent To run the test on the physical robot, change the first line of the actuatorTestConfiguration.ini and sensorTestConfiguration.ini files to \texttt{platform robot}. On the other hand, to run the test on the simulator platform, change the first line of the actuatorTestConfiguration.ini and sensorTestConfiguration.ini files to \texttt{platform simulator}. 
 
-\noindent Before starting the test on the physical robot, run the launch file of the \texttt{pepper\_interface\_tests} package either the actuatorTestLaunchRobot.launch or sensorTestLaunchRobot.launch. Please replace the variables \texttt{robot\_ip, roscore\_ip,} and \texttt{network\_interface\_name} with the values obtained from the section \ref{bup}. Then proceed to run the actuator and sensor test.\\
+\noindent Before starting the test on the physical robot, run the launch file of the \texttt{pepper\_interface\_tests} package, either the actuatorTestLaunchRobot.launch or sensorTestLaunchRobot.launch. Please replace the variables \texttt{robot\_ip, roscore\_ip,} and \texttt{network\_interface\_name} with the values obtained from the section \ref{bup}. Then, proceed to run the actuator and sensor test.\\
 
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 cd $HOME/workspace/pepper_rob_ws
@@ -890,6 +858,39 @@ robot_ip:=<robot_ip> roscore_ip:=<roscore_ip> \
 network_interface:=<network_interface_name>
 \end{lstlisting}
 
+\begin{figure}[ht]
+{\dirtree{%
+.1 pepper\_interface\_tests.
+.2 config.
+.3 actuatorTestConfiguration.ini.
+.3 actuatorTestInput.ini.
+.3 sensorTestConfiguration.ini.
+.3 sensorTestInput.ini.
+.2 data.
+.3 pepperTopics.dat.
+.3 sensorTestOutput.dat.
+.3 simulatorTopics.dat.
+.2 include.
+.3 pepper\_interface\_tests.
+.4 actuatorTest.h.
+.4 sensorTest.h.
+.2 launch.
+.3 actuatorTestLaunchRobot.launch.
+.3 interfaceTestLaunchSimulator.launch.
+.3 sensorTestLaunchRobot.launch.
+.2 src.
+.3 actuatorTestApplication.cpp.
+.3 actuatorTestImplementation.cpp.
+.3 sensorTestApplication.cpp.
+.3 sensorTestImplementation.cpp.
+.2 CMakeLists.txt.
+.2 package.xml.
+.2 README.md.
+}}
+\caption{Directory structure for the \texttt{pepper\_interface\_tests} package. There are two nodes: \texttt{actuatorTest} and \texttt{sensorTest}.}
+\label{fig:pepper-interface-tests-directory-structure}
+\end{figure}
+
 \begingroup
 \tcbset{%
 noteshift/.store in=\mynote@shift,
@@ -924,7 +925,7 @@ roslaunch pepper_interface_tests interfaceTestLaunchSimulator.launch
 
 \noindent To begin the tests open a new terminal and run the following node.
 \begin{enumerate}
-    
+
 \item Test the sensors
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 rosrun pepper_interface_tests sensorTest
@@ -938,7 +939,7 @@ Please go through deliverables to \href{https://cssr4africa.github.io/deliverabl
 \begin{lstlisting}[style=withoutNumbering, language=bash]
 rosrun pepper_interface_tests actuatorTest
 \end{lstlisting}
-    
+
 The acutator test is designed to unit test each joint by moving the joint to its minimum, maximum, and mid-range position at a selected angular velocity. The progress for testing each joint will be displayed in the terminal. 
 
 Please go through deliverables to \href{https://cssr4africa.github.io/deliverables/CSSR4Africa_Deliverable_D5.1.pdf}
@@ -1002,7 +1003,7 @@ CSSR4Africa Team.\\
 
 \item [Version 1.3]~\\
 Changed the test from Pepper diagnostic routines to Pepper interface tests.\\
-Removed containerized docker installation.\\
+Removed containerized Docker installation.\\
 Grouped the test section to sensorTest and actuatorTest.\\
 Changed the extension of the configuration files from .txt to .ini. Changed the extension of data files from .txt to .dat. \\
 Added the appendix section for server specification and accessibility.\\
@@ -1010,7 +1011,7 @@ Yohannes Haile and Mihiretab Hordofa.\\
 7 September 2023.
 
 \item [Version 1.4]~\\
-Setting up Pepper Robot section added.\\
+Setting up the Pepper Robot section added.\\
 Changed the ROS-Version from ROS-Melodic to ROS-Noetic.\\
 Removed Installation C++ NAOqi SDK.\\
 Added Installation of Python NAOqi SDK.\\
@@ -1033,27 +1034,25 @@ Joined multiple package installations into one.\\
 Yohannes Haile .\\
 20 August 2024.
 
-
 \item [Version 1.6]~\\
-Modified the diretcory structure in Figure 5 to show the software already uploaded on the \href{https://github.com/cssr4africa/cssr4africa} {GitHub Repository}.
+Modified the directory structure in Figure 5 to show the software already uploaded on the \href{https://github.com/cssr4africa/cssr4africa} {GitHub Repository}.
 The software include \texttt{animateBehaviour}, \texttt{gestureExecution}, and \texttt{overtAttention}.\\
 Corrected the name of the \texttt{pepper\_interface\_tests package} in the directory structure.\\
 Adedayo Akinade .\\
 7 February 2025.
 
 \item [Version 1.7]~\\
-Added  a {\small \tt utilities} sub-directory that contains stand-alone software, such as the C++ helper classes that provide access to the culture knowledge base and the environment knowledge base. These classes are used by the ROS nodes that need to access this knowledge; see Deliverable D3.1 System Architecture.\\
+Added a {\small \tt utilities} sub-directory that contains stand-alone software, such as the C++ helper classes that provide access to the culture knowledge base and the environment knowledge base. These classes are used by the ROS nodes that need to access this knowledge; see Deliverable D3.1 System Architecture.\\
 David Vernon \\       
 17 February 2025.
 
 \item [Version 1.7]~\\
-Added  a {\small \tt utilities} sub-directory that contains stand-alone software, such as the C++ helper classes that provide access to the culture knowledge base and the environment knowledge base. These classes are used by the ROS nodes that need to access this knowledge; see Deliverable D3.1 System Architecture.\\
+Added a {\small \tt utilities} sub-directory that contains stand-alone software, such as the C++ helper classes that provide access to the culture knowledge base and the environment knowledge base. These classes are used by the ROS nodes that need to access this knowledge; see Deliverable D3.1 System Architecture.\\
 David Vernon \\       
 17 February 2025.
 
-
 \item [Version 1.8]~\\
-Removed  the {\small \tt utilities} sub-directory since the C++ helper classes will be integrated directly in the software for the {\small \tt behaviorController} node and not be made available independently.\\
+Removed the {\small \tt utilities} sub-directory since the C++ helper classes will be integrated directly in the software for the {\small \tt behaviorController} node and not be made available independently.\\
 Added a  {\small \tt dashboard} sub-directory for the dashboard visualization software.\\
 David Vernon \\       
 11 March 2025.
@@ -1065,25 +1064,32 @@ Adedayo Akinade \\
 27 April 2025.
 
 \item [Version 1.10]~\\
-Updated the installation manual with the face and person detection and localization python environment setup.\\
+Updated the installation manual with the face and person detection and localization Python environment setup.\\
 Yohannes Haile.\\    
 26 May 2025.
 
 \item [Version 1.11]~\\
 Fixed the issue with the heading and put an important marker for users not to continue with the manual installation if the script installation is used. \\
-Added command to change the software installation scripts to be executable.\\
-Added a the shell script command to install cssr4africa package in the section 4.\\
-And update the note to be similar to the installation of development environment. \\
+Added a command to change the software installation scripts to be executable.\\
+Added the shell script command to install the cssr4africa package in section 4.\\
+And update the note to be similar to the installation of the development environment. \\
 Added the installation of the Python environment for the sound detection. \\
 Yohannes Haile and Muhammed Danso.\\
 03 June 2025.
 
 \item [Version 1.12]~\\
-Added the installation of Git before the usage the installation scripts.\\
+Added the installation of Git before the usage of the software installation scripts.\\
 Changed the Git clone location of the \texttt{software-Installation-scripts} repository to \texttt{\$HOME/workspace}.\\
 Fixed issues regarding the installation of the Hugging Face models and unit tests.\\
 Yohannes Haile.\\
 20 June 2025.
+
+\item [Version 1.13]~\\
+Fixed several grammar and typo issues in the document.\\
+Added a hyperlink to the project in the executive summary.\\
+Explicit reference to figures.\\
+Yohannes Haile.\\
+21 June 2025.
 
 \end{description}
 \end{document}
