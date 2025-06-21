@@ -77,10 +77,10 @@
 \leadpartner{Carnegie Mellon University Africa} % REPLACE with partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
 \partner{}                                      
 
-\revision{1.3}    
+\revision{1.4}    
 \deliverabledate{31/12/2023}  
 \submissiondate{21/02/2025} 
-\revisiondate{16/06/2025}  
+\revisiondate{20/06/2025}  
 \disseminationlevel{PU}
 \responsible{Yohannes Haile}    
 
@@ -248,12 +248,12 @@ The SORT algorithm is a lightweight multi-object tracking method that combines K
 
 \newpage
 
-Below is a diagram illustrating the complete process of SORT tracking.
+Figure \ref{fig: SORT Diagram} illustrates the complete process of SORT tracking.
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.8]{images/SORT_Diagram.pdf}
-	\caption{SORT Diagram}
+	\caption{SORT Diagram.}
 	\label{fig: SORT Diagram}
 \end{figure}
 
@@ -263,7 +263,7 @@ Below is a diagram illustrating the complete process of SORT tracking.
 \subsection*{File Organization}
 The source code for conducting person detection and localization is structured into three primary components: \texttt{person\_detection\_application}, \texttt{person\_detection\_implementation}, and \texttt{person\_detection\_tracking}. The \texttt{person\_detection\_implementation} component encapsulates all the essential functionality required for executing YOLO based person detection. The \texttt{person\_detection\_tracking} component, on the other hand, manages tracking functionality by employing \texttt{SORT} (Simple Online and Realtime Tracking). Additionally, the person detection system is equipped with the capability to process various files critical for testing, such as configuration files, input files, and topic files. Meanwhile, the \texttt{person\_detection\_application} component serves as the entry point, invoking the main functions to run the person detection node and executing the functions defined within \texttt{person\_detection\_implementation}.\\
 
-Here is the file structure of the person detection package:
+Figure \ref{fig:person_detection_directory} shows the file structure of the person detection package.
 
 \begin{figure}[h]	
 	\renewcommand*\DTstyle{\ttfamily}
@@ -290,27 +290,27 @@ Here is the file structure of the person detection package:
 		.2 CMakeLists.txt.
 		.2 Package.xml.
 	}
-	\caption{File structure of the person detection system}
+	\caption{File structure of the person detection system.}
 	\label{fig:person_detection_directory}
 \end{figure}
 
 \subsection*{UML Diagram for the Person Detection and Localization Module}
 The UML diagram provides a clear structural representation of the Persons Detection and Localization Module, illustrating the relationships between its core components. It highlights inheritance, where PersonDetectionNode serves as the base class, extended by YOLOv8 for specialized person detection. Associations between tracking components such as Sort, and TrackerUtils emphasize how detected people are tracked using Kalman filtering. 
 
-Below is the UML diagram of person\_detection\_implementation.py
+Figure \ref{fig:Person_implementation_UML} show the UML diagram of person\_detection\_implementation.py
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.75]{images/Person_implementation_UML.pdf}
-	\caption{Person detection implementation UML}
+	\caption{Person detection implementation UML.}
 	\label{fig:Person_implementation_UML}
 \end{figure}
 
-Below is the UML diagram of person\_detection\_tracking.py
+Figure \ref{fig:Person_detection_tracking_UML} show the UML diagram of person\_detection\_tracking.py
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.75]{images/Person_Tracking_UML.pdf}
-	\caption{Person detection tracking UML}
-	\label{fig:Person detection tracking UML}
+	\caption{Person detection tracking UML.}
+	\label{fig:Person_detection_tracking_UML}
 \end{figure}
 
 \newpage
@@ -353,7 +353,7 @@ There is no input file the person detection node.
 There is no output file the person detection node. The node using OpenCV to display the detected people with bounding boxes and labels.
 
 \subsection*{Models}
-The person detection node uses one model for detecting people. The model is stored in the \texttt{models} directory. The model is:
+The person detection node uses one model for detecting people. The model is stored in the \texttt{models} directory.
 \begin{table}[h!]
 	\centering
 	\begin{tabularx}{\linewidth}{| l | X |}
@@ -468,7 +468,7 @@ The unit test is designed to validate the person detection node's functionality 
 The test can be performed using a driver-stub test platform, which utilizes recorded color and depth images stored in the data folder as a rosbag file. The unit test can also 
 be executed directly on the physical robot to validate real-world performance. 
 
-The person detection unit test file structure is as follows: 
+The person detection unit test file structure is as shown in Figure \ref{fig:person_detection_unit_test}
 
 \begin{figure}[h]	
 	\renewcommand*\DTstyle{\ttfamily}
@@ -603,6 +603,8 @@ This setup allows flexible testing of the face detection node using live or reco
 
 The launch file \texttt{person\_detection\_test\_launch\_test\_harness.launch} launches the person\_detection node and person\_detection\_test node that run the unit test based on configuration file in the person\_detection\_test.
 
+\newpage
+
 \subsection*{Topics Subscribed}
 The person detection test node subscribes to the  topics shown in Table \ref{tab:topics}.
 
@@ -713,7 +715,12 @@ Yohannes Haile. \\
 \item [Version 1.3]~\\
 Fixed typos and added explicit references to tables.\\
 David Vernon. \\   
-16 June 2025.   
+16 June 2025.  
+
+\item [Version 1.4]~\\
+Added explicit references to the figures.\\
+Yohannes Haile.\\
+20 June 2025.
 
  
 \end{description}

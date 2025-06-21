@@ -77,10 +77,10 @@
 \leadpartner{Carnegie Mellon University Africa} % REPLACE with partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
 \partner{}                                      
 
-\revision{1.2} 
+\revision{1.3} 
 \deliverabledate{31/12/2023}  
 \submissiondate{21/02/2025}  
-\revisiondate{16/06/2025}   
+\revisiondate{20/06/2025}   
 \disseminationlevel{PU}
 \responsible{Yohannes Haile}  
 
@@ -190,7 +190,7 @@ A unit test is developed to cover various scenarios, including multiple faces, p
 \newpage
 \section{Module Design}
 \subsection*{Image Input}
-The primary input for the ROS node is the Intel RealSense camera mounted on top of Pepper's head. As an alternative, the Pepper camera can also be used by configuring the camera parameter in the configuration file. However, as noted in section 2 the depth camera has very low quality. The Intel RealSense camera provides both RGB and depth images at various resolutions and frame rates, which can be customized through the launch file parameters. The table below outlines the available resolution and frame rate configurations for the Intel RealSense camera.
+The primary input for the ROS node is the Intel RealSense camera mounted on top of Pepper's head. As an alternative, the Pepper camera can also be used by configuring the camera parameter in the configuration file. However, as noted in section 2 the depth camera has very low quality. The Intel RealSense camera provides both RGB and depth images at various resolutions and frame rates, which can be customized through the launch file parameters. Table \ref{table: Intel RealSense D435i stream configuration} below outlines the available resolution and frame rate configurations for the Intel RealSense camera.
 
 \begin{table}[h!]
 	\centering
@@ -216,11 +216,12 @@ The primary input for the ROS node is the Intel RealSense camera mounted on top 
 		& 320x180 & 6, 30, 60 & \\ \hline
 	\end{tabular}
 	\caption{Stream Configurations for Depth and Color for Intel RealSense D435i. See the official datasheet: \href{https://cdrdv2-public.intel.com/841984/Intel-RealSense-D400-Series-Datasheet.pdf}{Intel RealSense D400 Series Datasheet}.}
+	\label{table: Intel RealSense D435i stream configuration}
 \end{table}
 
 \subsection*{Algorithms}
 \subsubsection*{MediaPipe}
-MediaPipe is open-source framework developed by Google that provides efficient solution for real-time computer vision application. Among the various capablitlies, MediaPipe can be utilized for head pose estimation by leveraging its face detection and face landmark modules. The process involves detecting key facial landmarks, such as the eyes, nose and mouth, to determine the orientation of the head in 3D space. MediaPipe's Face Mesh module identifies 468 distinct facial landmarks with high precision, allowing for robust tracking of head movements. Once these landmarks are detected, they are used as input to compute the head's rotation and translation relative to the camera coordinate system. You can see the landmarks detected on the picture below. 
+MediaPipe is open-source framework developed by Google that provides efficient solution for real-time computer vision application. Among the various capablitlies, MediaPipe can be utilized for head pose estimation by leveraging its face detection and face landmark modules. The process involves detecting key facial landmarks, such as the eyes, nose and mouth, to determine the orientation of the head in 3D space. MediaPipe's Face Mesh module identifies 468 distinct facial landmarks with high precision, allowing for robust tracking of head movements. Once these landmarks are detected, they are used as input to compute the head's rotation and translation relative to the camera coordinate system. Figure \ref{fig: MediaPipe Face land marks} shows the landmarks detected on the human face. 
 
 \newpage
 
@@ -312,13 +313,14 @@ The SORT algorithm is a lightweight multi-object tracking method that combines K
 	\end{algorithmic}
 \end{algorithm}
 \vspace{-0.3cm}
-Below is a diagram illustrating the complete process of SORT tracking.
+
+Figure \ref{fig: SORT Diagrams} illustrates the complete process of SORT tracking.
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.8]{images/SORT_Diagram.pdf}
-	\caption{SORT Diagrams}
-	\label{fig: SORT Diagrams}
+	\caption{SORT Diagram.}
+	\label{fig: SORT Diagram}
 \end{figure}
 
 \newpage
@@ -327,7 +329,7 @@ Below is a diagram illustrating the complete process of SORT tracking.
 \subsection*{File Organization}
 The source code for conducting face detection, mutual gaze detection, and localization is structured into three primary components: {\fontsize{9.0}{10.0}\selectfont\texttt{{face\_detection\_application}, \texttt{face\_detection\_implementation}}, and \small{\texttt{face\_detection\_tracking}}. The \texttt{face\_detection\_implementation} component encapsulates all the essential functionality required for executing both face detection and mutual gaze detection, utilizing \texttt{MediaPipe} and \texttt{SixDRepNet}. The \texttt{face\_detection\_tracking} component, on the other hand, manages tracking functionality by employing either the Centroid Tracker or \texttt{SORT} (Simple Online and Realtime Tracking). Additionally, the face detection system is equipped with the capability to process various files critical for testing, such as configuration files, input files, and topic files. Meanwhile, the {\fontsize{8.0}{9.0}\selectfont{\texttt{face\_detection\_application}}} component serves as the entry point, invoking the main functions to run the face detection node and executing the functions defined within \texttt{face\_detection\_implementation}.\\
 
-Here is the file structure of the face detection package:
+Figure \ref{fig:face_detection_directory} shows the file structure of the face detection package.
 
 \begin{figure}[h]	
 	\renewcommand*\DTstyle{\ttfamily}
@@ -355,7 +357,7 @@ Here is the file structure of the face detection package:
 		.2 CMakeLists.txt.
 		.2 Package.xml.
 	}
-	\caption{File structure of the face detection system}
+	\caption{File structure of the face detection system.}
 	\label{fig:face_detection_directory}
 \end{figure}
 
@@ -363,31 +365,31 @@ Here is the file structure of the face detection package:
 \subsection*{UML Diagram for the Face and Mutual Gaze Detection and Localization Module}
 The UML diagram provides a clear structural representation of the Face and Mutual Gaze Detection and Localization Module, illustrating the relationships between its core components. It highlights inheritance, where FaceDetectionNode serves as the base class, extended by MediaPipe and SixDRepNet for specialized face detection and head pose estimation. Associations between tracking components such as Sort, CentroidTracker, and TrackerUtils emphasize how detected faces are tracked using Kalman filtering and centroid-based methods. Composition relationships are depicted, showing that SixDRepNet integrates YOLOONNX for face detection as an essential part of head pose estimation, ensuring a modular and scalable system.\\
 
-Below is the UML diagram of face\_detection\_implementation.py
+Figure \ref{fig: Face_implementation_UML} shows the UML diagram of face\_detection\_implementation.py.
 
 \begin{figure}[!hbpt]
 	\centering
 	\hspace*{-0.5cm} % adjust the value as needed
 	\includegraphics[scale=0.85]{images/Face_implementation_UML.pdf}
-	\caption{Face detection implementation UML}
+	\caption{Face detection implementation UML.}
 	\label{fig: Face_implementation_UML}
 \end{figure}
 
 \newpage
 
-Below is the UML diagram of face\_detection\_tracking.py
+Figure \ref{fig: Face detection tracking UML} shows the UML diagram of face\_detection\_tracking.py.
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.90]{images/Face_Tracking_UML.pdf}
-	\caption{Face detection tracking UML}
+	\caption{Face detection tracking UML.}
 	\label{fig: Face detection tracking UML}
 \end{figure}
 
 \newpage
 
 \subsection*{Configuration File}
-The operation of the face detection node is determined by the contents of the configuration file that contains a list of key-value pairs as shown on the table below. 
+The operation of the face detection node is determined by the contents of the configuration file that contains a list of key-value pairs as shown on the Table \ref{Table: configuration file for face detection node}.
 The configuration file is named  \\
 \texttt{face\_detection\_configuration.json}. 
 
@@ -426,6 +428,7 @@ The configuration file is named  \\
 		\hline
 	\end{tabularx}
 	\caption{Configuration file key-value pairs for the face detection node.}
+	\label{Table: configuration file for face detection node}
 \end{table}
 
 
@@ -450,7 +453,7 @@ The launch file \texttt{face\_detection\_launch\_robot.launch} is designed to in
 The file sets the parameter \texttt{/faceDetection/camera} to the chosen camera and conditionally launches the corresponding nodes. If the \texttt{camera} parameter is set to \texttt{pepper}, the launch file starts the \texttt{naoqi\_driver} node using the provided IP, port, network interface, and namespace. Conversely, if \texttt{camera} is set to \texttt{realsense}, it includes the RealSense camera launch file with specified parameters for image resolution, frame rate, and depth alignment. Users can adjust these default values to suit their specific hardware configurations.
 
 \subsection*{Models}
-The face detection node uses two models for face detection and head pose estimation. The models are stored in the \texttt{models} directory. The models are:
+The face detection node uses two models for face detection and head pose estimation. The models are stored in the \texttt{models} directory. The models are shown in Table \ref{Table: Models for face detection node}.
 \begin{table}[h!]
 	\centering
 	\begin{tabularx}{\linewidth}{| l | X |}
@@ -464,6 +467,7 @@ The face detection node uses two models for face detection and head pose estimat
 		\hline
 	\end{tabularx}
 	\caption{Models used by the face detection node.}
+	\label{Table: Models for face detection node}
 \end{table}
 
 \subsection*{Topics File} 
@@ -473,7 +477,7 @@ and the value is the topic. The topics file for the robot is named \texttt{peppe
 
 \newpage
 \subsection*{Topics Subscribed}
-The face detection node subscribes to the following topics:
+The face detection node subscribes to the topics shown in Table \ref{Table: topic subscribed}.
 
 \begin{table}[!h]
 	\centering
@@ -498,10 +502,11 @@ The face detection node subscribes to the following topics:
 		\end{tabularx}
 	}
 	\caption{Topics subscribed by the face detection node.}
+	\label{Table: topic subscribed}
 \end{table}
 
 \subsection*{Topics Published}
-The face detection node publishes the following topics:
+The face detection node publishes to the topics shown in Table \ref{Table: topics published}.
 
 \begin{table}[!h]
 	\centering
@@ -516,6 +521,7 @@ The face detection node publishes the following topics:
 		\end{tabularx}
 	}
 	\caption{Topics published by the face detection node.}
+	\label{Table: topics published}
 \end{table}
 
 
@@ -591,7 +597,7 @@ The face detection unit test file structure is as follows:
 	\label{fig:face_detection_unit_test}
 \end{figure}
 
-The test cases for the face detection node that are going to be evaluated are as follows:
+The test cases for the face detection node that are going to be evaluated as shown in Table \ref{Table:face_detection_tests}.
 
 \begin{longtable}{| l | p{10.5cm} |}
     \hline
@@ -622,12 +628,12 @@ The test cases for the face detection node that are going to be evaluated are as
     \text{Lighting Conditions} & Test the face detection node's robustness under varying lighting conditions. \\
     \hline
 \caption{Test cases for face detection node evaluation (continued across pages).}
-\label{tab:face_detection_tests}
+\label{Table:face_detection_tests}
 \end{longtable}
 
 \subsection*{Configuration File}
 The configuration file for the face detection unit test is named \\
-\texttt{face\_detection\_test\_configuration.json} and contains the following key-value pairs:
+\texttt{face\_detection\_test\_configuration.json} and contains the following key-value pairs shown in Table \ref{tab:face_detection_config}.
 
 \begin{longtable}{|p{3.5cm}|p{11.0cm}|}
 	\hline
@@ -702,7 +708,7 @@ This setup allows flexible testing of the face detection node using live or reco
 The launch file \texttt{face\_detection\_test\_launch\_test\_harness.launch} launches the face\_detection node and face\_detection\_test node that runs the unit test for based on configuration file in the face\_detection\_test.
 
 \subsection*{Topics Subscribed}
-The face detection test node subscribes to the following topics:
+The face detection test node subscribes to the topics shown in Table \ref{Table: topics subscribed test node}.
 
 \begin{table}[!h]
 	\centering
@@ -723,6 +729,7 @@ The face detection test node subscribes to the following topics:
 		\end{tabularx}
 	}
 	\caption{Topics subscribed by the face detection test node.}
+	\label{Table: topics subscribed test node}
 \end{table}
 
 In addition it subscribes to \texttt{/faceDetection/data} to draw the bounding box and save the video in the data folder. 
@@ -801,13 +808,16 @@ Removed future tense in the report.\\
 Yohannes Haile. \\                                    
 29 April 2025.   
 
-
 \item [Version 1.2]~\\
 Fixed typos. \\
 David Vernon. \\       
 16 June 2025   
 
-\end{description}
+\item [Version 1.3]~\\
+Added explicit references to the table and figures.\\
+Yohannes Haile. \\       
+20 June 2025   
 
+\end{description}
 \end{document}
 

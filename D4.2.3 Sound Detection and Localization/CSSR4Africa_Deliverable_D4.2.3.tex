@@ -76,10 +76,10 @@
 \leadpartner{Carnegie Mellon University Africa} % REPLACE with partner name: Carnegie Mellon University Africa or The University of the Witwatersrand
 \partner{}                                      
 
-\revision{1.2}            
+\revision{1.3}            
 \deliverabledate{31/12/2023}    
 \submissiondate{21/02/2025}   
-\revisiondate{16/06/2025}    
+\revisiondate{20/06/2025}    
 \disseminationlevel{PU}
 \responsible{Yohannes Haile}      
 
@@ -94,7 +94,7 @@
 \section*{Executive Summary}
 %===============================================================
 \label{executive_summary}
-Deliverable D4.2.3 introduces the \texttt{soundDetection} module, a key component designed to detect and localize conspicuous sounds within a robot's hearing range, enabling enhanced interaction and responsiveness of Pepper robot. This module, implemented as a ROS node and it provides two outputs: the direction of arrival (DoA) of the sound, published as an angle in degrees, and a filtered audio signal. Designed to operate reliably in acoustically challenging environments, the module ensures robust performance in real-world conditions. It is integral to the Speech Event (D4.3.2) and Attention Subsytem(D5.3), facilitating Automatic Speech Recognition (ASR) and enabling the robot to focus its attention on sound sources. The deliverable includes a comprehensive documentation package covering the development process, functional specifications, interface design, and testing strategies. A user manual provides clear instructions for building, launching, and configuring the module for use with the Pepper robot. Testing across environments ensures reliability of the soundDetection module.
+Deliverable D4.2.3 introduces the \texttt{soundDetection} node, a key component designed to detect and localize conspicuous sounds within a robot's hearing range, enabling enhanced interaction and responsiveness of Pepper robot. This module, implemented as a ROS node and it provides two outputs: the direction of arrival (DoA) of the sound, published as an angle in degrees, and a filtered audio signal. Designed to operate reliably in acoustically challenging environments, the module ensures robust performance in real-world conditions. It is integral to the Speech Event (D4.3.2) and Attention Subsytem(D5.3), facilitating Automatic Speech Recognition (ASR) and enabling the robot to focus its attention on sound sources. The deliverable includes a comprehensive documentation package covering the development process, functional specifications, interface design, and testing strategies. A user manual provides clear instructions for building, launching, and configuring the module for use with the Pepper robot. Testing across environments ensures reliability of the sound Detection module.
 \newpage
  
 \pagebreak
@@ -270,12 +270,12 @@ The noisereduce package performs noise reduction by applying spectral gating tec
 
 \newpage
 
-The diagram below shows how the audio flow chart starting from pepper's microphone until to get filtered audio signal and direction of arrival of the sound.
+Figure \ref{fig:Sound_Diagram} shows how the audio flow chart starting from pepper's microphone until to get filtered audio signal and direction of arrival of the sound.
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=0.78]{images/Sound_Diagram.pdf}
-	\caption{Sound Detection and Localization Flow Chart}
+	\caption{Sound Detection and Localization Flow Chart.}
 	\label{fig:Sound_Diagram}
 \end{figure}
 
@@ -286,7 +286,7 @@ The diagram below shows how the audio flow chart starting from pepper's micropho
 \subsection*{File Organization}
 The source code for conducting sound detection and localization is structured into two primary components: \texttt{sound\_detection\_application} and  \texttt{sound\_detection\_implementation}. The \texttt{sound\_detection\_implementation} component encapsulates all the essential functionality required for sound filtering as well as sound localization. Additionally, the sound detection system is equipped with the capability to process various files critical for testing, such as configuration files, input files, and topic files. Meanwhile, the \texttt{sound\_detection\_application} component serves as the entry point, invoking the main functions to run the sound detection node and executing the functions defined within \texttt{sound\_detection\_implementation}.\\
 
-Here is the file structure of the sound detection package:
+Figure \ref{fig:sound_detection_directory} shows the file structure of the sound detection package.
 
 \begin{figure}[h]	
 	\renewcommand*\DTstyle{\ttfamily}
@@ -308,7 +308,7 @@ Here is the file structure of the sound detection package:
 		.2 CMakeLists.txt.
 		.2 package.xml.
 	}
-	\caption{Updated file structure of the sound detection system}
+	\caption{Updated file structure of the sound detection system.}
 	\label{fig:sound_detection_directory}
 \end{figure}
 
@@ -317,12 +317,12 @@ The UML diagram provides a clear structural representation of the sound Detectio
 
 \newpage
 
-Below is the UML diagram of sound\_detection\_implementation.py
+Figure \ref{fig:sound_implementation_UML} shows the UML diagram of sound\_detection\_implementation.py.
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=1.0]{images/Sound_implementation_UML.pdf}
-	\caption{Sound detection implementation UML}
+	\caption{Sound detection implementation UML.}
 	\label{fig:sound_implementation_UML}
 \end{figure}
 
@@ -330,7 +330,7 @@ Below is the UML diagram of sound\_detection\_implementation.py
 
 
 \subsection*{Configuration File}
-The operation of the sound detection node is determined by the contents of the configuration file that contains a list of key-value pairs as shown on the table below. 
+The operation of the sound detection node is determined by the contents of the configuration file that contains a list of key-value pairs shown in Table \ref{tab:sound_detection_config}.\\
 The configuration file is named \texttt{sound\_detection\_configuration.json}. 
 
 
@@ -397,7 +397,8 @@ The launch file \texttt{sound\_detection\_launch\_robot.launch} is designed to i
 
 
 \subsection*{Topics Subscribed}
-The sound detection node subscribes to the following topics:
+Table \ref{Table: topics subscribed} shows the topics subscribed by sound detection node.
+
 \begin{table}[!h]
 	\centering
 	\begin{tabularx}{\linewidth}{| l | l | X |}
@@ -409,11 +410,13 @@ The sound detection node subscribes to the following topics:
 		\hline
 	\end{tabularx}
 	\caption{Topics subscribed by the sound detection node.}
+	\label{Table: topics subscribed}
 \end{table}
 
 \subsection*{Topics Published}
 
-The sound detection node publishes the following topics:
+Table \ref{Table: topics published} shows the topics published by sound detection node.
+
 \begin{table}[!h]
 	\centering
 	\begin{tabularx}{\linewidth}{| l | l | >{\raggedright\arraybackslash}X |}
@@ -427,6 +430,7 @@ The sound detection node publishes the following topics:
 		\hline
 	\end{tabularx}
 	\caption{Topics published by the sound detection node.}
+	\label{Table: topics published}
 \end{table}
 
 \newpage
@@ -515,18 +519,19 @@ The test cases for the sound detection node that are going to be evaluated are a
 
 \newpage
 
-Below is the UML diagram of sound\_detection\_test\_implementation.py
+Figure \ref{fig:sound_implementation_test_UML} shows the UML diagram of sound\_detection\_test\_implementation.py.
+
 
 \begin{figure}[!hbpt]
 	\centering
 	\includegraphics[scale=1.0]{images/Sound_detection_test_implementation.pdf}
-	\caption{Sound detection implementation test UML}
+	\caption{Sound detection implementation test UML.}
 	\label{fig:sound_implementation_test_UML}
 \end{figure}
 
 \subsection*{Configuration File}
 The configuration file for the sound detection unit test is named \\
-\texttt{sound\_detection\_test\_configuration.json} and contains the following key-value pairs:
+\texttt{sound\_detection\_test\_configuration.json} and contains the key-value pairs shown in Table \ref{tab:sound_detection_test_config}.
 
 \begin{longtable}{| l | p{10.5cm} |}
 	\hline
@@ -563,7 +568,7 @@ The configuration file for the sound detection unit test is named \\
 \subsection*{Launch File}
 The launch file \texttt{sound\_detection\_test\_launch\_robot.launch} is designed to support testing the sound detection node with a live audio input from Pepper's microphone or a recorded a rosbag audio. It provides several configurable arguments to customize the test environment.   
 
-The launch file has the following parameter that can be passed.
+The launch file has the parameter shown in Table \ref{tab:launch_parameters} that can be passed.
 
 \begin{longtable}{| l | p{11cm} |}
 	\hline
@@ -599,8 +604,10 @@ The launch file has the following parameter that can be passed.
 This setup allows flexible testing of the sound detection node using live or recorded audio data sources with consistent parameters across different hardware.\\
 The launch file \texttt{sound\_detection\_test\_launch\_test\_harness.launch} launches the \\ \texttt{sound\_detection }node and \texttt{sound\_detection\_test} node that runs the unit test based on configuration file in the \texttt{sound\_detection\_test}.
 
+\newpage
+
 \subsection*{Topics Subscribed}
-The sound detection test node subscribes to the following topics:
+The sound detection test node subscribes to the topics shown in Table \ref{Table: topics subscribed unit test node}.
 \begin{table}[!h]
 	\centering
 	{\fontsize{9.0}{12.0}\selectfont % <- apply inside the table
@@ -614,8 +621,8 @@ The sound detection test node subscribes to the following topics:
 		\end{tabularx}
 	}
 	\caption{Topics subscribed by the sound detection test node.}
+	\label{Table: topics subscribed unit test node}
 \end{table}
-
 
 In addition it publishes to \texttt{/soundDetection/signal} for processed audio data and \\
  \texttt{/soundDetection/direction} for calculated sound source angles.
@@ -690,6 +697,10 @@ Fixed typos. \\
 David Vernon. \\       
 16 June 2025   
 
+\item [Version 1.3]~\\
+Explicit references to tables and figures. \\
+Yohannes Haile. \\       
+20 June 2025   
 
 \end{description}
 
